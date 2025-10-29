@@ -18,4 +18,12 @@
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ProfileService.Domain\ProfileService.Domain.csproj" />
+    <ProjectReference Include="..\ProfileService.Infrastructure\ProfileService.Infrastructure.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />
+  </ItemGroup>
+
 </Project>

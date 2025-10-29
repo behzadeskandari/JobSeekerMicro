@@ -29,4 +29,8 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JobService.Api\JobService.Api.csproj" />
+  </ItemGroup>
+
 </Project>
