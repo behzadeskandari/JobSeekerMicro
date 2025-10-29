@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\JobService.Domain\JobService.Domain.csproj" />
     <ProjectReference Include="..\JobService.Infrastructure\JobService.Infrastructure.csproj" />
-    <ProjectReference Include="..\JobService.Persistence\JobService.Persistence.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />

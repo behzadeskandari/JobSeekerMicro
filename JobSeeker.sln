@@ -64,6 +64,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertisementService.Persis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppJob.Core", "AppJob.Core\AppJob.Core.csproj", "{2214677D-BCF1-705A-4A26-0B50CE24B2D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Shared.Models", "JobSeeker.Shared.Models\JobSeeker.Shared.Models.csproj", "{E2AAF6F6-2887-47D7-B343-709A87CB2B9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -170,6 +172,10 @@ Global
 		{2214677D-BCF1-705A-4A26-0B50CE24B2D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2214677D-BCF1-705A-4A26-0B50CE24B2D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2214677D-BCF1-705A-4A26-0B50CE24B2D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2AAF6F6-2887-47D7-B343-709A87CB2B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2AAF6F6-2887-47D7-B343-709A87CB2B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2AAF6F6-2887-47D7-B343-709A87CB2B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2AAF6F6-2887-47D7-B343-709A87CB2B9E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +207,7 @@ Global
 		{0C689E72-603A-410F-862E-472693CC516B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{53B659A0-007C-4527-92E8-06E4AE8C5139} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2214677D-BCF1-705A-4A26-0B50CE24B2D5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E2AAF6F6-2887-47D7-B343-709A87CB2B9E} = {80F7DA93-51D6-46E6-B29B-23E66429D3C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF402294-27C1-4829-97C7-ADC04642A061}
