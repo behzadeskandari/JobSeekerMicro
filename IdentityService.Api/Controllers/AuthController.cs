@@ -466,6 +466,7 @@ namespace IdentityService.Api.Controllers
             //    return Ok(new { token, isSignedIn, hasActiveCompany });
             //}
             throw new NotImplementedException();
+            //:TODO
         }
 
         [HttpPost("reset-password")]
