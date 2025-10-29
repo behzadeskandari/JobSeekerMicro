@@ -26,7 +26,7 @@ namespace IdentityService.Api.Controllers
     {
         private readonly IJwtTokenGenerator _jwt;
         private readonly IAccountService _accountService;
-        private readonly IUnitOfWork _unitOfWork;
+       // private readonly IUnitOfWork _unitOfWork;
         private readonly ICommunicationOrchestrator _communicationOrchestrator;//IEmailService _emailService;
 
         /// <summary>
@@ -35,8 +35,8 @@ namespace IdentityService.Api.Controllers
         /// <param name="accountService"></param>
         public AccountController(IAccountService accountService, IJwtTokenGenerator jwtTokenGenerator,
            // IEmailService emailService            
-           ICommunicationOrchestrator CommunicationOrchestrator,
-           IUnitOfWork unitOfWork
+           ICommunicationOrchestrator CommunicationOrchestrator
+         //  ,IUnitOfWork unitOfWork
             )
         {
 
@@ -44,7 +44,7 @@ namespace IdentityService.Api.Controllers
             _accountService = accountService;
             //_emailService = emailService;
             _communicationOrchestrator = CommunicationOrchestrator;
-            _unitOfWork = unitOfWork;
+        //    _unitOfWork = unitOfWork;
         }
 
         [Authorize(Roles = "User,Staff")]
@@ -447,24 +447,25 @@ namespace IdentityService.Api.Controllers
 
             var responseToken = _jwt.ReadToken(token.token);
 
-            if (responseToken != null && responseToken.UserId != null)
-            {
-                bool hasActiveCompany = false;
-                var isSignedIn = true;
-                var findedCompany = await _unitOfWork.companyRepository.FindAsync(x => x.UserId == responseToken.UserId);
-                if (findedCompany.Count() > 0)
-                {
-                    hasActiveCompany = true;
-                }
+            //if (responseToken != null && responseToken.UserId != null)
+            //{
+            //    bool hasActiveCompany = false;
+            //    var isSignedIn = true;
+            //    var findedCompany = await _unitOfWork.companyRepository.FindAsync(x => x.UserId == responseToken.UserId);
+            //    if (findedCompany.Count() > 0)
+            //    {
+            //        hasActiveCompany = true;
+            //    }
 
-                return Ok(new { token, isSignedIn, hasActiveCompany });
-            }
-            else
-            {
-                var isSignedIn = false;
-                var hasActiveCompany = false;
-                return Ok(new { token, isSignedIn, hasActiveCompany });
-            }
+            //    return Ok(new { token, isSignedIn, hasActiveCompany });
+            //}
+            //else
+            //{
+            //    var isSignedIn = false;
+            //    var hasActiveCompany = false;
+            //    return Ok(new { token, isSignedIn, hasActiveCompany });
+            //}
+            throw new NotImplementedException();
         }
 
         [HttpPost("reset-password")]

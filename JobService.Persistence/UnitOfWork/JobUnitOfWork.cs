@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobService.Application.Interfaces;
 using JobService.Persistence.DbContexts;
+using JobService.Persistence.Repository;
 
 namespace JobService.Persistence.UnitOfWork
 {
@@ -12,6 +14,10 @@ namespace JobService.Persistence.UnitOfWork
         private readonly JobDbContext _context;
         public IJobPostsRepository JobPostsRepository { get; }
         public IJobRequestsRepository JobRequestsRepository { get; }
+
+        public IJobsRepository JobsRepository { get; }
+
+        public ISavedJobRepository SavedJob { get; }
 
         public JobUnitOfWork(JobDbContext context)
         {

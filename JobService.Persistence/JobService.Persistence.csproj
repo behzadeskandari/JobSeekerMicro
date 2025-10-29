@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
     <ProjectReference Include="..\JobService.Domain\JobService.Domain.csproj" />
+    <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
   </ItemGroup>
 
 </Project>

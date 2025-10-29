@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobService.Domain.Entities;
-using JobService.Persistence.DbContext;
 using JobService.Persistence.DbContexts;
 using JobService.Persistence.GenericRepository;
 using MassTransit;
