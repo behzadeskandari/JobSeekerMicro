@@ -78,7 +78,6 @@ namespace IdentityService.Infrastructure.Jwt
             if (!tokenHandler.CanReadToken(token))
                 throw new ArgumentException("Invalid JWT token");
 
-            testc.
             JwtSecurityToken jwtToken = tokenHandler.ReadJwtToken(token);
             if (jwtToken.ValidTo <= DateTime.Now)
             {
