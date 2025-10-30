@@ -22,7 +22,7 @@ namespace JobSeeker.Shared.Common.Interfaces
         Task<IEnumerable<T>> ExecuteStoredProcedureAsync(string procedureName, params SqlParameter[] parameters);
 
         Task<T?> GetByIdAsync(object id);
-        Task<IList<T>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> expression);
         IQueryable<T> GetQueryable(); // For more complex queries
         Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);

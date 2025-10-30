@@ -44,7 +44,7 @@ namespace JobService.Domain.Entities
         public DateTime? DateModified { get; set; }
         public bool? IsActive { get; set; }
         public JobOfferStatus Status { get; set; }
-        public virtual ICollection<Guid> JobApplicationIds { get; set; }
+        public virtual ICollection<JobApplication> JobApplication { get; set; }
         public ICollection<Guid> CandidatesIds { get; set; }
         public ICollection<JobPost> JobPosts { get; set; }
     }

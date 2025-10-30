@@ -21,4 +21,9 @@
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Models\JobSeeker.Shared.Models.csproj" />
+  </ItemGroup>
+
 </Project>
