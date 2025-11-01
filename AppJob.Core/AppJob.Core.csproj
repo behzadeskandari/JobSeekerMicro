@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
 	  <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
 	  <PackageReference Include="KavenegarDotNetCore" Version="1.0.7" />
+	  <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.5" />
+	  <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.6" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
@@ -23,6 +26,7 @@
 	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.21" />
 	  <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
