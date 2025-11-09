@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ProfileService.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProfileController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

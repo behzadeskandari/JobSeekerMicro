@@ -72,12 +72,14 @@ app.UseSwaggerForOcelotUI(opt =>
 {
     x.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
 });
-
+app.UseRouting();
 app.UseCors();
+app.MapFallback(() => Results.NotFound());
 app.UseHttpsRedirection();
 app.UseMiddleware<InterceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 await app.UseOcelot();
 app.Run();

@@ -96,13 +96,14 @@
             ],
             "UpstreamPathTemplate": "/",
             "UpstreamHttpMethod": [ "GET" ]
-        },
-
+        }
     ],
+
     "GlobalConfiguration": {
         "BaseUrl": "https://localhost:7000",
         "RequestIdKey": "OcRequestId"
     },
+
     "SwaggerEndPoints": [
         {
             "Key": "account",

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace JobService.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class JobController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

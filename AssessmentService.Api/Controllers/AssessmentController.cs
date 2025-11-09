@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AssessmentService.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AssessmentController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
