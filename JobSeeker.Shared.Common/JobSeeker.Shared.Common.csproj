@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
   </ItemGroup>
 
 </Project>

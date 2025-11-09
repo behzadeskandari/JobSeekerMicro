@@ -9,6 +9,7 @@ using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddDbContext<ApplicationUserDbContext>(options =>
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationUserDbContext>().AddRoles<IdentityRole>();
+
+
+builder.Services.AddDbContextPool
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.RegisterAppJobServicesApp(builder.Configuration);
 builder.Services.AddScoped<ICommunicationOrchestrator, CommunicationOrchestrator>();
@@ -32,6 +36,17 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);
 builder.Services.AddJWTService(builder.Configuration);
+
+
+builder.Services.AddCors(builder =>
+{
+    builder.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -43,11 +58,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("AllowAll");
 app.UseAuthentication().UseAuthorization();
 app.UseMiddleware<ResterictAccessMiddleware>();
-
-
 
 app.MapControllers();
 

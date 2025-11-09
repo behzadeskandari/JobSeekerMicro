@@ -37,8 +37,10 @@ namespace IdentityService.Infrastructure
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(opt =>
             {
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = true;
                 opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
+                { 
                     ValidateAudience = true,
                     ValidateIssuer = true,
                     //ValidateLifetime =  ️true,

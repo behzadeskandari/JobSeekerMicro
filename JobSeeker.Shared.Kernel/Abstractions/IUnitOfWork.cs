@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace JobSeeker.Shared.Kernel.Abstractions
 {
-    internal class IUnitOfWork
+    public interface IUnitOfWork
     {
+
     }
 }
