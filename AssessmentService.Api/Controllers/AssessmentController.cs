@@ -4,16 +4,16 @@ namespace AssessmentService.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class AssessmentController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<AssessmentController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public AssessmentController(ILogger<AssessmentController> logger)
         {
             _logger = logger;
         }

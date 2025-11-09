@@ -490,6 +490,18 @@ namespace IdentityService.Api.Controllers
 
             return BadRequest(new { error = "Failed to reset password" });
         }
+
+        [HttpGet]
+        public IActionResult Test()
+        {
+            List<string> str = new List<string>()
+            {
+                "1",
+                "2",
+                "3"
+            };
+            return Ok(str);
+        }
     }
 
 }

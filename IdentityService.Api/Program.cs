@@ -1,3 +1,5 @@
+using AppJob.Core.Configuration;
+using AppJob.Core.Services;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
@@ -23,6 +25,8 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationUserDbContext>().AddRoles<IdentityRole>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.RegisterAppJobServicesApp(builder.Configuration);
+builder.Services.AddScoped<ICommunicationOrchestrator, CommunicationOrchestrator>();
 builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);

@@ -4,16 +4,16 @@ namespace IdentityService.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class IdentityController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<IdentityController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public IdentityController(ILogger<IdentityController> logger)
         {
             _logger = logger;
         }

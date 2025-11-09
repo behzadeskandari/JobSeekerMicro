@@ -13,7 +13,7 @@
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
         },
         {
-            "DownstreamPathTemplate": "/api/weather",
+            "DownstreamPathTemplate": "/api/job",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -21,12 +21,12 @@
                     "Port": 7002
                 }
             ],
-            "UpstreamPathTemplate": "/api/weather",
+            "UpstreamPathTemplate": "/api/job",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
 
         },
         {
-            "DownstreamPathTemplate": "/api/weather",
+            "DownstreamPathTemplate": "/api/profile",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -34,11 +34,11 @@
                     "Port": 7003
                 }
             ],
-            "UpstreamPathTemplate": "/api/weather",
+            "UpstreamPathTemplate": "/api/profile",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
         },
         {
-            "DownstreamPathTemplate": "/api/weather",
+            "DownstreamPathTemplate": "/api/advertisment",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -47,6 +47,18 @@
                 }
             ],
             "UpstreamPathTemplate": "/api/weather",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/assessment",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7005
+                }
+            ],
+            "UpstreamPathTemplate": "/api/assessment",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
         },
 

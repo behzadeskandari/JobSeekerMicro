@@ -4,16 +4,16 @@ namespace ProfileService.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class ProfileController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<ProfileController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public ProfileController(ILogger<ProfileController> logger)
         {
             _logger = logger;
         }
