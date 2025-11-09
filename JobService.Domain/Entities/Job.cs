@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Models;
 using MassTransit;
 using MassTransit.Transports;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JobService.Domain.Entities
 {
-    public class Job : IBaseEntity<Guid>
+    public class Job : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
 

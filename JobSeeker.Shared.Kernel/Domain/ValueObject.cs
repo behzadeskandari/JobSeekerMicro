@@ -9,14 +9,21 @@ namespace JobSeeker.Shared.Kernel.Domain
     public abstract class ValueObject
     {
         protected abstract IEnumerable<object> GetEqualityComponents();
+
         public override bool Equals(object obj)
-            => ReferenceEquals(this, obj)
-               || obj is ValueObject vo
-                  && GetType() == vo.GetType()
-                  && GetEqualityComponents().SequenceEqual(vo.GetEqualityComponents());
+        {
+            if (obj == null || obj.GetType() != GetType())
+                return false;
+
+            var other = (ValueObject)obj;
+
+            return GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+        }
+
         public override int GetHashCode()
-            => GetEqualityComponents()
-                .Aggregate(1, (current, obj) =>
-                            HashCode.Combine(current, obj?.GetHashCode() ?? 0));
+        {
+            return GetEqualityComponents()
+                .Aggregate(1, (current, obj) => HashCode.Combine(current, obj?.GetHashCode() ?? 0));
+        }
     }
 }

@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class JobRequest : IBaseEntity<Guid>
+    public class JobRequest : IBaseEntity<Guid>, IAggregateRoot
     {
         public Guid Id { get; set; }
 

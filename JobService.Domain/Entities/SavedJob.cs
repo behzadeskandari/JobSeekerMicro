@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class SavedJob : IBaseEntity<Guid>
+    public class SavedJob : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
         public Guid? JobId { get; set; }

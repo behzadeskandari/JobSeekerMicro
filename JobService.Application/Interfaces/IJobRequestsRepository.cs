@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Common.Interfaces;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobService.Domain.Entities;
 
 namespace JobService.Application.Interfaces
 {
     public interface IJobRequestsRepository :
-          IWriteRepository<JobRequest>
-    //, IReadRepository<JobSeeker.Domain.Common.Entities.JobRequest>
+      IWriteRepository<JobRequest>, IAggregateRoot
     {
     }
 }

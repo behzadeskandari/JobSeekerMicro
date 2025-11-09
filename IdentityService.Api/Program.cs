@@ -28,7 +28,6 @@ builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationUserDbContext>().AddRoles<IdentityRole>();
 
 
-builder.Services.AddDbContextPool
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.RegisterAppJobServicesApp(builder.Configuration);
 builder.Services.AddScoped<ICommunicationOrchestrator, CommunicationOrchestrator>();

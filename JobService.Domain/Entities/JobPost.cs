@@ -6,12 +6,20 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
+using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
+using JobService.Domain.DomainEvents;
+using JobService.Domain.ValueObjects;
 
 namespace JobService.Domain.Entities
 {
-    public class JobPost : IBaseEntity<Guid>
+    public class JobPost : IBaseEntity<Guid> , IAggregateRoot
     {
+
+        public List<DomainEvent> DomainEvents { get; private set; } = new List<DomainEvent>();
+
+
         public Guid Id { get; set; }
 
         [Required]
@@ -26,7 +34,7 @@ namespace JobService.Domain.Entities
         [Required]
         public string Location { get; set; }
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? Salary { get; set; }
+        public SalaryRange? Salary { get; set; }
 
         [Required]
         //[ForeignKey("Staff")]
@@ -66,5 +74,12 @@ namespace JobService.Domain.Entities
         //[ForeignKey("City")]
         public int CityId { get; set; }
         //public City City { get; set; }
+
+        public void Publish()
+        {
+            IsActive = true;
+            DatePublished = DateTime.Now;
+            DomainEvents.Add(new JobOfferPublishedEvent(Id));
+        }
     }
 }

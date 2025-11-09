@@ -14,13 +14,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 
 namespace JobSeeker.Shared.Common.GenericRepo
 {
 
     public abstract class GenericRepository<T> :
         //IReadRepository<T>,
-        IWriteRepository<T> where T : class
+        IWriteRepository<T> where T : class , IAggregateRoot
     {
         private readonly DbContext _context;
         protected readonly DbSet<T> _dbSet;

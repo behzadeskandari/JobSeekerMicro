@@ -1,7 +1,7 @@
 {
     "Routes": [
         {
-            "DownstreamPathTemplate": "/api/account",
+            "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -9,11 +9,16 @@
                     "Port": 7001
                 }
             ],
-            "UpstreamPathTemplate": "/api/account",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamPathTemplate": "/account/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "account",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         },
         {
-            "DownstreamPathTemplate": "/api/job",
+            "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -21,12 +26,16 @@
                     "Port": 7002
                 }
             ],
-            "UpstreamPathTemplate": "/api/job",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-
+            "UpstreamPathTemplate": "/job/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "job",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         },
         {
-            "DownstreamPathTemplate": "/api/profile",
+            "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -34,11 +43,16 @@
                     "Port": 7003
                 }
             ],
-            "UpstreamPathTemplate": "/api/profile",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamPathTemplate": "/profile/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "profile",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         },
         {
-            "DownstreamPathTemplate": "/api/advertisment",
+            "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -46,11 +60,16 @@
                     "Port": 7004
                 }
             ],
-            "UpstreamPathTemplate": "/api/weather",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamPathTemplate": "/advertisement/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "advertisement",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
         },
         {
-            "DownstreamPathTemplate": "/api/assessment",
+            "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
@@ -58,12 +77,82 @@
                     "Port": 7005
                 }
             ],
-            "UpstreamPathTemplate": "/api/assessment",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+            "UpstreamPathTemplate": "/assessment/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "assessment",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ],
+            "UpstreamPathTemplate": "/",
+            "UpstreamHttpMethod": [ "GET" ]
         },
 
     ],
     "GlobalConfiguration": {
         "BaseUrl": "https://localhost:7000",
-    }
+        "RequestIdKey": "OcRequestId"
+    },
+    "SwaggerEndPoints": [
+        {
+            "Key": "account",
+            "Config": [
+                {
+                    "Name": "Account API",
+                    "Version": "v1",
+                    "Url": "http://localhost:7001/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "job",
+            "Config": [
+                {
+                    "Name": "Job API",
+                    "Version": "v1",
+                    "Url": "http://localhost:7002/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "profile",
+            "Config": [
+                {
+                    "Name": "Profile API",
+                    "Version": "v1",
+                    "Url": "http://localhost:7003/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "advertisement",
+            "Config": [
+                {
+                    "Name": "Advertisement API",
+                    "Version": "v1",
+                    "Url": "http://localhost:7004/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "assessment",
+            "Config": [
+                {
+                    "Name": "Assessment API",
+                    "Version": "v1",
+                    "Url": "http://localhost:7005/swagger/v1/swagger.json"
+                }
+            ]
+        }
+    ]
 }
