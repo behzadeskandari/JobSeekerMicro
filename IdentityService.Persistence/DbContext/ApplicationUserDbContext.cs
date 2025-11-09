@@ -11,7 +11,7 @@ namespace IdentityService.Persistence.DbContext
 {
     public class ApplicationUserDbContext : IdentityDbContext<User>
     {
-        public ApplicationUserDbContext(DbContextOptions options): base(options)
+        public ApplicationUserDbContext(DbContextOptions<ApplicationUserDbContext> options): base(options)
         {
             
         }

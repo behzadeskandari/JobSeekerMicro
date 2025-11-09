@@ -1,8 +1,11 @@
+using IdentityService.Application.Interfaces;
+using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
 using IdentityService.Persistence.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,11 +15,17 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationUserDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationUserDbContext>().AddRoles<IdentityRole>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddAuthorization();
-
+builder.Services.AddMemoryCache();
+builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);
 builder.Services.AddJWTService(builder.Configuration);
 var app = builder.Build();
 
