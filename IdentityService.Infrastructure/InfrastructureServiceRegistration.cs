@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Infrastructure.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Infrastructure
 {
@@ -27,11 +29,25 @@ namespace IdentityService.Infrastructure
 
 
     public static class JWTAuthService{
-        public static IServiceCollection AddJWTService(this IServiceCollection services) {
+        public static IServiceCollection AddJWTService(this IServiceCollection services, IConfiguration config) {
 
             services.AddAuthentication(opt =>
             {
-                opt.DefaultAuthenticateScheme = JwtBrarerDefault
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    //ValidateLifetime =  ️true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = config["Jwt:Issuer"],
+                    ValidAudience = config["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]))
+
+                };
             });
             return services;
         }
