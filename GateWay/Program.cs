@@ -1,3 +1,4 @@
+using GateWay.Middleware;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -21,6 +22,8 @@ builder.Services.AddCors(options=>
                .AllowAnyHeader();
     });
 });
+
+
 var app = builder.Build();
 
 //// Configure the HTTP request pipeline.
@@ -31,7 +34,7 @@ var app = builder.Build();
 //}
 app.UseCors();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<InterceptionMiddleware>();
 app.UseAuthorization();
 
 app.UseOcelot().Wait();

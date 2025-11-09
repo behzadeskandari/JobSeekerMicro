@@ -1,3 +1,5 @@
+using JobSeeker.Shared.Kernel.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -19,7 +21,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
+app.UseMiddleware<ResterictAccessMiddleware>();
 app.MapControllers();
 
 app.Run();

@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
     <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
   </ItemGroup>
 

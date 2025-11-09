@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdvertisementService.Application\AdvertisementService.Application.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
   </ItemGroup>
 
 </Project>

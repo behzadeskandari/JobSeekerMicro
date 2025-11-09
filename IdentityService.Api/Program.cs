@@ -5,6 +5,7 @@ using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
 using IdentityService.Persistence.DbContext;
+using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddMemoryCache();
 builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);
 builder.Services.AddJWTService(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -43,6 +45,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication().UseAuthorization();
+app.UseMiddleware<ResterictAccessMiddleware>();
 
 
 
