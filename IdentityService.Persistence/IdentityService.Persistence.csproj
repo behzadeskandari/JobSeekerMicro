@@ -28,13 +28,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GenericRepository\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Repository\" />
     <Folder Include="Repository\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
   </ItemGroup>
 
 </Project>

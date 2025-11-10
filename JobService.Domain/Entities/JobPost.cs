@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JobSeeker.Shared.Contracts.DomainEvents;
 using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
-using JobService.Domain.DomainEvents;
 using JobService.Domain.ValueObjects;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace JobService.Domain.Entities
 {
-    public class JobPost : IBaseEntity<Guid> , IAggregateRoot
+    public class JobPost : IBaseEntity<Guid>, IAggregateRoot
     {
 
         public List<DomainEvent> DomainEvents { get; private set; } = new List<DomainEvent>();
