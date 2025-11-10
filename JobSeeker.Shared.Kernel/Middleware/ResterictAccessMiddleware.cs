@@ -14,7 +14,7 @@ namespace JobSeeker.Shared.Kernel.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             // Example logic: Restrict access based on a custom header
-            if (context.Request.Headers["X-Intercepted"] != "true")
+            if (context.Request.Headers["X-Intercepted"] == "true")
             {
                 var referrer = context.Request.Headers["referer"].ToString();
                 if (string.IsNullOrEmpty(referrer))
@@ -25,7 +25,7 @@ namespace JobSeeker.Shared.Kernel.Middleware
                 }
                 else
                 {
-                    await context.Response.WriteAsync($"Access Allowed from referrer: {referrer}");
+                    //await context.Response.WriteAsync($"Access Allowed from referrer: {referrer}");
                     await _next(context);
                 }
             }

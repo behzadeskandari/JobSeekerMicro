@@ -18,6 +18,21 @@
             }
         },
         {
+            "DownstreamPathTemplate": "/api/account/register",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/account/Account/register",
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": ""
+            }
+        },
+        {
             "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
