@@ -3,10 +3,9 @@
 namespace GateWay.Controllers
 {
     [ApiController]
-    [Route("/")]
     public class RootController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("/")]
         public IActionResult Get()
         {
             return Ok(new { status = "Gateway is running 🚀" });

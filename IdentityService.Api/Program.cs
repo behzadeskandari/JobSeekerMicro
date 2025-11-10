@@ -210,6 +210,7 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIs V 01");
         app.UseDeveloperExceptionPage();
+        c.RoutePrefix = "swagger";
         //c.InjectStylesheet("/Content/Swagger.css");
     });
 }
