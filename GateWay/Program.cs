@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using GateWay.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -13,66 +14,152 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
-
-
-builder.Services.AddAntiforgery(x =>
-{
-    x.HeaderName = "X-CSRF-TOKEN"; // Set the header name for CSRF token
-    x.Cookie.Name = "X-CSRF-TOKEN"; // Set the cookie name for CSRF token
-    x.SuppressXFrameOptionsHeader = false;
-    x.Cookie.HttpOnly = false;
-});
-
-
 builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+}); ;
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
-    c =>
+c =>
+{
+    c.SchemaGeneratorOptions = new SchemaGeneratorOptions
     {
-        c.SchemaGeneratorOptions = new SchemaGeneratorOptions
-        {
-            SchemaIdSelector = type => type.FullName
-        };
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobMicro", Version = "V1" });
+        SchemaIdSelector = type => type.FullName
+    };
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay api", Version = "V1" });
 
-        // Set the comments path for the Swagger JSON and UI.
-        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    // Set the comments path for the Swagger JSON and UI.
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+}
+);
 
-    });
 
+//builder.Services.AddSwaggerGen(
+//    c =>
+//    {
+//        c.SchemaGeneratorOptions = new SchemaGeneratorOptions
+//        {
+//            SchemaIdSelector = type => type.FullName
+//        };
+//        c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay Api ", Version = "V1" });
+
+//        // Include XML comments
+//        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+
+//        // ✅ Keep only ONE Bearer definition block
+//        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+//        {
+//            Name = "Authorization",
+//            Type = SecuritySchemeType.ApiKey,
+//            Scheme = "Bearer",
+//            BearerFormat = "JWT",
+//            In = ParameterLocation.Header,
+//            Description = "JWT Authorization header using the Bearer scheme."
+//        });
+
+//        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+//        {
+//            {
+//                new OpenApiSecurityScheme
+//                {
+//                    Reference = new OpenApiReference
+//                    {
+//                        Type = ReferenceType.SecurityScheme,
+//                        Id = "Bearer"
+//                    }
+//                },
+//                Array.Empty<string>()
+//            }
+//        });
+//    });
+
+var tokenValidationParams = new TokenValidationParameters
+{
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = "https://localhost:5000", // Your Identity Server URL or issuer
+    ValidAudience = "jobseeker_api", // Your API resource name or audience
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YOUR_SECRET_HERE")) // Your signing key or retrieve from config
+
+};
+
+builder.Services.AddSingleton(tokenValidationParams);
+
+
+
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
+//.AddJwtBearer("Bearer", options =>
+//{
+//    options.RequireHttpsMetadata = false;
+//    options.SaveToken = true;
+//    options.TokenValidationParameters = tokenValidationParams;
+//});
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultAuthenticateScheme =
+    options.DefaultChallengeScheme =
+    options.DefaultForbidScheme =
+    options.DefaultScheme =
+    options.DefaultSignInScheme =
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+
 })
-.AddJwtBearer("Bearer", options =>
+.AddJwtBearer(options =>
 {
+
     options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.SaveToken = false;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = "https://localhost:5000", // Your Identity Server URL or issuer
-        ValidAudience = "jobseeker_api", // Your API resource name or audience
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YOUR_SECRET_HERE")) // Your signing key or retrieve from config
-
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])),
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"]
+    };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine("Authentication failed: " + context.Exception.Message);
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token validated successfully.");
+            return Task.CompletedTask;
+        },
+        OnMessageReceived = context =>
+        {
+            return Task.CompletedTask;
+        }
     };
 });
 
-builder.Services.AddCors(options=>
+
+builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
@@ -81,6 +168,8 @@ builder.Services.AddCors(options=>
                .AllowAnyHeader();
     });
 });
+
+
 
 builder.Services.ConfigureSwaggerGen(options =>
 {
@@ -111,6 +200,15 @@ builder.Services.ConfigureSwaggerGen(options =>
    });
 });
 
+
+builder.Services.AddAntiforgery(x =>
+{
+    x.HeaderName = "X-CSRF-TOKEN"; // Set the header name for CSRF token
+    x.Cookie.Name = "X-CSRF-TOKEN"; // Set the cookie name for CSRF token
+    x.SuppressXFrameOptionsHeader = false;
+    x.Cookie.HttpOnly = false;
+});
+
 var app = builder.Build();
 
 //// Configure the HTTP request pipeline.
@@ -122,10 +220,11 @@ var app = builder.Build();
 
 app.UseSwaggerForOcelotUI(opt =>
 {
-    opt.PathToSwaggerGenerator = "/swagger/docs";  // Default path
-}, x =>
+    opt.PathToSwaggerGenerator = "/swagger/docs";
+    opt.DownstreamSwaggerEndPointBasePath = "/swagger/docs";
+}, ui =>
 {
-    x.RoutePrefix = "swagger"; // Set Swagger UI at /swagger
+    ui.RoutePrefix = "swagger";
 });
 app.UseRouting();
 app.UseCors();

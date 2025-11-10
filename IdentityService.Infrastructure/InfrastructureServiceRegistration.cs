@@ -77,7 +77,6 @@ namespace IdentityService.Infrastructure
                         return Task.CompletedTask;
                     }
                 };
-                services.AddSingleton(opt.TokenValidationParameters);
             });
             return services;
         }
