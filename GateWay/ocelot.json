@@ -2,53 +2,24 @@
     "Routes": [
         {
             "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
-                    "Port": 7250
+                    "Port": 7001
                 }
             ],
             "UpstreamPathTemplate": "/account/{everything}",
             "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
             "SwaggerKey": "account",
             "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/account/register",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7250
-                }
-            ],
-            "UpstreamPathTemplate": "/account/register",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/account/login",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7250
-                }
-            ],
-            "UpstreamPathTemplate": "/account/login",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
             }
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
@@ -65,7 +36,7 @@
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
@@ -82,7 +53,7 @@
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
@@ -99,7 +70,7 @@
         },
         {
             "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
@@ -116,48 +87,15 @@
         },
         {
             "DownstreamPathTemplate": "/",
-            "DownstreamScheme": "https",
+            "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
                     "Host": "localhost",
-                    "Port": 7250
+                    "Port": 7001
                 }
             ],
             "UpstreamPathTemplate": "/",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/swagger/{everything}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7250
-                }
-            ],
-            "UpstreamPathTemplate": "/swagger/{everything}",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/swagger.json",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7250
-                }
-            ],
-            "UpstreamPathTemplate": "/swagger/v1/swagger.json",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": null
-            }
+            "UpstreamHttpMethod": [ "GET" ]
         }
     ],
 
@@ -173,7 +111,7 @@
                 {
                     "Name": "Account API",
                     "Version": "v1",
-                    "Url": "https://localhost:7250/swagger/v1/swagger.json"
+                    "Url": "http://localhost:7001/swagger/v1/swagger.json"
                 }
             ]
         },
@@ -183,7 +121,7 @@
                 {
                     "Name": "Job API",
                     "Version": "v1",
-                    "Url": "https://localhost:7002/swagger/v1/swagger.json"
+                    "Url": "http://localhost:7002/swagger/v1/swagger.json"
                 }
             ]
         },
@@ -193,7 +131,7 @@
                 {
                     "Name": "Profile API",
                     "Version": "v1",
-                    "Url": "https://localhost:7003/swagger/v1/swagger.json"
+                    "Url": "http://localhost:7003/swagger/v1/swagger.json"
                 }
             ]
         },
@@ -203,7 +141,7 @@
                 {
                     "Name": "Advertisement API",
                     "Version": "v1",
-                    "Url": "https://localhost:7004/swagger/v1/swagger.json"
+                    "Url": "http://localhost:7004/swagger/v1/swagger.json"
                 }
             ]
         },
@@ -213,7 +151,7 @@
                 {
                     "Name": "Assessment API",
                     "Version": "v1",
-                    "Url": "https://localhost:7005/swagger/v1/swagger.json"
+                    "Url": "http://localhost:7005/swagger/v1/swagger.json"
                 }
             ]
         }

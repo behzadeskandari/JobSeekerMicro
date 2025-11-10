@@ -25,8 +25,8 @@ namespace GateWay.Middleware
                 return;
             }
             // PUBLIC ENDPOINTS - NO TOKEN REQUIRED
-            if (path == "/" || path.StartsWith("/account/register") ||
-                path.StartsWith("/account/login"))
+            if (path == "/" || path.Contains("/account/register") ||
+                path.Contains("/account/login"))
             {
                 await _next(context);
                 return;

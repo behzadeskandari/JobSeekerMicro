@@ -1,41 +1,209 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:14065",
-      "sslPort": 44307
-    }
-  },
-  "profiles": {
-    "http": {
-        "commandName": "Project",
-        "dotnetRunMessages": true,
-        "launchBrowser": true,
-        "launchUrl": "swagger",
-        "applicationUrl": "http://localhost:7003",
-        "environmentVariables": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/account/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "account",
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
+        },
+        {
+            "DownstreamPathTemplate": "/api/account/register",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/account/register",
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
+        },
+        {
+            "DownstreamPathTemplate": "/api/account/login",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/account/login",
+            "UpstreamHttpMethod": [ "POST" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
+        },
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7129
+                }
+            ],
+            "UpstreamPathTemplate": "/job/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "job",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7221
+                }
+            ],
+            "UpstreamPathTemplate": "/profile/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "profile",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7128
+                }
+            ],
+            "UpstreamPathTemplate": "/advertisement/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "advertisement",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7193
+                }
+            ],
+            "UpstreamPathTemplate": "/assessment/{everything}",
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "SwaggerKey": "assessment",
+            "AuthenticationOptions": {
+                "AuthenticationProviderKey": "Bearer",
+                "AllowedScopes": []
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/",
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
+        },
+        {
+            "DownstreamPathTemplate": "/swagger/{everything}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/swagger/{everything}",
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
+        },
+        {
+            "DownstreamPathTemplate": "/swagger.json",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7250
+                }
+            ],
+            "UpstreamPathTemplate": "/swagger/v1/swagger.json",
+            "UpstreamHttpMethod": [ "GET" ],
+            "AuthenticationOptions": { "AuthenticationProviderKey": null }
         }
+    ],
+
+    "GlobalConfiguration": {
+        "BaseUrl": "https://localhost:7000",
+        "RequestIdKey": "OcRequestId"
     },
-    "https": {
-        "commandName": "Project",
-        "dotnetRunMessages": true,
-        "launchBrowser": true,
-        "launchUrl": "swagger",
-        "applicationUrl": "https://localhost:7221;http://localhost:7003",
-        "environmentVariables": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
+
+    "SwaggerEndPoints": [
+        {
+            "Key": "account",
+            "Config": [
+                {
+                    "Name": "Account API",
+                    "Version": "v1",
+                    "Url": "https://localhost:7250/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "job",
+            "Config": [
+                {
+                    "Name": "Job API",
+                    "Version": "v1",
+                    "Url": "https://localhost:7129/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "profile",
+            "Config": [
+                {
+                    "Name": "Profile API",
+                    "Version": "v1",
+                    "Url": "https://localhost:7221/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "advertisement",
+            "Config": [
+                {
+                    "Name": "Advertisement API",
+                    "Version": "v1",
+                    "Url": "https://localhost:7128/swagger/v1/swagger.json"
+                }
+            ]
+        },
+        {
+            "Key": "assessment",
+            "Config": [
+                {
+                    "Name": "Assessment API",
+                    "Version": "v1",
+                    "Url": "https://localhost:7193/swagger/v1/swagger.json"
+                }
+            ]
         }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    }
-  }
+    ]
 }
