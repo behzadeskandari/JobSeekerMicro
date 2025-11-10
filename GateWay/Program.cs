@@ -187,16 +187,20 @@ app.UseSwaggerForOcelotUI(opt =>
 {
     ui.RoutePrefix = "swagger";
 });
+app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseCors();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseMiddleware<InterceptionMiddleware>();
 app.UseMiddleware<TokenCheckerMiddleware>();
 
-app.UseAuthentication();
-app.UseAuthorization();
-app.MapFallback(() => Results.NotFound());
-app.UseHttpsRedirection();
 app.MapControllers();
+
+app.MapFallback(() => Results.NotFound());
+
 await app.UseOcelot();
 app.Run();
