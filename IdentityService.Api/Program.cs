@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Threading.RateLimiting;
 using AppJob.Core.Configuration;
 using AppJob.Core.Services;
@@ -55,7 +55,7 @@ builder.Services.AddSwaggerGen(
         var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
 
-        // ? Keep only ONE Bearer definition block
+        // ✅ Keep only ONE Bearer definition block
         c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             Name = "Authorization",
@@ -209,13 +209,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseAuthentication().UseAuthorization();
-app.MapControllers();
-
 app.UseMiddleware<ResterictAccessMiddleware>();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.UseIpRateLimiting();
 app.UseRateLimiter();
+
+
 
 
 app.Run();
