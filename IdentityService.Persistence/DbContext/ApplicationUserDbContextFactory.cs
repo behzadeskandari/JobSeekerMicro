@@ -14,13 +14,13 @@ namespace IdentityService.Persistence.DbContext
         public ApplicationUserDbContext CreateDbContext(string[] args)
         {
             // Find the appsettings.json (adjust the path if needed)
-            var basePath = Directory.GetCurrentDirectory();
+            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "IdentityService.Api");
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: false)
                 .AddJsonFile("appsettings.Development.json", optional: true)
                 .Build();
-
             var builder = new DbContextOptionsBuilder<ApplicationUserDbContext>();
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 

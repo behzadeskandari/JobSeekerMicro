@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IdentityService.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class mic001 : Migration
+    public partial class mig001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

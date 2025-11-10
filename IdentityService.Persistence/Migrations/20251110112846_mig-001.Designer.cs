@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityService.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationUserDbContext))]
-    [Migration("20251109055851_mic-001")]
-    partial class mic001
+    [Migration("20251110112846_mig-001")]
+    partial class mig001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
