@@ -12,5 +12,8 @@
     <PackageReference Include="Ocelot" Version="24.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
-
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DocumentationFile>bin\Debug\net8.0\GateWay.xml</DocumentationFile>
+	</PropertyGroup>
 </Project>

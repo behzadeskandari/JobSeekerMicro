@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using GateWay.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +20,35 @@ builder.Services.AddControllers();
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
 
+
+builder.Services.AddAntiforgery(x =>
+{
+    x.HeaderName = "X-CSRF-TOKEN"; // Set the header name for CSRF token
+    x.Cookie.Name = "X-CSRF-TOKEN"; // Set the cookie name for CSRF token
+    x.SuppressXFrameOptionsHeader = false;
+    x.Cookie.HttpOnly = false;
+});
+
+
 builder.Services.AddOcelot(builder.Configuration);
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(
+    c =>
+    {
+        c.SchemaGeneratorOptions = new SchemaGeneratorOptions
+        {
+            SchemaIdSelector = type => type.FullName
+        };
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "JobMicro", Version = "V1" });
+
+        // Set the comments path for the Swagger JSON and UI.
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+
+    });
 
 builder.Services.AddAuthentication(options =>
 {
@@ -55,6 +82,34 @@ builder.Services.AddCors(options=>
     });
 });
 
+builder.Services.ConfigureSwaggerGen(options =>
+{
+    options.IncludeXmlComments($"{AppDomain.CurrentDomain.BaseDirectory}{Path.DirectorySeparatorChar}{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header using the Bearer scheme.",
+
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+   {
+       {
+           new OpenApiSecurityScheme
+           {
+               Reference = new OpenApiReference
+               {
+                   Type = ReferenceType.SecurityScheme,
+                   Id = "Bearer"
+               }
+           },
+           Array.Empty<string>()
+       }
+   });
+});
 
 var app = builder.Build();
 
@@ -77,9 +132,9 @@ app.UseCors();
 app.MapFallback(() => Results.NotFound());
 app.UseHttpsRedirection();
 app.UseMiddleware<InterceptionMiddleware>();
+app.UseMiddleware<TokenCheckerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 await app.UseOcelot();
 app.Run();

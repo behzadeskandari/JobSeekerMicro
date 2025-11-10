@@ -24,6 +24,8 @@ namespace JobService.Persistence.UnitOfWork
             _context = context;
             JobPostsRepository = new JobPostsRepository(_context);
             JobRequestsRepository = new JobRequestsRepository(_context);
+            SavedJob = new SavedJobRepository(_context);
+            JobsRepository = new JobsRepository(_context);
         }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
