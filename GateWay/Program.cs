@@ -189,12 +189,14 @@ app.UseSwaggerForOcelotUI(opt =>
 });
 app.UseRouting();
 app.UseCors();
+
+app.UseMiddleware<InterceptionMiddleware>();
+app.UseMiddleware<TokenCheckerMiddleware>();
+
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapFallback(() => Results.NotFound());
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseMiddleware<InterceptionMiddleware>();
-app.UseMiddleware<TokenCheckerMiddleware>();
-app.UseAuthentication();
-app.UseAuthorization();
 await app.UseOcelot();
 app.Run();

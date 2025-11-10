@@ -56,9 +56,8 @@ namespace IdentityService.Api.Controllers
             userDto.Value.JWT = await _jwt.GetToken(user);
             return userDto;
         }
-
-        [HttpPost("Login")]
         [AllowAnonymous]
+        [HttpPost("Login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginModel)
         {
             User user = await _accountService.FindByNameAsync(loginModel.UserName);
@@ -200,9 +199,8 @@ namespace IdentityService.Api.Controllers
             return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
         }
 
-
-        [HttpPost("register")]
         [AllowAnonymous]
+        [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
 
