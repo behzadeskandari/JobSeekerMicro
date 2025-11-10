@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobSeeker.Shared.Models
+namespace ProfileService.Domain.Entities
 {
     public class OutboxMessage
     {

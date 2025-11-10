@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using JobSeeker.Shared.Contracts.Integration;
 
-namespace IdentityService.Domain.IntegrationEvent
+namespace IdentityService.Domain.IntegrationEventSourcing
 {
-    public sealed class UserRegisteredIntegrationEvent : IntegrationEvent
+    public sealed class UserRegisteredIntegrationEvent : IntegrationEvent  
     {
         public Guid UserId { get; }
         public string Email { get; }

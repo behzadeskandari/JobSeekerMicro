@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobSeeker.Shared.Kernel.Integration
+namespace JobSeeker.Shared.Contracts.Integration
 {
     public abstract class IntegrationEvent
     {
