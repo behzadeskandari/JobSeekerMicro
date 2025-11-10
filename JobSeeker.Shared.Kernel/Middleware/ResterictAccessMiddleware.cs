@@ -7,14 +7,16 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 namespace JobSeeker.Shared.Kernel.Middleware
 {
-    public class ResterictAccessMiddleware(RequestDelegate next)
+    public class ResterictAccessMiddleware
     {
+        private readonly RequestDelegate _next;
+        public ResterictAccessMiddleware(RequestDelegate next) => _next = next;
         public async Task InvokeAsync(HttpContext context)
         {
             // Example logic: Restrict access based on a custom header
-            if (!context.Request.Headers.TryGetValue("X-Intercepted", out var allowedValues) || allowedValues != "true")
+            if (context.Request.Headers["X-Intercepted"] != "true")
             {
-                var referrer = context.Request.Headers["referrer"].ToString();
+                var referrer = context.Request.Headers["referer"].ToString();
                 if (string.IsNullOrEmpty(referrer))
                 {
                     context.Response.StatusCode = StatusCodes.Status403Forbidden;
@@ -24,11 +26,11 @@ namespace JobSeeker.Shared.Kernel.Middleware
                 else
                 {
                     await context.Response.WriteAsync($"Access Allowed from referrer: {referrer}");
-                    await next(context);
+                    await _next(context);
                 }
             }
             // Call the next middleware in the pipeline
-            await next(context);
+            await _next(context);
         }
     }
 }
