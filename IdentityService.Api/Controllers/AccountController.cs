@@ -58,6 +58,7 @@ namespace IdentityService.Api.Controllers
         }
 
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginModel)
         {
             User user = await _accountService.FindByNameAsync(loginModel.UserName);
@@ -201,6 +202,7 @@ namespace IdentityService.Api.Controllers
 
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
 

@@ -29,63 +29,24 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 }); ;
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(
-c =>
-{
-    c.SchemaGeneratorOptions = new SchemaGeneratorOptions
-    {
-        SchemaIdSelector = type => type.FullName
-    };
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay api", Version = "V1" });
-
-    // Set the comments path for the Swagger JSON and UI.
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
-}
-);
-
-
 //builder.Services.AddSwaggerGen(
-//    c =>
+//c =>
+//{
+//    c.SchemaGeneratorOptions = new SchemaGeneratorOptions
 //    {
-//        c.SchemaGeneratorOptions = new SchemaGeneratorOptions
-//        {
-//            SchemaIdSelector = type => type.FullName
-//        };
-//        c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay Api ", Version = "V1" });
+//        SchemaIdSelector = type => type.FullName
+//    };
+//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay api", Version = "V1" });
 
-//        // Include XML comments
-//        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-//        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-//        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+//    // Set the comments path for the Swagger JSON and UI.
+//    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+//}
+//);
 
-//        // ✅ Keep only ONE Bearer definition block
-//        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//        {
-//            Name = "Authorization",
-//            Type = SecuritySchemeType.ApiKey,
-//            Scheme = "Bearer",
-//            BearerFormat = "JWT",
-//            In = ParameterLocation.Header,
-//            Description = "JWT Authorization header using the Bearer scheme."
-//        });
 
-//        c.AddSecurityRequirement(new OpenApiSecurityRequirement
-//        {
-//            {
-//                new OpenApiSecurityScheme
-//                {
-//                    Reference = new OpenApiReference
-//                    {
-//                        Type = ReferenceType.SecurityScheme,
-//                        Id = "Bearer"
-//                    }
-//                },
-//                Array.Empty<string>()
-//            }
-//        });
-//    });
+
 
 var tokenValidationParams = new TokenValidationParameters
 {
@@ -230,10 +191,10 @@ app.UseRouting();
 app.UseCors();
 app.MapFallback(() => Results.NotFound());
 app.UseHttpsRedirection();
+app.MapControllers();
 app.UseMiddleware<InterceptionMiddleware>();
 app.UseMiddleware<TokenCheckerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
 await app.UseOcelot();
 app.Run();

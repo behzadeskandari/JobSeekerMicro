@@ -1,7 +1,9 @@
+using System.Reflection;
 using System.Threading.RateLimiting;
 using AppJob.Core.Configuration;
 using AppJob.Core.Services;
 using AspNetCoreRateLimit;
+using IdentityService.Api.Filters;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
@@ -14,6 +16,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +26,63 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen(
+//c =>
+//{
+//    c.SchemaGeneratorOptions = new SchemaGeneratorOptions
+//    {
+//        SchemaIdSelector = type => type.FullName
+//    };
+//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay api", Version = "V1" });
+
+//    // Set the comments path for the Swagger JSON and UI.
+//    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+//    c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+//}
+//);
+builder.Services.AddSwaggerGen(
+    c =>
+    {
+        c.SchemaGeneratorOptions = new SchemaGeneratorOptions
+        {
+            SchemaIdSelector = type => type.FullName
+        };
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "GateWay Api ", Version = "V1" });
+
+        // Include XML comments
+        var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+
+        // ? Keep only ONE Bearer definition block
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme."
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+        c.OperationFilter<SwaggerExcludeAuthOperationFilter>();
+    });
+
 
 builder.Services.AddDbContext<ApplicationUserDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -150,12 +210,13 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthentication().UseAuthorization();
+app.MapControllers();
+
 app.UseMiddleware<ResterictAccessMiddleware>();
 
 app.UseIpRateLimiting();
 app.UseRateLimiter();
 
-app.MapControllers();
 
 app.Run();
 // Extension method

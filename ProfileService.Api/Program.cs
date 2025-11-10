@@ -21,7 +21,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-app.UseMiddleware<ResterictAccessMiddleware>();
 app.MapControllers();
+
+app.UseMiddleware<ResterictAccessMiddleware>();
 
 app.Run();
