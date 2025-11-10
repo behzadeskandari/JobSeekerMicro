@@ -27,10 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
 {
-    var policy = new AuthorizationPolicyBuilder()
-                     .RequireAuthenticatedUser()
-                     .Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
+    options.Filters.Add(new AuthorizeFilter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -139,7 +136,12 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.RegisterAppJobServicesApp(builder.Configuration);
 builder.Services.AddScoped<ICommunicationOrchestrator, CommunicationOrchestrator>();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+});
 builder.Services.AddMemoryCache();
 builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);
 builder.Services.AddJWTService(builder.Configuration);

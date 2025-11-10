@@ -17,6 +17,14 @@ namespace GateWay.Middleware
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // Skip middleware for login/register endpoints
+            var path = context.Request.Path.Value?.ToLower();
+
+            if (path.StartsWith("/account/account/register") || path.StartsWith("/account/account/login"))
+            {
+                await _next(context);
+                return;
+            }
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             if (!string.IsNullOrEmpty(token))
             {

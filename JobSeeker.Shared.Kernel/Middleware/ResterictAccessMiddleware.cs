@@ -11,16 +11,6 @@ namespace JobSeeker.Shared.Kernel.Middleware
     {
         public async Task InvokeAsync(HttpContext context)
         {
-            // Skip middleware for login/register endpoints
-            var path = context.Request.Path.Value?.ToLower();
-
-            if (path == "/account/login" || path == "/account/register")
-            {
-                await next(context);
-                return;
-            }
-
-
             // Example logic: Restrict access based on a custom header
             if (!context.Request.Headers.TryGetValue("X-Intercepted", out var allowedValues) || allowedValues != "true")
             {
