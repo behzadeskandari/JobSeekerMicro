@@ -1,6 +1,86 @@
 {
     "Routes": [
         {
+            "DownstreamPathTemplate": "/api/account/register",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ],
+            "UpstreamPathTemplate": "/account/Account/register",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/account/login",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                }
+            ],
+            "UpstreamPathTemplate": "/account/Account/Login",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7002
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7003
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7004
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7005
+                }
+            ],
+            "UpstreamPathTemplate": "/swagger/v1/swagger.json",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+            "DownstreamPathTemplate": "/swagger/{everything}",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 7001
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7002
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7003
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7004
+                },
+                {
+                    "Host": "localhost",
+                    "Port": 7005
+                }
+            ],
+            "UpstreamPathTemplate": "/swagger/{everything}",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
             "DownstreamPathTemplate": "/api/{everything}",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
@@ -10,26 +90,11 @@
                 }
             ],
             "UpstreamPathTemplate": "/account/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
             "SwaggerKey": "account",
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
                 "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/account/register",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7250
-                }
-            ],
-            "UpstreamPathTemplate": "/account/Account/register",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": ""
             }
         },
         {
@@ -42,7 +107,7 @@
                 }
             ],
             "UpstreamPathTemplate": "/job/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
             "SwaggerKey": "job",
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
@@ -59,7 +124,7 @@
                 }
             ],
             "UpstreamPathTemplate": "/profile/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
             "SwaggerKey": "profile",
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
@@ -76,7 +141,7 @@
                 }
             ],
             "UpstreamPathTemplate": "/advertisement/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
             "SwaggerKey": "advertisement",
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
@@ -93,7 +158,7 @@
                 }
             ],
             "UpstreamPathTemplate": "/assessment/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ],
+            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
             "SwaggerKey": "assessment",
             "AuthenticationOptions": {
                 "AuthenticationProviderKey": "Bearer",
@@ -113,12 +178,10 @@
             "UpstreamHttpMethod": [ "GET" ]
         }
     ],
-
     "GlobalConfiguration": {
         "BaseUrl": "https://localhost:7000",
         "RequestIdKey": "OcRequestId"
     },
-
     "SwaggerEndPoints": [
         {
             "Key": "account",

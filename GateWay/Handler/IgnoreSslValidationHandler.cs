@@ -2,20 +2,24 @@
 {
     public class IgnoreSslValidationHandler : DelegatingHandler
     {
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        public IgnoreSslValidationHandler(HttpMessageHandler innerHandler) : base(innerHandler) { }
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
-            // Bypass SSL certificate validation errors
+            // Only bypass SSL for localhost
             if (request.RequestUri?.Host.Contains("localhost") == true)
             {
-                var handler = new HttpClientHandler
+                // Get the current handler (usually SocketsHttpHandler)
+                if (InnerHandler is HttpClientHandler clientHandler)
                 {
-                    ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-                };
-                var client = new HttpClient(handler);
-                return await client.SendAsync(request, cancellationToken);
+                    clientHandler.ServerCertificateCustomValidationCallback =
+                        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+                }
             }
 
-            return await base.SendAsync(request, cancellationToken);
+            return base.SendAsync(request, cancellationToken);
         }
     }
 }

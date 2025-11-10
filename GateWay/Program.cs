@@ -220,22 +220,12 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<HttpClientHandler>(sp =>
-    new HttpClientHandler
-    {
-        ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-        {
-            if (cert?.Issuer.Contains("localhost") == true ||
-                message?.RequestUri?.Host.Contains("localhost") == true)
-                return true;
-            return errors == System.Net.Security.SslPolicyErrors.None;
-        }
-    });
+
 
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-builder.Services.AddTransient<IgnoreSslValidationHandler>();
+//builder.Services.AddTransient<IgnoreSslValidationHandler>();
 
-builder.Services.AddOcelot(builder.Configuration).AddDelegatingHandler<IgnoreSslValidationHandler>(true);
+builder.Services.AddOcelot(builder.Configuration);//.AddDelegatingHandler<IgnoreSslValidationHandler>(true);
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 builder.Services.AddControllers()
