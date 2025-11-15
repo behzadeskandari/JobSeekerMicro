@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
 using JobSeeker.Shared.Kernel.Abstractions;
+using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 using MassTransit;
 using MassTransit.Transports;
@@ -48,6 +49,15 @@ namespace JobService.Domain.Entities
         public virtual ICollection<JobApplication> JobApplication { get; set; }
         public ICollection<Guid> CandidatesIds { get; set; }
         public ICollection<JobPost> JobPosts { get; set; }
+
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 
 }

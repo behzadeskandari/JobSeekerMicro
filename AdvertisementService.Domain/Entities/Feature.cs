@@ -1,10 +1,11 @@
-﻿using JobSeeker.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Domain;
+using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
@@ -25,5 +26,14 @@ namespace AdvertisementService.Domain.Entities
 
         // Navigation property for Jobs
         public ICollection<Guid> JobsIds { get; set; }
+
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

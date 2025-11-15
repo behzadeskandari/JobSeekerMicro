@@ -1,9 +1,10 @@
-﻿using JobSeeker.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Domain;
+using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
@@ -21,5 +22,15 @@ namespace JobService.Domain.Entities
         public bool? IsActive { get; set; }
 
         public ICollection<Job> Jobs { get; set; } = new List<Job>();
+
+
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

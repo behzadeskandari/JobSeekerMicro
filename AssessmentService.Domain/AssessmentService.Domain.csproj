@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Models\JobSeeker.Shared.Models.csproj" />
   </ItemGroup>

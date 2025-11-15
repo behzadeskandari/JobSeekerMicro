@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdvertisementService.Domain.Entities
+namespace AdvertisementService.Persistence.Repository
 {
-    internal class PricingCategories
+    internal class PricingCategoryRepository
     {
     }
 }

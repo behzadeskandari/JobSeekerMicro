@@ -1,11 +1,12 @@
-﻿using JobSeeker.Shared.Contracts.Enums;
-using JobSeeker.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Domain;
+using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
@@ -36,5 +37,14 @@ namespace AssessmentService.Domain.Entities
         public ICollection<PsychologyTestResponseAnswer>? PsychologyTestResponseAnswers { get; set; } = new List<PsychologyTestResponseAnswer>();
 
         public PsychologyTestType Type { get; set; }
+
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

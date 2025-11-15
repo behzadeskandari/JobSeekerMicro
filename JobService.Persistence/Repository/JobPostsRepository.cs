@@ -14,11 +14,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobService.Persistence.Repository
 {
-    internal class JobPostsRepository : IJobPostsRepository
+    internal class JobPostsRepository : GenericWriteRepository<JobPost>, IJobPostsRepository
     {
         private readonly GenericWriteRepository<JobPost> _writeRepository;
         private readonly JobDbContext _writeContext; // You might need this for specific read logic
-        public JobPostsRepository(JobDbContext writeContext)
+        public JobPostsRepository(JobDbContext writeContext) : base(writeContext)
         {
             _writeContext = writeContext ?? throw new ArgumentNullException(nameof(writeContext));
             //_readRepository = new GenericReadRepository<JobPost>(_readContext);

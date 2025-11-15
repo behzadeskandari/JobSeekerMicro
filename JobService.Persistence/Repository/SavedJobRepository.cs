@@ -13,11 +13,11 @@ using Microsoft.Data.SqlClient;
 
 namespace JobService.Persistence.Repository
 {
-    public class SavedJobRepository : ISavedJobRepository
+    public class SavedJobRepository :GenericWriteRepository<SavedJob>, ISavedJobRepository
     {
         private readonly GenericWriteRepository<SavedJob> _writeRepository;
         private readonly JobDbContext _writeContext; // You might need this for specific read logic
-        public SavedJobRepository(JobDbContext writeContext)
+        public SavedJobRepository(JobDbContext writeContext) : base(writeContext)
         {
             _writeContext = writeContext ?? throw new ArgumentNullException(nameof(writeContext));
             //_readRepository = new GenericReadRepository<JobPost>(_readContext);
