@@ -237,7 +237,14 @@ namespace IdentityService.Api.Controllers
             var result = await _accountService.CreateUserAsync(userToAdd, userToAdd.Password);
 
             var userRecord = await _accountService.AddRoleAsync(result.Value, "Staff");
-
+            //var integrationEvent = new UserRegisteredIntegrationEvent(user.Id, user.Email, "Staff", user.FirstName, user.LastName);
+            //_dbContext.OutboxMessages.Add(new OutboxMessage
+            //{
+            //    Id = integrationEvent.Id,
+            //    Type = nameof(UserRegisteredIntegrationEvent),
+            //    Content = JsonSerializer.Serialize(integrationEvent),
+            //    OccurredOn = DateTime.UtcNow
+            //});
 
             if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);//BadRequest(result.Errors);
 

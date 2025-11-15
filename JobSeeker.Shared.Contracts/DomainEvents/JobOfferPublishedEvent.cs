@@ -1,11 +1,11 @@
-﻿using System;
+﻿using JobSeeker.Shared.Kernel.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using JobSeeker.Shared.Kernel.Domain;
 
-namespace JobService.Domain.DomainEvents
+namespace JobSeeker.Shared.Contracts.DomainEvents
 {
     public class JobOfferPublishedEvent : DomainEvent
     {
