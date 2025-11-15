@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
@@ -40,5 +41,14 @@ namespace AssessmentService.Domain.Entities
         // Navigation property
         public ICollection<PsychologyTestResponse> PsychologyTestResponses { get; set; }
         public List<AnswerOption> AnswerOptions { get; set; } = new();
+
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

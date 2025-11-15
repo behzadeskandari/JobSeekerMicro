@@ -73,9 +73,15 @@ namespace JobService.Domain.Entities
         {
             IsActive = true;
             DatePublished = DateTime.Now;
-            AddDomainEvent(new JobOfferPublishedEvent(Id));
+            Raise(new JobOfferPublishedEvent(Id));
         }
-        private void AddDomainEvent(DomainEvent domainEvent) => DomainEvents.Add(domainEvent);
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AdvertisementService.Domain.Entities
+namespace JobService.Application.Interfaces
 {
-    internal class PricingCategories
+    internal interface ICompanyJobPreferencesRepository
     {
     }
 }

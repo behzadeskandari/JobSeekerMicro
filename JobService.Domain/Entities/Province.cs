@@ -1,15 +1,17 @@
-﻿using JobSeeker.Shared.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
+using JobSeeker.Shared.Kernel.Domain;
+using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class Province : IBaseEntity<int>
+    public class Province : IBaseEntity<int> ,IAggregateRoot
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -23,5 +25,13 @@ namespace JobService.Domain.Entities
         public string Value { get; set; } = string.Empty;
         public ICollection<City> Cities { get; set; }
         public bool? IsActive { get; set; }
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace ProfileService.Domain.Entities
@@ -32,6 +33,14 @@ namespace ProfileService.Domain.Entities
         public DateTime? DateModified { get; set; }
         public bool? IsActive { get; set; }
         //[NotMapped]
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 
 }

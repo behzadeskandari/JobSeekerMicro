@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Domain.Roles;
+using JobSeeker.Shared.Kernel.Domain;
 using MassTransit.Transports;
 using Microsoft.AspNetCore.Identity;
 
@@ -49,7 +50,15 @@ namespace IdentityService.Domain.Entities
 
         [NotMapped]
         public string RedirectUrl { get; set; }
-  
+
+
+        private readonly List<DomainEvent> _domainEvents = new();
+
+        protected void Raise(DomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
+
     }
 
 }

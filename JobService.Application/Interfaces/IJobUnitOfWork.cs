@@ -10,7 +10,7 @@ namespace JobService.Application.Interfaces
     {
         IJobPostsRepository JobPostsRepository { get; }
         IJobRequestsRepository JobRequestsRepository { get; }
-        IJobsRepository JobsRepository { get; }
+        IJobRepository JobsRepository { get; }
         ISavedJobRepository SavedJob { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }

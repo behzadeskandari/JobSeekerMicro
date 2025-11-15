@@ -13,8 +13,17 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.5.5" />
+    <PackageReference Include="MediatR" Version="13.0.0" />
+    <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.21" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\AdvertisementService.Domain\AdvertisementService.Domain.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
   </ItemGroup>
 
 </Project>
