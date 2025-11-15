@@ -10,6 +10,20 @@ namespace AdvertisementService.Persistence.DbContexts
 {
     public class AdvertismentDbContext : DbContext
     {
-        public DbSet<Advertisement> JobPosts { get; set; }
+        public DbSet<Advertisement> Advertisements { get; set; }
+        public DbSet<CustomerAddress> CustomerAddress { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Feature> Feature { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OutboxMessage> OutboxMessage { get; set; }
+        public DbSet<Payment> Payment { get; set; }
+        public DbSet<PricingCategory> PricingCategory { get; set; }
+        public DbSet<PricingFeature> PricingFeature { get; set; }
+        public DbSet<PricingPlan> PricingPlan { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<ProductInventory> ProductInventory { get; set; }
+        public DbSet<ProductInventorySnapshot> ProductInventorySnapshot { get; set; }
+        public DbSet<SalesOrder> SalesOrder { get; set; }
+        public DbSet<SalesOrderItem> SalesOrderItem { get; set; }
     }
 }

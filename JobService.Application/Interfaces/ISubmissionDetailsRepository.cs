@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AdvertisementService.Domain.Entities;
 using JobSeeker.Shared.Common.Interfaces;
+using JobService.Domain.Entities;
 
-namespace AdvertisementService.Application.Interfaces
+namespace JobService.Application.Interfaces
 {
-    public interface ICustomersRepository: IWriteRepository<Customer>
+    public interface ISubmissionDetailsRepository : IWriteRepository<SubmissionDetails>
     {
     }
 }

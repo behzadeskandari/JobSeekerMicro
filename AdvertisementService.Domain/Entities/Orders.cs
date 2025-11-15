@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Order : IBaseEntity<Guid>
+    public class Order : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
         public Guid PricingPlanId { get; set; }

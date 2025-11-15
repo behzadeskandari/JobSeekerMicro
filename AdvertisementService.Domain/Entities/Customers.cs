@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Customer : IBaseEntity<Guid>
+    public class Customer : IBaseEntity<Guid>, IAggregateRoot
     {
         public Guid Id { get; set; }
         public DateTime CreatedOn { get; set; }

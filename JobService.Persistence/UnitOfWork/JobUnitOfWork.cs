@@ -15,7 +15,7 @@ namespace JobService.Persistence.UnitOfWork
         public IJobPostsRepository JobPostsRepository { get; }
         public IJobRequestsRepository JobRequestsRepository { get; }
 
-        public IJobsRepository JobsRepository { get; }
+        public IJobRepository JobsRepository { get; }
 
         public ISavedJobRepository SavedJob { get; }
 

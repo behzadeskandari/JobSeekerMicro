@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdvertisementService.Application.Interfaces;
+using AdvertisementService.Domain.Entities;
+using AdvertisementService.Persistence.DbContexts;
+using AdvertisementService.Persistence.GenericRepository;
 
 namespace AdvertisementService.Persistence.Repository
 {
-    internal class ProductInventoryRepository
+    public class ProductInventoryRepository : GenericWriteRepository<ProductInventory>, IProductInventoryRepository
     {
+        public ProductInventoryRepository(AdvertismentDbContext context) : base(context)
+        {
+        }
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
 
-    public class PricingCategory : IBaseEntity<Guid>
+    public class PricingCategory : IBaseEntity<Guid>, IAggregateRoot
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

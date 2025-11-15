@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdvertisementService.Domain.Entities;
+using JobSeeker.Shared.Common.Interfaces;
+using JobSeeker.Shared.Kernel.Abstractions;
 
 namespace AdvertisementService.Application.Interfaces
 {
-    internal interface ISalesOrderRepository
+    public interface ISalesOrderRepository : IWriteRepository<SalesOrder> 
     {
     }
+    
 }

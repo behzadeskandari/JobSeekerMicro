@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Product : IBaseEntity<Guid>
+    public class Product : IBaseEntity<Guid>, IAggregateRoot
     {
         public Guid Id { get; set; }
         public DateTime CreatedOn { get; set; }
