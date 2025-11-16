@@ -6,18 +6,19 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Domain.Roles;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using MassTransit.Transports;
 using Microsoft.AspNetCore.Identity;
 
 namespace IdentityService.Domain.Entities
 {
-    public class User : IdentityUser
+    public class User : IdentityUser ,IAggregateRoot
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public override string? Email { get; set; }
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;        
         public bool? IsActive { get; set; }
         public string PictureUrl { get; set; } = string.Empty;
         public string Role { get; set; } = AppRoles.Role_User;

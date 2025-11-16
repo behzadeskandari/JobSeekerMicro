@@ -25,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\IdentityService.Domain\IdentityService.Domain.csproj" />
     <ProjectReference Include="..\IdentityService.Infrastructure\IdentityService.Infrastructure.csproj" />
-    <ProjectReference Include="..\IdentityService.Persistence\IdentityService.Persistence.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />
