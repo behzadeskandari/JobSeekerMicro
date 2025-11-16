@@ -8,9 +8,7 @@ namespace AdvertisementService.Application.Interfaces
 {
     public interface IAdvertisementUnitOfWork : IDisposable
     {
-        IAdvertisementRepository AdvertisementRepository { get; }
-
-
+        public IAdvertisementRepository AdvertisementRepository { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }
