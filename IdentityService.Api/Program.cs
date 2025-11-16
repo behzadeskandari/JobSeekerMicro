@@ -9,6 +9,7 @@ using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
 using IdentityService.Persistence.DbContext;
+using IdentityService.Persistence.SeedData;
 using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -230,8 +231,11 @@ app.UseEndpoints(endpoints =>
 app.UseIpRateLimiting();
 app.UseRateLimiter();
 
+await SeedDataIdentity.InitializeAsync(app.Services);
+await SeedDataIdentity.SeedAsync(app.Services);
 
 
 
 app.Run();
+
 // Extension method
