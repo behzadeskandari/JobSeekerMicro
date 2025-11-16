@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class CompanyJobPreferences : IBaseEntity<Guid>
+    public class CompanyJobPreferences : IBaseEntity<Guid> ,IAggregateRoot
     {
         [Key]
         public Guid Id { get; set; }

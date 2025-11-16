@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class JobApplication : IBaseEntity<Guid>
+    public class JobApplication : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
 

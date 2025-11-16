@@ -1,19 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using JobSeeker.Shared.Contracts.Paged;
-using JobService.Application.Interfaces;
+﻿using JobService.Application.Interfaces;
 using JobService.Domain.Entities;
 using JobService.Persistence.DbContexts;
 using JobService.Persistence.GenericRepository;
-using Microsoft.Data.SqlClient;
 
 namespace JobService.Persistence.Repository
 {
-    public class JobRequestsRepository :GenericWriteRepository<JobRequest>, IJobRequestsRepository
+    public class JobRequestsRepository : GenericWriteRepository<JobRequest>, IJobRequestsRepository
     {
         //private readonly GenericReadRepository<JobRequest> _readRepository;
         private readonly GenericWriteRepository<JobRequest> _writeRepository;

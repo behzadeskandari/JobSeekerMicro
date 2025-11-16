@@ -5,9 +5,9 @@ using JobService.Persistence.GenericRepository;
 
 namespace JobService.Persistence.Repository
 {
-    public class TechnicalOptionsRepository : GenericWriteRepository<TechnicalOption>, ITechnicalOptionsRepository
+    public class CompanyJobPreferencesRepository : GenericWriteRepository<CompanyJobPreferences>, ICompanyJobPreferencesRepository
     {
-        public TechnicalOptionsRepository(JobDbContext context) : base(context)
+        public CompanyJobPreferencesRepository(JobDbContext context) : base(context)
         {
         }
     }
