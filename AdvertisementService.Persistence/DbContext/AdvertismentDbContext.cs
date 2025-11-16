@@ -10,6 +10,10 @@ namespace AdvertisementService.Persistence.DbContexts
 {
     public class AdvertismentDbContext : DbContext
     {
+        public AdvertismentDbContext(DbContextOptions<AdvertismentDbContext> options)
+    : base(options)
+        {
+        }
         public DbSet<Advertisement> Advertisements { get; set; }
         public DbSet<CustomerAddress> CustomerAddress { get; set; }
         public DbSet<Customer> Customers { get; set; }
