@@ -76,23 +76,25 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProfileService", "ProfileSe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{73E73BA3-0547-43FB-8896-00BEACD6032A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Shared.Kernel", "JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj", "{396DAA8B-526F-46EF-863F-DB8904D645B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JobSeeker.Shared.Kernel", "JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj", "{396DAA8B-526F-46EF-863F-DB8904D645B7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AssessmentService", "AssessmentService", "{6336586B-6B9B-43C6-8FC7-6D80CA2F0A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssessmentService.Api", "AssessmentService.Api\AssessmentService.Api.csproj", "{71C5A538-9061-4BA8-844A-3BCD2494FC04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssessmentService.Api", "AssessmentService.Api\AssessmentService.Api.csproj", "{71C5A538-9061-4BA8-844A-3BCD2494FC04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssessmentService.Application", "AssessmentService.Application\AssessmentService.Application.csproj", "{406EA92D-9211-4018-988B-71DACAACAD3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssessmentService.Application", "AssessmentService.Application\AssessmentService.Application.csproj", "{406EA92D-9211-4018-988B-71DACAACAD3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssessmentService.Domain", "AssessmentService.Domain\AssessmentService.Domain.csproj", "{BF657BBB-1B22-4BD0-999E-E31AE3E80BEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssessmentService.Domain", "AssessmentService.Domain\AssessmentService.Domain.csproj", "{BF657BBB-1B22-4BD0-999E-E31AE3E80BEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssessmentService.Infrastructure", "AssessmentService.Infrastructure\AssessmentService.Infrastructure.csproj", "{90CB61E4-8A19-4FD5-ACA0-93099D23C790}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssessmentService.Infrastructure", "AssessmentService.Infrastructure\AssessmentService.Infrastructure.csproj", "{90CB61E4-8A19-4FD5-ACA0-93099D23C790}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssessmentService.Persistance", "AssessmentService.Persistance\AssessmentService.Persistance.csproj", "{E5AADBF7-35A5-4C4C-A418-D874E9A6E169}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssessmentService.Persistance", "AssessmentService.Persistance\AssessmentService.Persistance.csproj", "{E5AADBF7-35A5-4C4C-A418-D874E9A6E169}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{15F250E4-F446-426B-910D-61C4D5F93614}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GateWay", "GateWay\GateWay.csproj", "{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GateWay", "GateWay\GateWay.csproj", "{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Shared.EventBusRabbitMQ", "JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj", "{A36203BA-3DA6-4130-8AF9-6A31D82090FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +234,10 @@ Global
 		{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A36203BA-3DA6-4130-8AF9-6A31D82090FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A36203BA-3DA6-4130-8AF9-6A31D82090FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A36203BA-3DA6-4130-8AF9-6A31D82090FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A36203BA-3DA6-4130-8AF9-6A31D82090FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,6 +284,7 @@ Global
 		{E5AADBF7-35A5-4C4C-A418-D874E9A6E169} = {6336586B-6B9B-43C6-8FC7-6D80CA2F0A47}
 		{15F250E4-F446-426B-910D-61C4D5F93614} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{4C7EA8D7-8710-4C59-9B5A-7D4249E5B7EA} = {15F250E4-F446-426B-910D-61C4D5F93614}
+		{A36203BA-3DA6-4130-8AF9-6A31D82090FB} = {73E73BA3-0547-43FB-8896-00BEACD6032A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AF402294-27C1-4829-97C7-ADC04642A061}
