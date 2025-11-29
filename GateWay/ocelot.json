@@ -10,7 +10,13 @@
                 }
             ],
             "UpstreamPathTemplate": "/account/Account/register",
-            "UpstreamHttpMethod": [ "POST" ]
+            "UpstreamHttpMethod": [ "POST" ],
+            "FileCacheOptions": {
+               "TtlSeconds": 60,
+                "Region": "default",
+                "Header": "OC-Cache-Control",
+                "EnabledContentHashing": false
+            }
         },
         {
             "DownstreamPathTemplate": "/api/account/login",
