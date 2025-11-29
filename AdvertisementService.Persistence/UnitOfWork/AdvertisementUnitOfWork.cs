@@ -10,10 +10,12 @@ using Polly;
 
 namespace AdvertisementService.Persistence.UnitOfWork
 {
-    public class AdvertisementUnitOfWork
+    public class AdvertisementUnitOfWork : IAdvertisementUnitOfWork
     {
         private readonly AdvertismentDbContext _context;
-        IAdvertisementRepository AdvertisementRepository { get; }
+        public IAdvertisementRepository _advertisementRepository;
+
+        public IAdvertisementRepository AdvertisementRepository => _advertisementRepository ??= new AdvertisementRepository(_context);
 
         public AdvertisementUnitOfWork(AdvertismentDbContext context)
         {

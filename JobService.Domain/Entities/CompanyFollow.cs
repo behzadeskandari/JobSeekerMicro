@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class CompanyFollow : IBaseEntity<Guid>
+    public class CompanyFollow : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
         public string UserId { get; set; }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JobService.Application.Interfaces
+namespace AssessmentService.Infrastructure
 {
-    internal interface IJobPostRepository
+    internal class AssessmentInfrastructureServiceRegistration
     {
     }
 }

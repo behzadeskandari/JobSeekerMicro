@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Application.Interfaces
 {
-    internal interface IIdentityUnitOfWOrk
+    public interface IIdentityUnitOfWOrk : IDisposable
     {
+        IUserRepository Users { get; }
+        Task<int> CommitAsync();
+        void Rollback();
     }
 }

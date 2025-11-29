@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace JobService.Domain.Entities
 {
-    public class Company : IBaseEntity<Guid>
+    public class Company : IBaseEntity<Guid> ,IAggregateRoot
     {
         public string Name { get; set; } = string.Empty;
         public CompanySize Size { get; set; }
