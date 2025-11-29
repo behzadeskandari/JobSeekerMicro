@@ -12,10 +12,17 @@
             "UpstreamPathTemplate": "/account/Account/register",
             "UpstreamHttpMethod": [ "POST" ],
             "FileCacheOptions": {
-               "TtlSeconds": 60,
+                "TtlSeconds": 60,
                 "Region": "default",
                 "Header": "OC-Cache-Control",
                 "EnabledContentHashing": false
+            },
+            "RateLimitOptions": {
+                "ClientWhitelist": [],
+                "EnableRateLimiting": true,
+                "Period": "1m",
+                "PeriodTimespan": 1,
+                "Limit": 5
             }
         },
         {
