@@ -20,7 +20,8 @@ namespace JobSeeker.Shared.Contracts.User
         public string PictureUrl { get; set; }
         public bool EmailConfirmed { get; set; }
 
-
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryTime { get; set; }
         public string Password { get; set; } = string.Empty;
         public DateTime? DateCreated { get; set; } = DateTime.Now;
         public DateTime? DateModified { get; set; } = DateTime.Now;

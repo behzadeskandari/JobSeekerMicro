@@ -171,8 +171,6 @@ builder.Services.AddCors(builder =>
 });
 
 
-
-
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
 builder.Services.AddInMemoryRateLimiting();
