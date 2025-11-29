@@ -54,6 +54,8 @@ namespace IdentityService.Api.Controllers
             var user = await _accountService.FindByNameAsync(User.FindFirst(ClaimTypes.Name)?.Value);
             var userDto = _accountService.CreateApplicationUserDto(user);
             userDto.Value.JWT = await _jwt.GetToken(user);
+            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
+            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             return userDto;
         }
         [AllowAnonymous]
@@ -86,6 +88,9 @@ namespace IdentityService.Api.Controllers
             var userDto = _accountService.CreateApplicationUserDto(userWithRole);
             var t = await _jwt.GetToken(userWithRole);
             userDto.Value.JWT = t;
+
+            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
+            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
         }
 
@@ -118,6 +123,9 @@ namespace IdentityService.Api.Controllers
             var userDto = _accountService.CreateApplicationUserDto(userWithRole);
             var t = await _jwt.GetToken(userWithRole);
             userDto.Value.JWT = t;
+
+            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
+            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
         }
 
@@ -196,6 +204,9 @@ namespace IdentityService.Api.Controllers
 
             var userDto = _accountService.CreateApplicationUserDto(userWithRole);
             userDto.Value.JWT = await _jwt.GetToken(userWithRole);
+
+            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
+            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
         }
 

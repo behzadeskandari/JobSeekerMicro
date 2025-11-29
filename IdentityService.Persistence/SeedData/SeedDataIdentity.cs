@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using IdentityService.Persistence.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 
@@ -13,6 +15,14 @@ namespace IdentityService.Persistence.SeedData
 {
     public static class SeedDataIdentity
     {
+        public static async Task ApplicationStart(IServiceProvider serviceProvider, int maxRetryCount = 5)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            { 
+                var _context = scope.ServiceProvider.GetRequiredService<ApplicationUserDbContext>();
+                
+            }
+        }
         public static async Task InitializeAsync(IServiceProvider serviceProvider)
         {
             try

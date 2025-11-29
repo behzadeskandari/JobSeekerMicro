@@ -215,6 +215,7 @@ using GateWay.Middleware;
 using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -225,7 +226,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 //builder.Services.AddTransient<IgnoreSslValidationHandler>();
 
-builder.Services.AddOcelot(builder.Configuration);//.AddDelegatingHandler<IgnoreSslValidationHandler>(true);
+builder.Services.AddOcelot().AddCacheManager(x =>
+{
+    x.WithDictionaryHandle();
+});
+//.AddDelegatingHandler<IgnoreSslValidationHandler>(true);
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 builder.Services.AddControllers()
