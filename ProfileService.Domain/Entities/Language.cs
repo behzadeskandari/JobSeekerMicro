@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace ProfileService.Domain.Entities
 {
-    public class Language : IBaseEntity<Guid>
+    public class Language : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
         [Required]

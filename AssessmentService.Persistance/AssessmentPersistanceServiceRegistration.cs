@@ -1,6 +1,7 @@
 ﻿using AssessmentService.Application.Interfaces;
 using AssessmentService.Persistance.GenericRepository;
 using AssessmentService.Persistance.Repository;
+using AssessmentService.Persistance.UnitOfWork;
 using JobSeeker.Shared.Common.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,9 +14,10 @@ namespace AssessmentService.Persistance
 {
     public static class AssessmentPersistanceServiceRegistration
     {
-        public static IServiceCollection AddAdvertismentPersistanceServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddAssessmentPersistanceServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IWriteRepository<>), typeof(GenericWriteRepository<>));
+            services.AddScoped<IAssessmentServiceUnitOfWork, AssessmentServiceUnitOfWork>();
             services.AddScoped<IAnswerOptionsRepository, AnswerOptionsRepository>();
             services.AddScoped<IMBTIQuestionsRepository, MBTIQuestionsRepository>();
             services.AddScoped<IMBTIResultAnswersRepository, MBTIResultAnswersRepository>();

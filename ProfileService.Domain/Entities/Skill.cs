@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace ProfileService.Domain.Entities
 {
 
-    public class Skill : IBaseEntity<int>
+    public class Skill : IBaseEntity<int> , IAggregateRoot
     {
         public int Id { get; set; }
 
