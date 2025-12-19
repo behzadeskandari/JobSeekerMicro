@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
-    public class PsychologyTestResponse : IBaseEntity<Guid>
+    public class PsychologyTestResponse : IBaseEntity<Guid> , IAggregateRoot
     {
         [Key]
         public Guid Id { get; set; }

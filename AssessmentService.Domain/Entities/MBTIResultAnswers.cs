@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
-    public class MBTIResultAnswers : IBaseEntity<Guid>
+    public class MBTIResultAnswers : IBaseEntity<Guid> , IAggregateRoot
     {
         public Guid Id { get; set; }
         public DateTime? DateCreated { get; set; } = DateTime.Now;

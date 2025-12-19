@@ -30,4 +30,8 @@
     <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
-    public class MBTIQuestions : IBaseEntity<Guid>
+    public class MBTIQuestions : IBaseEntity<Guid> , IAggregateRoot
     {
 
         public Guid Id { get; set; }

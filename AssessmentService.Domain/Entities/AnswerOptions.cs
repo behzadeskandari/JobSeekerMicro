@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
-    public class AnswerOption : IBaseEntity<int>
+    public class AnswerOption : IBaseEntity<int> , IAggregateRoot
     {
         public int Id { get; set; }
         public int Value { get; set; }        // E.g., 1–4
