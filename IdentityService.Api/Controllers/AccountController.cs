@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Text.Json;
 using AppJob.Core.Services;
 using Google.Apis.Auth;
 using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Entities;
+using IdentityService.Domain.IntegrationEventSourcing;
 using IdentityService.Domain.Roles;
 using IdentityService.Infrastructure.Jwt;
 using JobSeeker.Shared.Common.Errors;
@@ -11,6 +13,7 @@ using JobSeeker.Shared.Contracts.Authentication;
 using JobSeeker.Shared.Contracts.Response;
 using JobSeeker.Shared.Contracts.Routes;
 using JobSeeker.Shared.Contracts.User;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -26,17 +29,18 @@ namespace IdentityService.Api.Controllers
     {
         private readonly IJwtTokenGenerator _jwt;
         private readonly IAccountService _accountService;
-       // private readonly IUnitOfWork _unitOfWork;
+        private readonly IIdentityUnitOfWOrk _unitOfWork;
         private readonly ICommunicationOrchestrator _communicationOrchestrator;//IEmailService _emailService;
-
+        private readonly IPublishEndpoint _publishEndpoint;
         /// <summary>
         /// goes into the service not needed any more here 
         /// </summary>
         /// <param name="accountService"></param>
         public AccountController(IAccountService accountService, IJwtTokenGenerator jwtTokenGenerator,
+            IPublishEndpoint publishEndpoint,
            // IEmailService emailService            
-           ICommunicationOrchestrator CommunicationOrchestrator
-         //  ,IUnitOfWork unitOfWork
+           ICommunicationOrchestrator CommunicationOrchestrator,
+           IIdentityUnitOfWOrk unitOfWork
             )
         {
 
@@ -44,7 +48,8 @@ namespace IdentityService.Api.Controllers
             _accountService = accountService;
             //_emailService = emailService;
             _communicationOrchestrator = CommunicationOrchestrator;
-        //    _unitOfWork = unitOfWork;
+            _publishEndpoint = publishEndpoint;
+            //    _unitOfWork = unitOfWork;
         }
 
         [Authorize(Roles = "User,Staff")]
@@ -247,19 +252,30 @@ namespace IdentityService.Api.Controllers
             };
             var result = await _accountService.CreateUserAsync(userToAdd, userToAdd.Password);
 
-            var userRecord = await _accountService.AddRoleAsync(result.Value, "Staff");
-
-            //var integrationEvent = new UserRegisteredIntegrationEvent(user.Id, user.Email, "Staff", user.FirstName, user.LastName);
-            //_dbContext.OutboxMessages.Add(new OutboxMessage
-            //{
-            //    Id = integrationEvent.Id,
-            //    Type = nameof(UserRegisteredIntegrationEvent),
-            //    Content = JsonSerializer.Serialize(integrationEvent),
-            //    OccurredOn = DateTime.UtcNow
-            //});
+   
 
             if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);//BadRequest(result.Errors);
+            var userRecord = await _accountService.AddRoleAsync(result.Value, AppRoles.Role_Staff);
 
+            var UserRegisterEvent = new UserRegisteredEvent(userRecord.Id, userRecord.Email, AppRoles.Role_Staff, userRecord.FirstName, userRecord.LastName);
+
+            await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
+            {
+                Id = UserRegisterEvent.Id,
+                Type = nameof(UserRegisteredEvent),
+                Content = JsonSerializer.Serialize(UserRegisterEvent),
+                OccurredOn = DateTime.UtcNow
+            });
+
+            await _unitOfWork.CommitAsync();
+
+            await _publishEndpoint.Publish(new UserRegisteredEvent(
+            userRecord.Id,
+            userRecord.Email,
+            AppRoles.Role_Staff,
+            userRecord.FirstName,
+            userRecord.LastName
+            ));
             // Add user to Staff role
 
             return Ok(new { message = SuccessMessages.AccountCreated, Items = userRecord });
@@ -304,7 +320,7 @@ namespace IdentityService.Api.Controllers
             if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);// BadRequest(result.Errors);
 
             // Add user to Staff role
-            Response<User> userResponse = new Response<User>()
+            JobSekkerResponse<User> userResponse = new JobSekkerResponse<User>()
             {
 
                 Message = SuccessMessages.AccountCreated,

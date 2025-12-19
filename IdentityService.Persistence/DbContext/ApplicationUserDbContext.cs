@@ -44,6 +44,11 @@ namespace IdentityService.Persistence.DbContext
             .IsUnique();
 
             base.OnModelCreating(modelBuilder);
+
+            
+            //modelBuilder.AddInboxStateEntity();
+            //modelBuilder.AddOutboxMessageEntity();
+            //modelBuilder.AddOutboxStateEntity();
         }
     }
 }

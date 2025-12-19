@@ -7,10 +7,12 @@ using IdentityService.Api.Filters;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
+using IdentityService.Domain.IntegrationEventSourcing;
 using IdentityService.Infrastructure;
 using IdentityService.Persistence.DbContext;
 using IdentityService.Persistence.SeedData;
 using JobSeeker.Shared.Kernel.Middleware;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -198,6 +200,32 @@ builder.Services.Configure<RateLimitOptions>(options =>
     });
 });
 
+
+builder.Services.AddMassTransit(x =>
+{
+    //x.AddConsumers<YourPocoConsumer>();  // If needed
+
+    
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        // RabbitMQ config
+        cfg.Host("rabbitmq://localhost", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        // Enable Outbox (stores messages in DB)
+        //cfg.UseMessageOutbox(context);  // Requires EF Core setup below
+
+        // Publish endpoints for events
+        cfg.Publish<UserRegisteredEvent>(p => { p.Durable = true; });
+
+        // Configure the bus
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 

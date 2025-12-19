@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JobSeeker.Shared.Kernel.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace IdentityService.Domain.Entities
 {
-    public class OutboxMessage
+    public class OutboxMessage : IAggregateRoot
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime OccurredOn { get; set; } = DateTime.UtcNow;
