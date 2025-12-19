@@ -14,7 +14,7 @@ namespace ProfileService.Persistance.DbContexts
         public ProfileServiceDbContext CreateDbContext(string[] args)
         {
             // Find the appsettings.json (adjust the path if needed)
-            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "AdvertisementService.Api");
+            var basePath = Path.Combine(Directory.GetCurrentDirectory(), "..", "ProfileService.Api");
 
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
