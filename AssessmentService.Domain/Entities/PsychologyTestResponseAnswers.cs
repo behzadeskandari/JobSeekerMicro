@@ -13,7 +13,6 @@ namespace AssessmentService.Domain.Entities
 {
     public class PsychologyTestResponseAnswer : IBaseEntity<Guid> , IAggregateRoot
     {
-        [Key]
         public Guid Id { get; set; }
 
         [Required]

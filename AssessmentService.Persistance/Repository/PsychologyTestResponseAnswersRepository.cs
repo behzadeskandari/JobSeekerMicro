@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AssessmentService.Persistance.Repository
 {
-    public class PsychologyTestResponseAnswersRepository : GenericWriteRepository<PsychologyTestResponse>, IPsychologyTestResponseAnswersRepository
+    public class PsychologyTestResponseAnswersRepository : GenericWriteRepository<PsychologyTestResponseAnswer>, IPsychologyTestResponseAnswersRepository
     {
         public PsychologyTestResponseAnswersRepository(AssessmentDbContext context) : base(context)
         {

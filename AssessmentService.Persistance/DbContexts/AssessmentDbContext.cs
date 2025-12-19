@@ -10,11 +10,32 @@ namespace AssessmentService.Persistance.DbContexts
 {
     public class AssessmentDbContext : DbContext
     {
-        public AssessmentDbContext(DbContextOptions<AssessmentDbContext> options): base(options)
+        public AssessmentDbContext(DbContextOptions<AssessmentDbContext> options) : base(options)
         {
-            
+
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PsychologyTestResponse>()
+                .HasOne(ptr => ptr.PsychologyTest)
+                .WithMany(pt => pt.PsychologyTestResponses)
+                .HasForeignKey(ptr => ptr.PsychologyTestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PsychologyTestResponse>()
+                .HasOne(ptr => ptr.PsychologyTestQuestion)
+                .WithMany(ptq => ptq.PsychologyTestResponses)
+                .HasForeignKey(ptr => ptr.PsychologyTestQuestionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PsychologyTestResponse>()
+                 .HasOne(ptr => ptr.TestResult)
+                 .WithMany(ptr => ptr.Responses)
+                 .HasForeignKey(ptr => ptr.TestResultId)
+                 .OnDelete(DeleteBehavior.Restrict);
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<AnswerOption> Advertisements { get; set; }
         public DbSet<MBTIQuestions> MBTIQuestions { get; set; }
         public DbSet<MBTIResultAnswers> MBTIResultAnswers { get; set; }

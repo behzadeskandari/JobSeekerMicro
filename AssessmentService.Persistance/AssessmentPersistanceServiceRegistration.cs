@@ -3,6 +3,7 @@ using AssessmentService.Persistance.GenericRepository;
 using AssessmentService.Persistance.Repository;
 using AssessmentService.Persistance.UnitOfWork;
 using JobSeeker.Shared.Common.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
