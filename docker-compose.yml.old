@@ -1,0 +1,165 @@
+services:
+  # Shared Dependencies
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "P@ssw0rd123!Strong"  # Stronger password; update in appsettings too
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-data:/var/opt/mssql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '$$SA_PASSWORD' -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"  # AMQP
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+
+  # Microservices
+  identity-api:
+    build:
+      context: ./IdentityService.Api  # Root-level path
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=IdentityDb;User Id=sa;Password=P@ssw0rd123!Strong;TrustServerCertificate=true;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Username: "guest"
+      RabbitMQ__Password: "guest"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  profile-api:
+    build:
+      context: ./ProfileService.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=ProfileDb;User Id=sa;Password=P@ssw0rd123!Strong;TrustServerCertificate=true;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Username: "guest"
+      RabbitMQ__Password: "guest"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  job-api:
+    build:
+      context: ./JobService.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5003:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=JobDb;User Id=sa;Password=P@ssw0rd123!Strong;TrustServerCertificate=true;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Username: "guest"
+      RabbitMQ__Password: "guest"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  advertisement-api:
+    build:
+      context: ./AdvertisementService.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5004:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=AdvertisementDb;User Id=sa;Password=P@ssw0rd123!Strong;TrustServerCertificate=true;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Username: "guest"
+      RabbitMQ__Password: "guest"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  assessment-api:
+    build:
+      context: ./AssessmentService.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5005:80"
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=AssessmentDb;User Id=sa;Password=P@ssw0rd123!Strong;TrustServerCertificate=true;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Username: "guest"
+      RabbitMQ__Password: "guest"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  # API Gateway
+  gateway:
+    build:
+      context: .  # Root repo—allows access to shared
+      dockerfile: GateWay/Dockerfile  # Points to the file inside GateWay
+    ports:
+      - "5000:80"
+    environment:
+      Services__Identity: "http://identity-api:80"
+      Services__Profile: "http://profile-api:80"
+      Services__Job: "http://job-api:80"
+      Services__Advertisement: "http://advertisement-api:80"
+      Services__Assessment: "http://assessment-api:80"
+    depends_on:
+      - identity-api
+      - profile-api
+      - job-api
+      - advertisement-api
+      - assessment-api
+    networks:
+      - backend
+
+volumes:
+  db-data:
+  rabbitmq-data:
+
+networks:
+  backend:
+    driver: bridge
