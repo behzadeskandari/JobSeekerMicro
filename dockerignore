@@ -1,0 +1,8 @@
+bin/
+obj/
+*.csproj.user
+.vs/
+**/*.log
+GateWay/Dockerfile  # Exclude to avoid compiling it
+**/.git/
+README.md

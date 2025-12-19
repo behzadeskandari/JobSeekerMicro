@@ -1,21 +1,23 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-# Restore: Copy csproj files from root (context is .)
+
+# Restore: Copy csproj files
 COPY ["GateWay/GateWay.csproj", "GateWay/"]
-# Shared projects (direct from root)
 COPY ["JobSeeker.Shared.Common/JobSeeker.Shared.Common.csproj", "JobSeeker.Shared.Common/"]
 COPY ["JobSeeker.Shared.Contracts/JobSeeker.Shared.Contracts.csproj", "JobSeeker.Shared.Contracts/"]
+COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
 COPY ["JobSeeker.Shared.Logging/JobSeeker.Shared.Logging.csproj", "JobSeeker.Shared.Logging/"]
-# Add only if referenced (check GateWay.csproj; e.g., for RabbitMQ)
-# COPY ["JobSeeker.Shared.EventBusRabbitMQ/JobSeeker.Shared.EventBusRabbitMQ.csproj", "JobSeeker.Shared.EventBusRabbitMQ/"]
-RUN dotnet restore "GateWay/GateWay.csproj"  # Restore from GateWay subdir
+RUN dotnet restore "GateWay/GateWay.csproj"
 
-# Build: Copy full GateWay folder and shared source
-COPY ["GateWay/", "GateWay/"]
-COPY ["JobSeeker.Shared.Common/", "JobSeeker.Shared.Common/"]
-COPY ["JobSeeker.Shared.Contracts/", "JobSeeker.Shared.Contracts/"]
-COPY ["JobSeeker.Shared.Logging/", "JobSeeker.Shared.Logging/"]
-# Copy more shared source if needed
+# Build: Copy GateWay code/config (Dockerfile excluded via .dockerignore)
+COPY GateWay/ GateWay/
+
+# Copy shared source
+COPY JobSeeker.Shared.Common/ JobSeeker.Shared.Common/
+COPY JobSeeker.Shared.Contracts/ JobSeeker.Shared.Contracts/
+COPY JobSeeker.Shared.Kernel/ JobSeeker.Shared.Kernel/
+COPY JobSeeker.Shared.Logging/ JobSeeker.Shared.Logging/
+
 WORKDIR "/src/GateWay"
 RUN dotnet build "GateWay.csproj" -c Release -o /app/build
 

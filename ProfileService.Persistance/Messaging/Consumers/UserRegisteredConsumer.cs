@@ -96,13 +96,13 @@ namespace ProfileService.Persistance.Messaging.Consumers
             }
             else
             {
-                userSettingsExits.DateCreated = DateTime.UtcNow,
-                userSettingsExits.DateModified = null,
-                userSettingsExits.IsActive = true,
-                userSettingsExits.Language = "fa",
-                userSettingsExits.EmailNotifications = true,
-                userSettingsExits.SmsNotifications = true,
-                userSettingsExits.TimeZone = "UTC",
+                userSettingsExits.DateCreated = DateTime.UtcNow;
+                userSettingsExits.DateModified = null;
+                userSettingsExits.IsActive = true;
+                userSettingsExits.Language = "fa";
+                userSettingsExits.EmailNotifications = true;
+                userSettingsExits.SmsNotifications = true;
+                userSettingsExits.TimeZone = "UTC";
                 await _context.UserSettingsRepository.UpdateAsync(userSettingsExits);
             }
             await _context.CommitAsync();
