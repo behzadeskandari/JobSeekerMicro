@@ -276,6 +276,15 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 
+// Data Protection
+builder.Services.AddDataProtection(x =>
+{
+    x.ApplicationDiscriminator = "JobSeekerAPIGateway";
+});
+
+
+
+
 var app = builder.Build();
 
 app.UseHttpsRedirection();

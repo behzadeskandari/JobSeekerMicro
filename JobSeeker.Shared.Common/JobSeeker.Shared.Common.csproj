@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
+    <ProjectReference Include="..\ProfileService.Infrastructure\ProfileService.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

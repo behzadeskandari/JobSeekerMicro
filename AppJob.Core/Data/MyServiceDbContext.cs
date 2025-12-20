@@ -27,7 +27,7 @@ namespace AppJob.Core.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<GeneratedLink>().HasIndex(l => l.Token).IsUnique();
-            modelBuilder.Entity<EmailLog>().HasIndex(e => e.IsSent).;
+            modelBuilder.Entity<EmailLog>().HasIndex(e => e.IsSent).IsClustered();
             // Configure your entities here
             base.OnModelCreating(modelBuilder);
         }
