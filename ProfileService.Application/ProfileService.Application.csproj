@@ -36,9 +36,6 @@
     <Folder Include="Features\CandidateJobPreferences\Queries\" />
     <Folder Include="Features\CandidateJobPreferences\Validators\" />
     <Folder Include="Features\Candidates\Validators\" />
-    <Folder Include="Features\Education\Command\" />
-    <Folder Include="Features\Education\Handlers\" />
-    <Folder Include="Features\Education\Queries\" />
     <Folder Include="Features\Education\Validators\" />
     <Folder Include="Features\Language\Command\" />
     <Folder Include="Features\Language\Handlers\" />
