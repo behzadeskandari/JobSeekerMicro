@@ -30,4 +30,39 @@
     <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\CandidateJobPreferences\Command\" />
+    <Folder Include="Features\CandidateJobPreferences\Handlers\" />
+    <Folder Include="Features\CandidateJobPreferences\Queries\" />
+    <Folder Include="Features\CandidateJobPreferences\Validators\" />
+    <Folder Include="Features\Candidate\Command\" />
+    <Folder Include="Features\Candidate\Handlers\" />
+    <Folder Include="Features\Candidate\Validators\" />
+    <Folder Include="Features\Candidate\Queries\" />
+    <Folder Include="Features\Education\Command\" />
+    <Folder Include="Features\Education\Handlers\" />
+    <Folder Include="Features\Education\Queries\" />
+    <Folder Include="Features\Education\Validators\" />
+    <Folder Include="Features\Language\Command\" />
+    <Folder Include="Features\Language\Handlers\" />
+    <Folder Include="Features\Language\Queries\" />
+    <Folder Include="Features\Language\Validators\" />
+    <Folder Include="Features\Resume\Command\" />
+    <Folder Include="Features\Resume\Handlers\" />
+    <Folder Include="Features\Resume\Queries\" />
+    <Folder Include="Features\Resume\Validators\" />
+    <Folder Include="Features\Skill\Command\" />
+    <Folder Include="Features\Skill\Handlers\" />
+    <Folder Include="Features\Skill\Queries\" />
+    <Folder Include="Features\Skill\Validators\" />
+    <Folder Include="Features\UserSettings\Command\" />
+    <Folder Include="Features\UserSettings\Handlers\" />
+    <Folder Include="Features\UserSettings\Queries\" />
+    <Folder Include="Features\UserSettings\Validators\" />
+    <Folder Include="Features\WorkExperience\Command\" />
+    <Folder Include="Features\WorkExperience\Handlers\" />
+    <Folder Include="Features\WorkExperience\Queries\" />
+    <Folder Include="Features\WorkExperience\Validators\" />
+  </ItemGroup>
+
 </Project>
