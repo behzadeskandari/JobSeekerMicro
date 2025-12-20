@@ -38,9 +38,6 @@
     <Folder Include="Features\Candidates\Validators\" />
     <Folder Include="Features\Education\Validators\" />
     <Folder Include="Features\Language\Validators\" />
-    <Folder Include="Features\Resume\Command\" />
-    <Folder Include="Features\Resume\Handlers\" />
-    <Folder Include="Features\Resume\Queries\" />
     <Folder Include="Features\Resume\Validators\" />
     <Folder Include="Features\Skill\Command\" />
     <Folder Include="Features\Skill\Handlers\" />
