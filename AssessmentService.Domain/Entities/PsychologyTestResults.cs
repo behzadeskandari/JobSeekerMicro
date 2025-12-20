@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
 
-    public class PsychologyTestResult : IBaseEntity<Guid>
+    public class PsychologyTestResult : IBaseEntity<Guid> , IAggregateRoot
     {
         [Key]
         public Guid Id { get; set; }

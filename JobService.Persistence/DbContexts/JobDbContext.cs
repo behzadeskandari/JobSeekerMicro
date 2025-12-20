@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using AdvertisementService.Persistence.DbContexts;
 using JobService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,28 @@ namespace JobService.Persistence.DbContexts
 {
     public class JobDbContext : DbContext
     {
+        public JobDbContext(DbContextOptions<JobDbContext> options) : base(options)
+        {
+            
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<JobPost>(entity =>
+            {
+                entity.OwnsOne(j => j.Salary, salary =>
+                {
+                    salary.Property(p => p.Min)
+                          .HasColumnName("SalaryMin")
+                          .HasColumnType("decimal(18,2)");
+
+                    salary.Property(p => p.Max)
+                          .HasColumnName("SalaryMax")
+                          .HasColumnType("decimal(18,2)");
+                });
+            });
+        }
         public DbSet<JobPost> JobPosts { get; set; }
         public DbSet<JobRequest> JobRequests { get; set; }
         public DbSet<City> Cities { get; set; }
@@ -32,6 +55,5 @@ namespace JobService.Persistence.DbContexts
         public DbSet<SubmissionDetails> SubmissionDetails { get; set; }
         public DbSet<TechnicalOption> TechnicalOptions { get; set; }
 
-        public JobDbContext(DbContextOptions<JobDbContext> options) : base(options) { }
     }
 }

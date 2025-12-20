@@ -9,6 +9,7 @@ namespace IdentityService.Application.Interfaces
     public interface IIdentityUnitOfWOrk : IDisposable
     {
         IUserRepository Users { get; }
+        IOutboxMessage OutboxMessage { get; }
         Task<int> CommitAsync();
         void Rollback();
     }

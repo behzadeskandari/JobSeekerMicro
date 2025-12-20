@@ -46,9 +46,6 @@ namespace IdentityService.Domain.Entities
         //public ICollection<PsychologyTestResult> PsychologyTestResults { get; set; }
         //public ICollection<PersonalityTestResponse> PersonalityTestResponses { get; set; }
         //public ICollection<PersonalityTestResult> PersonalityTestResults { get; set; }
-        public ICollection<IdentityUserClaim<string>> Claims { get; set; }
-        public ICollection<IdentityUserLogin<string>> Logins { get; set; }
-
         [NotMapped]
         public string RedirectUrl { get; set; }
 

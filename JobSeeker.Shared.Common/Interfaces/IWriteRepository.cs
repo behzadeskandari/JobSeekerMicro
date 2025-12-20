@@ -23,8 +23,8 @@ namespace JobSeeker.Shared.Common.Interfaces
         Task<IEnumerable<TAggregateRoot>> ExecuteStoredProcedureAsync(string procedureName, params SqlParameter[] parameters);
 
         Task<TAggregateRoot?> GetByIdAsync(object id);
-        Task<IEnumerable<TAggregateRoot>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task<IEnumerable<TAggregateRoot>> FindAsync(Expression<Func<TAggregateRoot, bool>> expression);
+        Task<IReadOnlyList<TAggregateRoot>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<TAggregateRoot>> FindAsync(Expression<Func<TAggregateRoot, bool>> expression);
         IQueryable<TAggregateRoot> GetQueryable(); // For more complex queries
         Task<bool> ExistsAsync(Expression<Func<TAggregateRoot, bool>> expression);
         // Add specific read-only query methods as needed

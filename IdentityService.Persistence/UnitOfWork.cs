@@ -14,10 +14,12 @@ namespace IdentityService.Persistence
     {
         private readonly ApplicationUserDbContext _context;
         public IUserRepository _users;
+        public IOutboxMessage _outBoxMessge;
         private IDbContextTransaction? _transaction;
 
 
         public IUserRepository Users => _users ?? new UserRepository(_context);
+        public IOutboxMessage OutboxMessage => _outBoxMessge ?? new OutBoxRepository(_context);
 
         public async Task<int> CommitAsync()
         {

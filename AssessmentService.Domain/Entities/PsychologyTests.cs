@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Contracts.Enums;
+using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
 using JobSeeker.Shared.Models;
 
 namespace AssessmentService.Domain.Entities
 {
-    public class PsychologyTest : IBaseEntity<int>
+    public class PsychologyTest : IBaseEntity<int> , IAggregateRoot
     {
         [Key]
         public int Id { get; set; }

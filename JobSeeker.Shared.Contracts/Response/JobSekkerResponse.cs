@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace JobSeeker.Shared.Contracts.Response
 {
-    public class Response<T>
+    public class JobSekkerResponse<T>
     {
         public HttpStatusCode StatusCode { get; set; }
 

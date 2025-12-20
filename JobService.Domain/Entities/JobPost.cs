@@ -11,7 +11,6 @@ namespace JobService.Domain.Entities
     public class JobPost : IBaseEntity<Guid>, IAggregateRoot
     {
 
-        public List<DomainEvent> DomainEvents { get; private set; } = new List<DomainEvent>();
 
 
         public Guid Id { get; set; }
