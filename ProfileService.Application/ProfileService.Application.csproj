@@ -35,10 +35,11 @@
     <Folder Include="Features\CandidateJobPreferences\Handlers\" />
     <Folder Include="Features\CandidateJobPreferences\Queries\" />
     <Folder Include="Features\CandidateJobPreferences\Validators\" />
-    <Folder Include="Features\Candidate\Command\" />
-    <Folder Include="Features\Candidate\Handlers\" />
+    <Folder Include="Features\Candidate\Handlers\CreateCandidateCommandHandler\" />
+    <Folder Include="Features\Candidate\Handlers\DeleteCandidateCommandHandler\" />
+    <Folder Include="Features\Candidate\Handlers\GetCandidateByIdQueryHandler\" />
+    <Folder Include="Features\Candidate\Handlers\UpdateCandidateCommandHandler\" />
     <Folder Include="Features\Candidate\Validators\" />
-    <Folder Include="Features\Candidate\Queries\" />
     <Folder Include="Features\Education\Command\" />
     <Folder Include="Features\Education\Handlers\" />
     <Folder Include="Features\Education\Queries\" />
