@@ -41,9 +41,6 @@
     <Folder Include="Features\Resume\Validators\" />
     <Folder Include="Features\Skill\Handlers\" />
     <Folder Include="Features\Skill\Validators\" />
-    <Folder Include="Features\UserSettings\Command\" />
-    <Folder Include="Features\UserSettings\Handlers\" />
-    <Folder Include="Features\UserSettings\Queries\" />
     <Folder Include="Features\UserSettings\Validators\" />
     <Folder Include="Features\WorkExperience\Command\" />
     <Folder Include="Features\WorkExperience\Handlers\" />
