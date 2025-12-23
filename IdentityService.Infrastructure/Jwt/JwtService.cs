@@ -84,9 +84,9 @@ namespace IdentityService.Infrastructure.Jwt
                 return new JwtTokenClaims();
             }
             var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-            var roles = jwtToken.Claims.FirstOrDefault(X => X.Value == AppRoles.Role_Staff | 
-                                                       X.Value == AppRoles.Role_Admin | 
-                                                       X.Value == AppRoles.Role_User);
+            var roles = jwtToken.Claims.FirstOrDefault(X => X.Value == AppRoles.Staff | 
+                                                       X.Value == AppRoles.Admin | 
+                                                       X.Value == AppRoles.User);
             var given_name = jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name");
             var family_name = jwtToken.Claims.FirstOrDefault(x => x.Type == "family_name");
             var userId = jwtToken.Claims.First().Value;

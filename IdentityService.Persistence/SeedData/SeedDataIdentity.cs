@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityService.Domain.Entities;
+using IdentityService.Domain.Roles;
 using IdentityService.Persistence.DbContext;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +84,10 @@ namespace IdentityService.Persistence.SeedData
             using (var scope = serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationUserDbContext>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                // Seed roles
                 if (!context.Roles.Any())
                 {
                     context.Roles.AddRange(new IdentityRole[]
@@ -90,8 +96,36 @@ namespace IdentityService.Persistence.SeedData
                         new IdentityRole() { Name = "User", ConcurrencyStamp = "1", NormalizedName = "User" },
                         new IdentityRole() { Name = "Staff", ConcurrencyStamp = "1", NormalizedName = "Staff" },
                     });
+                    await context.SaveChangesAsync();
                 }
-                var ids = await context.SaveChangesAsync();
+
+                // Seed user: behzad.b.i.g@gmail.com
+                var seedEmail = "behzad.b.i.g@gmail.com";
+                var existingUser = await userManager.FindByEmailAsync(seedEmail);
+                
+                if (existingUser == null)
+                {
+                    var seedUser = new User
+                    {
+                        FirstName = "eskandari",
+                        LastName = "behzad",
+                        Email = seedEmail,
+                        UserName = seedEmail,
+                        EmailConfirmed = true,
+                        Role = AppRoles.Admin
+                    };
+
+                    var createResult = await userManager.CreateAsync(seedUser, "Jokernewsmiles1!");
+                    
+                    if (createResult.Succeeded)
+                    {
+                        // Add user to Admin role
+                        if (await roleManager.RoleExistsAsync(AppRoles.Admin))
+                        {
+                            await userManager.AddToRoleAsync(seedUser, AppRoles.Admin);
+                        }
+                    }
+                }
             }
         }
     }

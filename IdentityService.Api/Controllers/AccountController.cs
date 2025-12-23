@@ -51,8 +51,8 @@ namespace IdentityService.Api.Controllers
             _publishEndpoint = publishEndpoint;
             //    _unitOfWork = unitOfWork;
         }
-
-        [Authorize(Roles = "User,Staff")]
+        //"User,Staff"
+        [Authorize(Roles = AppRoles.Combinations.UserOrStaff)]
         [HttpGet("refresh-user-token")]
         public async Task<ActionResult<UserDto>> RefreshUserToken()
         {
@@ -67,179 +67,82 @@ namespace IdentityService.Api.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginModel)
         {
+            // Try to find user by username first, then by email
             User user = await _accountService.FindByNameAsync(loginModel.UserName);
+            if (user == null)
+            {
+                user = await _accountService.FindByEmailAsync(loginModel.UserName);
+            }
+
             if (user == null) return Unauthorized(ErrorMessages.InvalidUser);
 
-            if (string.IsNullOrEmpty(user.Role) && user.Role == AppRoles.Role_Staff)
-            {
-                return Unauthorized(ErrorMessages.InvalidUser);
-            }
             var results = await _accountService.CheckPasswordAsync(user.Id, loginModel.Password);
+            if (!results) return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: ErrorMessages.InvalidPassword);
 
-            if (!results) return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: ErrorMessages.InvalidPassword);//Unauthorized(ErrorMessages.InvalidPassword);
+            // Get user's existing roles
+            var userRoles = await _accountService.GetUserRolesAsync(user.Id);
+            string roleToAssign;
+            string redirectUrl = string.Empty;
 
-            var userWithRole = await _accountService.AddRoleAsync(user, "User");
-
-            //Not Needed coockie based authentication
-            //await _accountService.SignInUserAsync(userWithRole.UserName, userWithRole.Password);
-
-            string body = $"ساخت کاربر جدید: {user.UserName} با پسورد {loginModel.Password}";
-            //var result = await _communicationOrchestrator.SendEmailAsync(
-            //    to: user.UserName,
-            //    subject: "کاربر جدید",
-            //    body: body);
-
-
-            var userDto = _accountService.CreateApplicationUserDto(userWithRole);
-            var t = await _jwt.GetToken(userWithRole);
-            userDto.Value.JWT = t;
-
-            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
-            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
-        }
-
-        [HttpPost("LoginSpecialUser")]
-        public async Task<ActionResult<UserDto>> LoginSpecialUser(LoginDto loginModel)
-        {
-            User user = await _accountService.FindByEmailAsync(loginModel.UserName);
-            if (user == null) return Unauthorized(ErrorMessages.InvalidUser);
-
-            if (string.IsNullOrEmpty(user.Role) && user.Role == AppRoles.Role_Staff)
+            // Determine role based on existing roles
+            if (userRoles.Contains(AppRoles.Admin))
             {
-                return Unauthorized(ErrorMessages.InvalidUser);
+                roleToAssign = AppRoles.Admin;
+                redirectUrl = Routes.AdminDashBoard;
             }
-            var results = await _accountService.CheckPasswordAsync(user.Id, loginModel.Password);
-
-            if (!results) return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: ErrorMessages.InvalidPassword);//Unauthorized(ErrorMessages.InvalidPassword);
-
-            var userWithRole = await _accountService.AddRoleAsync(user, "Admin");
-
-            //Not Needed coockie based authentication
-            //await _accountService.SignInUserAsync(userWithRole.UserName, userWithRole.Password);
-
-            string body = $"ساخت کاربر جدید: {user.UserName} با پسورد {loginModel.Password}";
-            //var result = await _communicationOrchestrator.SendEmailAsync(
-            //    to: user.UserName,
-            //    subject: "کاربر جدید",
-            //    body: body);
-
-
-            var userDto = _accountService.CreateApplicationUserDto(userWithRole);
-            var t = await _jwt.GetToken(userWithRole);
-            userDto.Value.JWT = t;
-
-            userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
-            userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-            return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
-        }
-
-        [HttpPost("registerSpecialUser")]
-        public async Task<ActionResult<UserDto>> RegisterSpecialUser(RegisterDto registerDto)
-        {
-
-            if (await _accountService.CheckEmailExistsAsync(registerDto.Email))
+            else if (userRoles.Contains(AppRoles.Staff))
             {
-                var user = await _accountService.GetUserByEmailAsync(registerDto.Email);
-                var role = await _accountService.GetUserRolesAsync(user.Id);
-                var Message = ErrorMessages.DuplicateEmail;
-
-                if (role != null && user != null)
-                {
-                    if (registerDto.Email == user.Email && role.Contains(AppRoles.Role_Staff))
-                    {
-                        return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: "You Aready Registerd as A Staff");
-                    }
-                }
-                return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: Message);//Problem(statusCode: StatusCodes.Status400BadRequest, detail: Message);
+                roleToAssign = AppRoles.Staff;
+                redirectUrl = Routes.StaffDashBoard;
             }
-            //string body = $"ورود کاربر : {registerDto.Email} با پسورد {registerDto.Password}";
-            //var results = await _communicationOrchestrator.SendEmailAsync(
-            //    to: registerDto.Email,
-            //    subject: "کاربر جدید",
-            //    body: body);
-            var userToAdd = new User
+            else if (userRoles.Contains(AppRoles.User))
             {
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                Email = registerDto.Email,
-                UserName = registerDto.Email,
-                Password = registerDto.Password,
-                PictureUrl = string.Empty,
-                EmailConfirmed = true,
-            };
-            var result = await _accountService.CreateUserAsync(userToAdd, userToAdd.Password);
-
-            var userRecord = await _accountService.AddRoleAsync(result.Value, "Admin");
-
-
-            if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);//BadRequest(result.Errors);
-
-            // Add user to Staff role
-
-            return Ok(new { message = SuccessMessages.AccountCreated, Items = userRecord });
-        }
-        [HttpPost("LoginStaff")]
-        public async Task<ActionResult<UserDto>> LoginStaff(LoginDto loginModel)
-        {
-            User userWithRole = null;
-            User user = await _accountService.FindByEmailAsync(loginModel.UserName);
-            if (user == null) return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: ErrorMessages.InvalidUser);//Unauthorized(ErrorMessages.InvalidUser);
-
-            if (string.IsNullOrEmpty(user.Role) && user.Role == AppRoles.Role_User)
-            {
-                return Unauthorized(ErrorMessages.InvalidUser);
-            }
-            var results = await _accountService.CheckPasswordAsync(user.Id, loginModel.Password);
-
-            if (!results) return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: ErrorMessages.InvalidPassword);//Unauthorized(ErrorMessages.InvalidPassword);
-
-            if (user.Role == "Admin")
-            {
-                userWithRole = await _accountService.AddRoleAsync(user, "Admin");
-                userWithRole.RedirectUrl = Routes.AdminDashBoard;
+                roleToAssign = AppRoles.User;
             }
             else
             {
-                userWithRole = await _accountService.AddRoleAsync(user, "Staff");
-                userWithRole.RedirectUrl = Routes.StaffDashBoard;
+                // Default to User role if no role is assigned
+                roleToAssign = AppRoles.User;
             }
-            //Coocike based
-            //await _accountService.SignInUserAsync(user.UserName,user.Password);
+
+            var userWithRole = await _accountService.AddRoleAsync(user, roleToAssign);
+            userWithRole.RedirectUrl = redirectUrl;
 
             var userDto = _accountService.CreateApplicationUserDto(userWithRole);
             userDto.Value.JWT = await _jwt.GetToken(userWithRole);
-
             userDto.Value.RefreshToken = await _jwt.GenerateRefreshToken();
             userDto.Value.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            
             return Ok(new { message = SuccessMessages.LoginSuccess, Items = userDto });
         }
 
+
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto, [FromQuery] string role = AppRoles.User)
         {
+            // Validate role
+            if (role != AppRoles.Admin && role != AppRoles.Staff && role != AppRoles.User)
+            {
+                return Problem(statusCode: StatusCodes.Status400BadRequest, detail: "Invalid role specified");
+            }
 
             if (await _accountService.CheckEmailExistsAsync(registerDto.Email))
             {
                 var user = await _accountService.GetUserByEmailAsync(registerDto.Email);
-                var role = await _accountService.GetUserRolesAsync(user.Id);
+                var existingRoles = await _accountService.GetUserRolesAsync(user.Id);
                 var Message = ErrorMessages.DuplicateEmail;
 
-                if (role != null && user != null)
+                if (existingRoles != null && user != null)
                 {
-                    if (registerDto.Email == user.Email && role.Contains(AppRoles.Role_Staff))
+                    if (registerDto.Email == user.Email && existingRoles.Contains(AppRoles.Staff))
                     {
-                        return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: "You Aready Registerd as A Staff");
+                        return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: "You Already Registered as A Staff");
                     }
                 }
-                return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: Message);//Problem(statusCode: StatusCodes.Status400BadRequest, detail: Message);
+                return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: Message);
             }
-            //string body = $"ورود کاربر : {registerDto.Email} با پسورد {registerDto.Password}";
-            //var results = await _communicationOrchestrator.SendEmailAsync(
-            //    to: registerDto.Email,
-            //    subject: "کاربر جدید",
-            //    body: body);
+
             var userToAdd = new User
             {
                 FirstName = registerDto.FirstName,
@@ -249,86 +152,40 @@ namespace IdentityService.Api.Controllers
                 Password = registerDto.Password,
                 PictureUrl = string.Empty,
                 EmailConfirmed = true,
+                Role = role
             };
+
             var result = await _accountService.CreateUserAsync(userToAdd, userToAdd.Password);
 
-   
+            if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);
 
-            if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);//BadRequest(result.Errors);
-            var userRecord = await _accountService.AddRoleAsync(result.Value, AppRoles.Role_Staff);
+            var userRecord = await _accountService.AddRoleAsync(result.Value, role);
 
-            var UserRegisterEvent = new UserRegisteredEvent(userRecord.Id, userRecord.Email, AppRoles.Role_Staff, userRecord.FirstName, userRecord.LastName);
-
-            await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
+            // Publish UserRegisteredEvent only for Staff role (as per original register method)
+            if (role == AppRoles.Staff)
             {
-                Id = UserRegisterEvent.Id,
-                Type = nameof(UserRegisteredEvent),
-                Content = JsonSerializer.Serialize(UserRegisterEvent),
-                OccurredOn = DateTime.UtcNow
-            });
+                var UserRegisterEvent = new UserRegisteredEvent(userRecord.Id, userRecord.Email, AppRoles.Staff, userRecord.FirstName, userRecord.LastName);
 
-            await _unitOfWork.CommitAsync();
+                await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
+                {
+                    Id = UserRegisterEvent.Id,
+                    Type = nameof(UserRegisteredEvent),
+                    Content = JsonSerializer.Serialize(UserRegisterEvent),
+                    OccurredOn = DateTime.UtcNow
+                });
 
-            await _publishEndpoint.Publish(new UserRegisteredEvent(
-            userRecord.Id,
-            userRecord.Email,
-            AppRoles.Role_Staff,
-            userRecord.FirstName,
-            userRecord.LastName
-            ));
-            // Add user to Staff role
+                await _unitOfWork.CommitAsync();
+
+                await _publishEndpoint.Publish(new UserRegisteredEvent(
+                    userRecord.Id,
+                    userRecord.Email,
+                    AppRoles.Staff,
+                    userRecord.FirstName,
+                    userRecord.LastName
+                ));
+            }
 
             return Ok(new { message = SuccessMessages.AccountCreated, Items = userRecord });
-        }
-
-
-        [HttpPost("registerStaff")]
-        public async Task<ActionResult<UserDto>> RegisterStaff(RegisterDto registerDto)
-        {
-
-            if (await _accountService.CheckEmailExistsAsync(registerDto.Email))
-            {
-
-                var user = await _accountService.GetUserByEmailAsync(registerDto.Email);
-                var role = await _accountService.GetUserRolesAsync(user.Id);
-                var Message = ErrorMessages.DuplicateEmail;
-                if (role != null && user != null)
-                {
-                    if (registerDto.Email == user.Email && role.Contains(AppRoles.Role_Staff))
-                    {
-                        return Problem(statusCode: StatusCodes.Status401Unauthorized, detail: "You Aready Registerd as A Staff");
-                    }
-                }
-                return Problem(statusCode: StatusCodes.Status400BadRequest, detail: ErrorMessages.InvalidPassword);//(new { message = ErrorMessages.DuplicateEmail });
-            }
-
-            var userToAdd = new User
-            {
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
-                Email = registerDto.Email,
-                UserName = registerDto.Email,
-                Password = registerDto.Password,
-                PictureUrl = string.Empty,
-                EmailConfirmed = true,
-                Role = "Staff"
-            };
-            var result = await _accountService.CreateUserAsync(userToAdd, userToAdd.Password);
-
-            var userRecord = await _accountService.AddRoleAsync(result.Value, "Staff");
-
-            if (!result.IsSuccess) return Problem(statusCode: StatusCodes.Status400BadRequest, detail: result.Errors.First().Message);// BadRequest(result.Errors);
-
-            // Add user to Staff role
-            JobSekkerResponse<User> userResponse = new JobSekkerResponse<User>()
-            {
-
-                Message = SuccessMessages.AccountCreated,
-                Items = userRecord,
-                StatusCode = System.Net.HttpStatusCode.OK,
-            };
-
-            return Ok(userResponse);
         }
 
         [HttpPost("google-login")]
@@ -412,7 +269,8 @@ namespace IdentityService.Api.Controllers
 
             return Redirect(returnUrl);
         }
-        [Authorize(Roles = "User,Staff")] // Requires a valid JWT token
+        //"User,Staff"
+        [Authorize(Roles = AppRoles.Combinations.UserOrStaff)] // Requires a valid JWT token
         [HttpGet("check-login")]
         public async Task<IActionResult> CheckLogin()
         {
@@ -525,18 +383,7 @@ namespace IdentityService.Api.Controllers
 
             return BadRequest(new { error = "Failed to reset password" });
         }
-
-        [HttpGet]
-        public IActionResult Test()
-        {
-            List<string> str = new List<string>()
-            {
-                "1",
-                "2",
-                "3"
-            };
-            return Ok(str);
-        }
+   
     }
 
 }
