@@ -10,5 +10,6 @@ namespace JobService.Application.Interfaces
 {
     public interface ICityRepository : IWriteRepository<City>
     {
+        Task UpdateCityAsync(City city, int provinceId);
     }
 }
