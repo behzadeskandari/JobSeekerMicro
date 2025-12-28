@@ -1,8 +1,9 @@
+using AdvertisementService.Infrastructure;
+using AdvertisementService.Persistence;
 using AdvertisementService.Persistence.DbContexts;
 using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using ProfileService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AdvertismentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Register persistence services
+builder.Services.AddAdvertismentPersistanceServiceRegistration(builder.Configuration);
+
+// Register infrastructure services (HTTP clients)
+builder.Services.ConfigureAdvertismentInfrastructureServiceRegistration(builder.Configuration);
 
 var app = builder.Build();
 

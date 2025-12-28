@@ -4,6 +4,7 @@ using JobSeeker.Shared.Contracts.City;
 using JobService.Application.Features.Cities.Queries;
 using JobService.Application.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;

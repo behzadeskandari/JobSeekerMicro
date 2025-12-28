@@ -5,6 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JobSeeker.Shared.Contracts.Category;
+using JobSeeker.Shared.Contracts.Company;
+using JobSeeker.Shared.Contracts.Payment;
+using JobSeeker.Shared.Contracts.User;
 
 namespace JobSeeker.Shared.Dtos.Advertisement
 {

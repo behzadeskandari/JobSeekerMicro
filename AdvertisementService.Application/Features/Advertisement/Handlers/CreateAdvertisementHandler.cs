@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AdvertisementService.Application.Features.Advertisement.Command;
 using AdvertisementService.Application.Interfaces;
@@ -16,42 +13,53 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
     {
         private readonly IAdvertisementUnitOfWork _repository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IIdentityServiceClient _identityServiceClient;
 
-        public CreateAdvertisementHandler(IAdvertisementUnitOfWork repository, ICurrentUserService currentUserService)
+        public CreateAdvertisementHandler(
+            IAdvertisementUnitOfWork repository, 
+            ICurrentUserService currentUserService,
+            IIdentityServiceClient identityServiceClient)
         {
             _repository = repository;
             _currentUserService = currentUserService;
+            _identityServiceClient = identityServiceClient;
         }
-        User user = null;
+
         public async Task<Result<string>> Handle(CreateAdvertisementCommand request, CancellationToken cancellationToken)
         {
-            
             if (string.IsNullOrEmpty(_currentUserService.UserEmail) || string.IsNullOrEmpty(_currentUserService.UserId))
             {
                 return Result.Fail("شما باید وارد سیستم شوید و ثبت نام کنید و برای تبلیغات در سایت ما یک شرکت ایجاد کنید");
             }
-            else
+
+            var userId = _currentUserService.UserId;
+
+            // Check user existence using synchronous HTTP call
+            var userExists = await _identityServiceClient.UserExistsAsync(userId, cancellationToken);
+            if (!userExists)
             {
-                var userId = _currentUserService.UserId;
-                user = await _repository.UsersRepository.GetByIdAsync(userId);
+                return Result.Fail("کاربر یافت نشد");
             }
 
-            var category = await _repository.CategoryRepository.GetByIdAsync(request.CategoryId);
+            // Load category (assuming it's in AdvertisementService domain)
+            var category = await _repository.PricingCategoryRepository.GetByIdAsync(request.CategoryId);
             if (category == null)
             {
-                throw new NotFoundException("دسته بندی صحیح نیست");
+                return Result.Fail("دسته بندی صحیح نیست");
             }
 
-            var comapny = await _repository.companyRepository.GetByIdAsync(request.CompanyId);
-            if (comapny == null)
+            // Get company owner using synchronous HTTP call
+            var companyOwnerUserId = await _identityServiceClient.GetCompanyOwnerUserIdAsync(request.CompanyId, cancellationToken);
+            if (companyOwnerUserId == null)
             {
-                throw new NotFoundException("دسته بندی صحیح نیست");
-            }
-            if (comapny.UserId != _currentUserService.UserId)
-            {
-                throw new NotFoundException("شرکت شما نیست");
+                return Result.Fail("شرکت یافت نشد");
             }
 
+            // Validate ownership
+            if (companyOwnerUserId != userId)
+            {
+                return Result.Fail("شرکت شما نیست");
+            }
 
             var advertisement = new AdvertisementService.Domain.Entities.Advertisement
             {
@@ -61,25 +69,20 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
                 ImageUrl = request.ImageUrl,
                 IsActive = request.IsActive,
                 IsApproved = request.IsApproved,
-                //Category = category,
                 CategoryId = category.Id,
                 IsPaid = request.IsPaid,
                 JobADVCreatedAt = request.JobADVCreatedAt,
-                //Company = comapny,
-                CompanyId = comapny.Id,
-                //Staff = user,
-                //StaffId = user.Id,
+                CompanyId = request.CompanyId,
+                UserId = userId,
                 DateCreated = DateTime.Now,
                 DateModified = DateTime.Now,
                 PaymentId = Guid.Empty,
-                //CompanyName = request.CompanyName,
-                //PostedDate = request.PostedDate
             };
 
             await _repository.AdvertisementRepository.AddAsync(advertisement);
+            await _repository.CommitAsync(cancellationToken);
 
-            return advertisement.Id;
+            return Result.Ok(advertisement.Id.ToString());
         }
     }
-
 }

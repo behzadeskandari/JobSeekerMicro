@@ -21,6 +21,7 @@ namespace AdvertisementService.Application.Interfaces
         public IProductRepository ProductRepository { get; }
         public ISalesOrderItemRepository SalesOrderItemRepository { get; }
         public ISalesOrderRepository SalesOrderRepository { get; }
+        
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }

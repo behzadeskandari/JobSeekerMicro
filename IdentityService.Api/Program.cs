@@ -220,7 +220,8 @@ builder.Services.AddMassTransit(x =>
         //cfg.UseMessageOutbox(context);  // Requires EF Core setup below
 
         // Publish endpoints for events
-        cfg.Publish<UserRegisteredEvent>(p => { p.Durable = true; });
+        cfg.Publish<JobSeeker.Shared.Contracts.Integration.UserRegisteredIntegrationEvent>(p => { p.Durable = true; });
+        cfg.Publish<JobSeeker.Shared.Contracts.Integration.CompanyCreatedIntegrationEvent>(p => { p.Durable = true; });
 
         // Configure the bus
         cfg.ConfigureEndpoints(context);

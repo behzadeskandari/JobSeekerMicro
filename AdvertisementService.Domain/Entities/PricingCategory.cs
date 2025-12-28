@@ -10,9 +10,9 @@ using JobSeeker.Shared.Models;
 namespace AdvertisementService.Domain.Entities
 {
 
-    public class PricingCategory : IBaseEntity<Guid>, IAggregateRoot
+    public class PricingCategory : IBaseEntity<int>, IAggregateRoot
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string IconName { get; set; }

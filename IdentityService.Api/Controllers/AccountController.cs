@@ -6,6 +6,7 @@ using Google.Apis.Auth;
 using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.IntegrationEventSourcing;
+using JobSeeker.Shared.Contracts.Integration;
 using IdentityService.Domain.Roles;
 using IdentityService.Infrastructure.Jwt;
 using JobSeeker.Shared.Common.Errors;
@@ -161,29 +162,26 @@ namespace IdentityService.Api.Controllers
 
             var userRecord = await _accountService.AddRoleAsync(result.Value, role);
 
-            // Publish UserRegisteredEvent only for Staff role (as per original register method)
-            if (role == AppRoles.Staff)
+            // Publish UserRegisteredIntegrationEvent for all roles
+            var userRegisteredEvent = new UserRegisteredIntegrationEvent(
+                userRecord.Id,
+                userRecord.Email,
+                role,
+                userRecord.FirstName,
+                userRecord.LastName
+            );
+
+            await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
             {
-                var UserRegisterEvent = new UserRegisteredEvent(userRecord.Id, userRecord.Email, AppRoles.Staff, userRecord.FirstName, userRecord.LastName);
+                Id = userRegisteredEvent.Id,
+                Type = nameof(UserRegisteredIntegrationEvent),
+                Content = JsonSerializer.Serialize(userRegisteredEvent),
+                OccurredOn = DateTime.UtcNow
+            });
 
-                await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
-                {
-                    Id = UserRegisterEvent.Id,
-                    Type = nameof(UserRegisteredEvent),
-                    Content = JsonSerializer.Serialize(UserRegisterEvent),
-                    OccurredOn = DateTime.UtcNow
-                });
+            await _unitOfWork.CommitAsync();
 
-                await _unitOfWork.CommitAsync();
-
-                await _publishEndpoint.Publish(new UserRegisteredEvent(
-                    userRecord.Id,
-                    userRecord.Email,
-                    AppRoles.Staff,
-                    userRecord.FirstName,
-                    userRecord.LastName
-                ));
-            }
+            await _publishEndpoint.Publish(userRegisteredEvent);
 
             return Ok(new { message = SuccessMessages.AccountCreated, Items = userRecord });
         }

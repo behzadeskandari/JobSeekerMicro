@@ -24,7 +24,7 @@ namespace JobService.Application.Features.Cities.Handlers
         {
             var city = await _unitOfWork.City.GetByIdAsync(request.Dto.Id);
             if (city == null)
-                return Result.Fail("City not found");
+                return Result.Fail("شهر مورد نظر پیدا نشد");
 
             var province = await _unitOfWork.City.GetByIdAsync(request.Dto.ProvinceId);
             if (province != null)
@@ -36,7 +36,7 @@ namespace JobService.Application.Features.Cities.Handlers
                 city.Label = request.Dto.Label;
                 city.ProvinceId = request.Dto.ProvinceId;
                 city.IsActive = request.Dto.IsActive.HasValue ? request.Dto.IsActive.Value : false;
-                await _unitOfWork.CitiesRepository.UpdateCityAsync(city);
+                await _unitOfWork.City.UpdateCityAsync(city, city.ProvinceId);
             }
             await _unitOfWork.CommitAsync(cancellationToken);
 

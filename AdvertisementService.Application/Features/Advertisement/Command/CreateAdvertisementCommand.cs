@@ -13,7 +13,7 @@ namespace AdvertisementService.Application.Features.Advertisement.Command
     {
 
         public int Id { get; set; }
-        public int CompanyId { get; set; }
+        public Guid CompanyId { get; set; }
         public int CategoryId { get; set; }
 
 

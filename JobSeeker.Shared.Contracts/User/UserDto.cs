@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using JobSeeker.Shared.Contracts.Advertisement;
 using JobSeeker.Shared.Contracts.Job;
 using JobSeeker.Shared.Contracts.Payment;
+using JobSeeker.Shared.Dtos.Advertisement;
 
 namespace JobSeeker.Shared.Contracts.User
 {
