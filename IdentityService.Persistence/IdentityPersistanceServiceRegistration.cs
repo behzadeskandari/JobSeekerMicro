@@ -18,7 +18,7 @@ namespace IdentityService.Persistence
         public static IServiceCollection AddIdentityPersistanceServiceRegistration(this IServiceCollection services, IConfiguration configuration) 
         {
             services.AddScoped(typeof(IWriteRepository<>), typeof(GenericWriteRepository<>));
-            services.AddScoped<IIdentityUnitOfWOrk, UnitOfWork>();
+            services.AddScoped<IIdentityUnitOfWOrk, IdentityUnitOfWork>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserRepository, UserRepository>();
 

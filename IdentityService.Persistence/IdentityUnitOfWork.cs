@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 namespace IdentityService.Persistence
 {
-    public class UnitOfWork : IIdentityUnitOfWOrk
+    public class IdentityUnitOfWork : IIdentityUnitOfWOrk
     {
         private readonly ApplicationUserDbContext _context;
         public IUserRepository _users;
