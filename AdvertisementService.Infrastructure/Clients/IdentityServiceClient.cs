@@ -63,7 +63,7 @@ namespace AdvertisementService.Infrastructure.Clients
                     });
         }
 
-        public async Task<string?> GetCompanyOwnerUserIdAsync(Guid companyId, CancellationToken ct = default)
+        public async Task<string?> GetCompanyOwnerUserIdAsync(int companyId, CancellationToken ct = default)
         {
             var httpClient = _httpClientFactory.CreateClient();
             httpClient.BaseAddress = new Uri(_jobServiceBaseUrl);

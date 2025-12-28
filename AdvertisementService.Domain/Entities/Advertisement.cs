@@ -1,39 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JobSeeker.Shared.Kernel.Abstractions;
+using AdvertisementService.Domain.Common;
 using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Advertisement : IBaseEntity<Guid>, IAggregateRoot
+    public class Advertisement : EntityBase<Guid>
     {
-        public Guid Id { get; set; }
+        [Required]
+        public string Title { get; set; } = string.Empty;
 
         [Required]
-        public string Title { get; set; }
+        public string Description { get; set; } = string.Empty;
+
+        public string ImageUrl { get; set; } = string.Empty;
 
         [Required]
-        public string Description { get; set; }
-
-        public string ImageUrl { get; set; }
-
-        [Required]
-        public string UserId { get; set; }
-
-        //public User Staff { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         [Required]
         public int CategoryId { get; set; }
 
-        //public Category Category { get; set; }
         [Required]
-        public Guid CompanyId { get; set; }
-        //public Company Company { get; set; }
+        public int CompanyId { get; set; }
 
         public DateTime JobADVCreatedAt { get; set; } = DateTime.Now;
 
@@ -43,20 +33,8 @@ namespace AdvertisementService.Domain.Entities
 
         public bool IsPaid { get; set; } = false;
 
-        public Guid? PaymentId { get; set; }
-        //public Payment? Payment { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateModified { get; set; }
-        public bool? IsActive { get; set; }
+        public int? PaymentId { get; set; }
 
-
-
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
     }
 }

@@ -1,48 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JobSeeker.Shared.Kernel.Abstractions;
-using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
-using MassTransit.Transports;
+using AdvertisementService.Domain.Common;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class PricingPlan : IBaseEntity<Guid> ,IAggregateRoot
+    public class PricingPlan : EntityBase<Guid>
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Subtitle { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Subtitle { get; set; } = string.Empty;
+        
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
-        public string Currency { get; set; }
+        
+        public string Currency { get; set; } = string.Empty;
         public int Duration { get; set; }
-        public string DurationUnit { get; set; }
+        public string DurationUnit { get; set; } = string.Empty;
         public int JobCount { get; set; }
         public int? DiscountPercentage { get; set; }
-        public string ButtonText { get; set; }
+        public string ButtonText { get; set; } = string.Empty;
         public bool? IsPopular { get; set; }
-        public string Type { get; set; }
-        public string Name { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public Guid PricingCategoryId { get; set; }
-        public PricingCategory PricingCategory { get; set; }
+        public int PricingCategoryId { get; set; }
+        public PricingCategory PricingCategory { get; set; } = null!;
 
         public ICollection<PricingFeature> Features { get; set; } = new List<PricingFeature>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateModified { get; set; }
-        public bool? IsActive { get; set; }
-
-
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
     }
 }

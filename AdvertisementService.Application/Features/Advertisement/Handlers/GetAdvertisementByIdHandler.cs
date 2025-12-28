@@ -9,7 +9,7 @@ using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Handlers
 {
-    public class GetAdvertisementByIdHandler : IRequestHandler<GetAdvertisementByIdQuery, AdvertisementService.Domain.Entities.Advertisement>
+    public class GetAdvertisementByIdHandler : IRequestHandler<GetAdvertisementByIdQuery, AdvertisementService.Domain.Entities.Advertisement?>
     {
         private readonly IAdvertisementUnitOfWork _repository;
 
@@ -18,7 +18,7 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
             _repository = repository;
         }
 
-        public async Task<AdvertisementService.Domain.Entities.Advertisement> Handle(GetAdvertisementByIdQuery request, CancellationToken cancellationToken)
+        public async Task<AdvertisementService.Domain.Entities.Advertisement?> Handle(GetAdvertisementByIdQuery request, CancellationToken cancellationToken)
         {
             return await _repository.AdvertisementRepository.GetByIdAsync(request.Id);
         }

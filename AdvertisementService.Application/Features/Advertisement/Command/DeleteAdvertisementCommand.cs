@@ -7,8 +7,8 @@ using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Command
 {
-    public class DeleteAdvertisementCommand : IRequest
+    public class DeleteAdvertisementCommand : IRequest<FluentResults.Result>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

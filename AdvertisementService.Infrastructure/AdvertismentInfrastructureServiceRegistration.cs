@@ -15,8 +15,8 @@ namespace AdvertisementService.Infrastructure
             services.AddHttpClient();
 
             // Get service URLs from configuration
-            var identityServiceBaseUrl = configuration["ServiceUrls:IdentityService"] ?? "https://localhost:5001";
-            var jobServiceBaseUrl = configuration["ServiceUrls:JobService"] ?? "https://localhost:5002";
+            var identityServiceBaseUrl = configuration["ServiceUrls:IdentityService"] ?? "https://localhost:7001";
+            var jobServiceBaseUrl = configuration["ServiceUrls:JobService"] ?? "https://localhost:7002";
 
             // Register the client implementation
             services.AddScoped<IIdentityServiceClient>(sp =>
@@ -30,6 +30,10 @@ namespace AdvertisementService.Infrastructure
                     jobServiceBaseUrl,
                     logger);
             });
+
+            // Register domain event dispatcher
+            services.AddScoped<AdvertisementService.Application.Interfaces.IDomainEventDispatcher, 
+                AdvertisementService.Infrastructure.DomainEvents.DomainEventDispatcher>();
 
             return services;
         }

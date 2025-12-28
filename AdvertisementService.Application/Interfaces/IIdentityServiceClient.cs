@@ -11,7 +11,7 @@ namespace AdvertisementService.Application.Interfaces
         /// <param name="companyId">Company ID</param>
         /// <param name="ct">Cancellation token</param>
         /// <returns>Owner userId or null if company not found</returns>
-        Task<string?> GetCompanyOwnerUserIdAsync(Guid companyId, CancellationToken ct = default);
+        Task<string?> GetCompanyOwnerUserIdAsync(int companyId, CancellationToken ct = default);
 
         /// <summary>
         /// Checks if a user exists in IdentityService

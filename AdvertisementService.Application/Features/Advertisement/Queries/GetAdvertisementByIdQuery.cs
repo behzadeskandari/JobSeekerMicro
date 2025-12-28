@@ -7,8 +7,8 @@ using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Queries
 {
-    public class GetAdvertisementByIdQuery : IRequest<AdvertisementService.Domain.Entities.Advertisement>
+    public class GetAdvertisementByIdQuery : IRequest<AdvertisementService.Domain.Entities.Advertisement?>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

@@ -1,58 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AdvertisementService.Domain.Common;
 using JobSeeker.Shared.Contracts.Enums;
-using JobSeeker.Shared.Kernel.Abstractions;
-using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Payment : IBaseEntity<Guid>, IAggregateRoot
+    public class Payment : EntityBase<Guid>
     {
-        public Guid Id { get; set; }
-
-        //[Required]
-        public string UserId { get; set; }
-
-        //public User User { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
         [Required]
-        public Guid AdvertisementId { get; set; }
+        public int AdvertisementId { get; set; }
 
-        public Advertisement Advertisement { get; set; }
+        public Advertisement Advertisement { get; set; } = null!;
 
-
-        public Guid? OrderId { get; set; }
-        public Order Order { get; set; }
+        public int? OrderId { get; set; }
+        public Order? Order { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
 
         [Required]
-        public string TransactionId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
 
         public string PaymentMethod { get; set; } = "Zarinpal";
-        public string TestType { get; set; }
+        public string TestType { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateModified { get; set; }
-        public bool? IsActive { get; set; }
-
-
-
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
     }
 }

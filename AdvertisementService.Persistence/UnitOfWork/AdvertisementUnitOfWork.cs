@@ -13,6 +13,7 @@ namespace AdvertisementService.Persistence.UnitOfWork
     public class AdvertisementUnitOfWork : IAdvertisementUnitOfWork
     {
         private readonly AdvertismentDbContext _context;
+        private readonly IDomainEventDispatcher? _domainEventDispatcher;
         public IAdvertisementRepository _advertisementRepository;
         public IAdvertisementRepository AdvertisementRepository => _advertisementRepository ??= new AdvertisementRepository(_context);
 
@@ -66,14 +67,24 @@ namespace AdvertisementService.Persistence.UnitOfWork
         public ISalesOrderRepository _salesOrderRepository;
         public ISalesOrderRepository SalesOrderRepository => _salesOrderRepository ??= new SalesOrderRepository(_context);
 
-        public AdvertisementUnitOfWork(AdvertismentDbContext context)
+        public AdvertisementUnitOfWork(AdvertismentDbContext context, IDomainEventDispatcher? domainEventDispatcher = null)
         {
             _context = context;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.SaveChangesAsync(cancellationToken);
+            var result = await _context.SaveChangesAsync(cancellationToken);
+            
+            // Dispatch domain events after save
+            if (_domainEventDispatcher != null)
+            {
+                await _domainEventDispatcher.DispatchDomainEventsAsync();
+                await _context.SaveChangesAsync(cancellationToken); // Save outbox messages
+            }
+            
+            return result;
         }
 
         public void Dispose() => _context.Dispose();

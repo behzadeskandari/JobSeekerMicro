@@ -8,9 +8,9 @@ using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Command
 {
-    public class UpdateAdvertisementCommand : IRequest
+    public class UpdateAdvertisementCommand : IRequest<FluentResults.Result>
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         public string Title { get; set; }

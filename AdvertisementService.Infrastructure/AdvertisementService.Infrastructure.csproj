@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdvertisementService.Application\AdvertisementService.Application.csproj" />
+    <ProjectReference Include="..\AdvertisementService.Domain\AdvertisementService.Domain.csproj" />
+    <ProjectReference Include="..\AdvertisementService.Persistence\AdvertisementService.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

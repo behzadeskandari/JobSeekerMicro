@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AdvertisementService.Application.Features.Advertisement.Command;
 using AdvertisementService.Application.Interfaces;
+using FluentResults;
 using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Handlers
 {
-    public class DeleteAdvertisementHandler : IRequestHandler<DeleteAdvertisementCommand>
+    public class DeleteAdvertisementHandler : IRequestHandler<DeleteAdvertisementCommand, Result>
     {
         private readonly IAdvertisementUnitOfWork _repository;
 
@@ -18,9 +15,18 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
             _repository = repository;
         }
 
-        public async Task Handle(DeleteAdvertisementCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteAdvertisementCommand request, CancellationToken cancellationToken)
         {
+            var advertisement = await _repository.AdvertisementRepository.GetByIdAsync(request.Id);
+            if (advertisement == null)
+            {
+                return Result.Fail("Advertisement not found");
+            }
+
             await _repository.AdvertisementRepository.DeleteAsync(request.Id);
+            await _repository.CommitAsync(cancellationToken);
+
+            return Result.Ok();
         }
     }
 }

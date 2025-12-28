@@ -18,7 +18,14 @@ namespace AdvertisementService.Persistence
         public static IServiceCollection AddAdvertismentPersistanceServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IWriteRepository<>), typeof(GenericWriteRepository<>));
-            services.AddScoped<IAdvertisementUnitOfWork, AdvertisementUnitOfWork>();
+            
+            // Register UnitOfWork with domain event dispatcher
+            services.AddScoped<IAdvertisementUnitOfWork>(sp =>
+            {
+                var context = sp.GetRequiredService<AdvertisementService.Persistence.DbContexts.AdvertismentDbContext>();
+                var dispatcher = sp.GetService<AdvertisementService.Application.Interfaces.IDomainEventDispatcher>();
+                return new AdvertisementService.Persistence.UnitOfWork.AdvertisementUnitOfWork(context, dispatcher);
+            });
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
             services.AddScoped<ICustomersRepository, CustomersRepository>();

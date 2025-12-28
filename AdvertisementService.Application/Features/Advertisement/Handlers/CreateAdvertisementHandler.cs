@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using AdvertisementService.Application.Features.Advertisement.Command;
 using AdvertisementService.Application.Interfaces;
+using AdvertisementService.Domain.Events;
 using FluentResults;
 using JobSeeker.Shared.Common.Services;
-using JobSeeker.Shared.Kernel.Abstractions;
 using MediatR;
 
 namespace AdvertisementService.Application.Features.Advertisement.Handlers
@@ -63,6 +63,7 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
 
             var advertisement = new AdvertisementService.Domain.Entities.Advertisement
             {
+                Id = Guid.NewGuid(),
                 Title = request.Title,
                 Description = request.Description,
                 ExpiresAt = request.ExpiresAt,
@@ -74,10 +75,18 @@ namespace AdvertisementService.Application.Features.Advertisement.Handlers
                 JobADVCreatedAt = request.JobADVCreatedAt,
                 CompanyId = request.CompanyId,
                 UserId = userId,
-                DateCreated = DateTime.Now,
-                DateModified = DateTime.Now,
-                PaymentId = Guid.Empty,
+                DateCreated = DateTime.UtcNow,
+                DateModified = DateTime.UtcNow,
             };
+
+            // Raise domain event
+            advertisement.Raise(new AdvertisementCreatedEvent(
+                advertisement.Id,
+                advertisement.UserId,
+                advertisement.CompanyId,
+                advertisement.CategoryId,
+                advertisement.Title,
+                advertisement.IsPaid));
 
             await _repository.AdvertisementRepository.AddAsync(advertisement);
             await _repository.CommitAsync(cancellationToken);

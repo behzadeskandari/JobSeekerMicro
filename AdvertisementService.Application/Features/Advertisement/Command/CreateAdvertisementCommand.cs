@@ -12,8 +12,7 @@ namespace AdvertisementService.Application.Features.Advertisement.Command
     public class CreateAdvertisementCommand : IRequest<Result<string>>
     {
 
-        public int Id { get; set; }
-        public Guid CompanyId { get; set; }
+        public int CompanyId { get; set; }
         public int CategoryId { get; set; }
 
 
