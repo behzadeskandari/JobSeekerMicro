@@ -4,12 +4,12 @@ namespace JobService.Domain.Events
 {
     public class JobSavedEvent : DomainEvent
     {
-        public Guid SavedJobId { get; }
+        public int SavedJobId { get; }
         public string UserId { get; }
         public int JobPostId { get; }
         public DateTime SavedAt { get; }
 
-        public JobSavedEvent(Guid savedJobId, string userId, int jobPostId, DateTime savedAt)
+        public JobSavedEvent(int savedJobId, string userId, int jobPostId, DateTime savedAt)
         {
             SavedJobId = savedJobId;
             UserId = userId;

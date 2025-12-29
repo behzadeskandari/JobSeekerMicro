@@ -6,7 +6,7 @@ namespace JobService.Application.Features.SubmissionDetails.Command
 {
     public class DeleteSubmissionDetailsCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 }
 

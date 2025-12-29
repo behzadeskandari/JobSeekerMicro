@@ -28,7 +28,7 @@ namespace JobService.Application.Features.CompanyFollow.Handlers
             follow.RaiseDomainEvent(new CompanyUnfollowedEvent(
                 follow.Id,
                 follow.UserId,
-                follow.CompanyId.Value,
+                follow.CompanyId ?? 0,
                 DateTime.UtcNow));
 
             await _repository.CompanyFollow.DeleteAsync(request.Id);

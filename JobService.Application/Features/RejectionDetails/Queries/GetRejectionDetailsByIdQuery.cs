@@ -6,7 +6,7 @@ namespace JobService.Application.Features.RejectionDetails.Queries
 {
     public class GetRejectionDetailsByIdQuery : IRequest<JobService.Domain.Entities.RejectionDetails?>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 }
 

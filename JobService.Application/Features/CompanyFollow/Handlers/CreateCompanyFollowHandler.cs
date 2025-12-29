@@ -38,7 +38,7 @@ namespace JobService.Application.Features.CompanyFollow.Handlers
             follow.RaiseDomainEvent(new CompanyFollowedEvent(
                 follow.Id,
                 follow.UserId,
-                follow.CompanyId.Value,
+                request.CompanyId,
                 DateTime.UtcNow));
 
             await _repository.CompanyFollow.AddAsync(follow);

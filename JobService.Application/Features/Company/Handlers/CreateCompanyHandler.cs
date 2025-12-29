@@ -52,8 +52,8 @@ namespace JobService.Application.Features.Company.Handlers
                 company.UserId,
                 company.LogoUrl,
                 DateTime.UtcNow,
-                company.IsActive.Value,
-                isVerified : company.IsVerified));
+                company.IsActive ?? true,
+                company.IsVerified));
 
             await _repository.CommitAsync(cancellationToken);
 

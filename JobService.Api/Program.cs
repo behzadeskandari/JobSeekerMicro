@@ -1,3 +1,4 @@
+using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.Kernel.Middleware;
 using JobService.Application;

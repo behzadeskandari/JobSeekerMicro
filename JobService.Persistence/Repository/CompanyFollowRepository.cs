@@ -27,7 +27,7 @@ namespace JobService.Persistence.Repository
 
                 if (item.CompanyId.HasValue)
                 {
-                    record = record.Where(f => f.CompanyId.Value == item.CompanyId.Value).ToList();
+                    record = record.Where(f => f.CompanyId == item.CompanyId).ToList();
                 }
 
             }

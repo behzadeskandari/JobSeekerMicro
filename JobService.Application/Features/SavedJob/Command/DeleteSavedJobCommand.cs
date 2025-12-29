@@ -6,7 +6,7 @@ namespace JobService.Application.Features.SavedJob.Command
 {
     public class DeleteSavedJobCommand : IRequest<Result>
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
     }
 }
 

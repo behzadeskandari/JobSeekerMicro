@@ -105,7 +105,7 @@ namespace JobService.Infrastructure.DomainEvents
                 CompanyCreatedEvent e => new JobSeeker.Shared.Contracts.Integration.CompanyCreatedIntegrationEvent(
                     e.CompanyId,
                     e.UserId,
-                    e.Name,
+                    e.Name, // CompanyName
                     e.isActive,
                     e.IsVerified,
                     e.LogoUrl),
@@ -124,6 +124,10 @@ namespace JobService.Infrastructure.DomainEvents
                     e.UserId,
                     e.Reason),
                 JobSavedEvent e => new JobSavedIntegrationEvent(
+                    e.SavedJobId,
+                    e.UserId,
+                    e.JobPostId),
+                SavedJobAddedEvent e => new JobSavedIntegrationEvent(
                     e.SavedJobId,
                     e.UserId,
                     e.JobPostId),
