@@ -17,9 +17,9 @@ namespace JobSeeker.Shared.Models
 
         public string Description { get; set; }
 
-        public ICollection<Guid> AdvertisementsIds { get; set; } = new List<Guid>();
+        public ICollection<int> AdvertisementsIds { get; set; } = new List<int>();
 
-        public ICollection<Guid> ProductsIds { get; set; }
+        public ICollection<int> ProductsIds { get; set; }
         public DateTime? DateCreated { get; set; }
         public DateTime? DateModified { get; set; }
         public bool? IsActive { get; set; }

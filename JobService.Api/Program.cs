@@ -1,3 +1,4 @@
+using JobSeeker.Shared.Common.SeedData;
 using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.Kernel.Middleware;
@@ -66,5 +67,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<ResterictAccessMiddleware>();
 
+await SeedDataJob.InitializeAsync(app.Services);
+await SeedDataJob.SeedAsync(app.Services);
 
 app.Run();

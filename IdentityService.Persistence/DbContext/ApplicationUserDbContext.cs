@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Domain.Entities;
+using JobSeeker.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,8 @@ namespace IdentityService.Persistence.DbContext
 
         public DbSet<User> Users { get; set; }
         public DbSet<OutboxMessage> OutboxMessage { get; set; }
+        public DbSet<TermsOfService> TermsOfServices { get; set; }
+        public DbSet<TermsSection> TermsSections { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -42,6 +45,13 @@ namespace IdentityService.Persistence.DbContext
             modelBuilder.Entity<User>()
             .HasIndex(a => a.Email)
             .IsUnique();
+
+            // Configure TermsOfService and TermsSection relationship
+            modelBuilder.Entity<TermsSection>()
+                .HasOne(ts => ts.TermsOfService)
+                .WithMany(tos => tos.Sections)
+                .HasForeignKey(ts => ts.TermsOfServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
 

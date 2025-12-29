@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.Roles;
 using IdentityService.Persistence.DbContext;
+using JobSeeker.Shared.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -125,6 +126,90 @@ namespace IdentityService.Persistence.SeedData
                             await userManager.AddToRoleAsync(seedUser, AppRoles.Admin);
                         }
                     }
+                }
+
+                // Seed TermsOfService
+                if (!context.TermsOfServices.Any())
+                {
+                    var termsOfService = new TermsOfService
+                    {
+                        Version = "1.0",
+                        LastUpdated = "2024-05-15",
+                        DateCreated = DateTime.UtcNow,
+                        IsActive = true,
+                    };
+                    await context.TermsOfServices.AddAsync(termsOfService);
+                    await context.SaveChangesAsync();
+                    
+                    var sections = new List<TermsSection>
+                    {
+                        new TermsSection
+                        {
+                            Id = 1,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "مقدمه",
+                            Content = "به پلتفرم کاریابی ما خوش آمدید. این شرایط سرویس، قوانین و مقررات استفاده از خدمات ما را برای کارجویان و کارفرمایان تعیین می‌کند. با استفاده از پلتفرم، شما موافقت خود را با این شرایط اعلام می‌کنید.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 2,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "تعهدات کارجویان",
+                            Content = "کارجویان متعهد می‌شوند اطلاعات هویتی و رزومه خود را به صورت دقیق و کامل وارد کنند. هرگونه اطلاعات نادرست، ممکن است منجر به حذف حساب کاربری شود. ارسال رزومه برای موقعیت‌های شغلی نامرتبط، مجاز نیست.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 3,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "تعهدات کارفرمایان",
+                            Content = "کارفرمایان متعهد می‌شوند اطلاعات شرکت و فرصت‌های شغلی را به صورت صحیح و شفاف درج کنند. هرگونه آگهی شغلی که شامل تبعیض یا محتوای غیرقانونی باشد، حذف خواهد شد. کارفرمایان باید در زمان مشخص به درخواست‌های ارسالی پاسخ دهند.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 4,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "حریم خصوصی و حفاظت از داده‌ها",
+                            Content = "ما متعهد به حفاظت از اطلاعات شخصی کاربران هستیم. اطلاعات جمع‌آوری شده تنها با رضایت صریح شما و به منظور بهبود خدمات، در اختیار طرفین (کارجو و کارفرما) قرار خواهد گرفت. برای اطلاعات بیشتر، لطفاً سیاست حفظ حریم خصوصی ما را مطالعه کنید.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 5,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "مالکیت معنوی",
+                            Content = "کلیه حقوق مالکیت معنوی پلتفرم، از جمله لوگو، محتوا و طراحی، متعلق به ما است. هرگونه استفاده غیرمجاز از این موارد پیگرد قانونی دارد.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 6,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "محدودیت مسئولیت",
+                            Content = "پلتفرم ما تنها واسطه بین کارجو و کارفرما است. ما هیچگونه مسئولیتی در قبال صحت اطلاعات درج شده توسط کاربران یا نتایج مصاحبه‌ها و استخدام‌ها نداریم. مسئولیت نهایی بر عهده طرفین است.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        },
+                        new TermsSection
+                        {
+                            Id = 7,
+                            TermsOfServiceId = termsOfService.Id,
+                            Title = "حل اختلافات",
+                            Content = "در صورت بروز هرگونه اختلاف، ابتدا تلاش می‌شود از طریق مذاکره و میانجی‌گری حل و فصل شود. در غیر این صورت، حل اختلاف از طریق مراجع قانونی صالح پیگیری خواهد شد.",
+                            DateCreated = DateTime.UtcNow,
+                            IsActive = true
+                        }
+                    };
+
+                    await context.TermsSections.AddRangeAsync(sections);
+                    await context.SaveChangesAsync();
                 }
             }
         }
