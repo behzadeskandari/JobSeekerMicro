@@ -1,30 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JobSeeker.Shared.Kernel.Abstractions;
-using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using JobService.Domain.Common;
+using JobService.Domain.Events;
 
 namespace JobService.Domain.Entities
 {
-    public class SavedJob : IBaseEntity<Guid> , IAggregateRoot
+    public class SavedJob : AuditableEntityBaseInt
     {
-        public Guid Id { get; set; }
-        public Guid? JobId { get; set; }
-        public Job? Job { get; set; }
+        [ForeignKey("JobPost")]
+        public int JobPostId { get; set; }
+        public JobPost JobPost { get; set; }
         public string UserId { get; set; }
-        public DateTime? DateCreated { get; set; }
-        public bool? IsActive { get; set; }
-        public DateTime? DateModified { get; set; }
-
-
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
     }
 }

@@ -1,20 +1,15 @@
-﻿using JobSeeker.Shared.Contracts.DomainEvents;
-using JobSeeker.Shared.Kernel.Abstractions;
-using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
-using JobService.Domain.ValueObjects;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using JobService.Domain.Common;
+using JobService.Domain.Events;
+using JobService.Domain.ValueObjects;
 
 namespace JobService.Domain.Entities
 {
-    public class JobPost : IBaseEntity<Guid>, IAggregateRoot
+    public class JobPost : AuditableEntityBaseInt//AuditableEntityBase<Guid>
     {
-
-
-
-        public Guid Id { get; set; }
-
         [Required]
         public string Title { get; set; }
 
@@ -22,7 +17,7 @@ namespace JobService.Domain.Entities
         public string Description { get; set; }
         [Required]
         public string Requirements { get; set; }
-        public Guid BenefitId { get; set; }
+        public int BenefitId { get; set; }
 
         [Required]
         public string Location { get; set; }
@@ -30,21 +25,13 @@ namespace JobService.Domain.Entities
         public SalaryRange? Salary { get; set; }
 
         [Required]
-        //[ForeignKey("Staff")]
         public string UserId { get; set; }
 
-        //public User Staff { get; set; }
-
         [Required]
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? ExpiresAt { get; set; } = DateTime.Now.AddDays(60);
-        public bool? IsActive { get; set; } = true;
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateModified { get; set; }
-        //[ForeignKey("Job")]
-        public Guid? JobId { get; set; }
-        //public Job? Job { get; set; }
+        public DateTime? ExpiresAt { get; set; } = DateTime.UtcNow.AddDays(60);
+        public int? JobId { get; set; }
 
         public int? ViewCount { get; set; }
         public int? ApplicationCount { get; set; }
@@ -55,32 +42,33 @@ namespace JobService.Domain.Entities
         public string SyncStatus { get; set; }
         public DateTime? LastSyncDate { get; set; }
         public ICollection<JobRequest> JobRequests { get; set; } = new List<JobRequest>();
-        public ICollection<Guid> CompanyJobPreferenceIds { get; set; } = new List<Guid>();
-        public IEnumerable<Guid> SkillIds { get; set; } = new List<Guid>();
-        public int MinimumExperience { get; set; } //Years
-        public Guid? MinimumEducationLevelId { get; set; } //Years
+        public ICollection<int> CompanyJobPreferenceIds { get; set; } = new List<int>();
+        public IEnumerable<int> SkillIds { get; set; } = new List<int>();
+        public int MinimumExperience { get; set; }
+        public int? MinimumEducationLevelId { get; set; }
         public string MinimumEducationLevelDegree { get; set; }
         public string MinimumEducationLevelInstitution { get; set; }
         public string MinimumEducationLevelField { get; set; }
         public string MinimumEducationLevelDescription { get; set; }
 
-        //[ForeignKey("City")]
         public int CityId { get; set; }
-        //public City City { get; set; }
+        public int? JobCategoryId { get; set; }
+        public int? ProvinceId { get; set; }
 
         public void Publish()
         {
             IsActive = true;
-            DatePublished = DateTime.Now;
-            Raise(new JobOfferPublishedEvent(Id));
+            DatePublished = DateTime.UtcNow;
+            RaiseDomainEvent(new JobPostPublishedEvent(Id, CompanyId, Title, JobCategoryId ?? 0, ProvinceId, CityId, UserId, DatePublished.Value));
         }
 
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
+        public void Expire()
         {
-            _domainEvents.Add(domainEvent);
+            IsActive = false;
+            RaiseDomainEvent(new JobPostExpiredEvent(Id, Title, ExpiresAt ?? DateTime.UtcNow));
         }
-    }
 
+        // Helper property to get CompanyId from Job
+        public int CompanyId { get; set; }
+    }
 }

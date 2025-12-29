@@ -49,9 +49,12 @@ namespace JobService.Persistence.UnitOfWork
 
         public ITechnicalOptionsRepository _technicalOptions;
 
-        public JobUnitOfWork(JobDbContext context)
+        private readonly IDomainEventDispatcher? _domainEventDispatcher;
+
+        public JobUnitOfWork(JobDbContext context, IDomainEventDispatcher? domainEventDispatcher = null)
         {
             _context = context;
+            _domainEventDispatcher = domainEventDispatcher;
         }
 
 
@@ -84,7 +87,16 @@ namespace JobService.Persistence.UnitOfWork
         public ITechnicalOptionsRepository TechnicalOptions => _technicalOptions ??= new TechnicalOptionsRepository(_context);
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.SaveChangesAsync(cancellationToken);
+            var result = await _context.SaveChangesAsync(cancellationToken);
+            
+            // Dispatch domain events after save
+            if (_domainEventDispatcher != null)
+            {
+                await _domainEventDispatcher.DispatchDomainEventsAsync();
+                await _context.SaveChangesAsync(cancellationToken); // Save outbox messages
+            }
+            
+            return result;
         }
 
         public void Dispose() => _context.Dispose();

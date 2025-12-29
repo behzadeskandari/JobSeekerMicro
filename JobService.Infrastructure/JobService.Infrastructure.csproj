@@ -23,6 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
+    <ProjectReference Include="..\JobService.Domain\JobService.Domain.csproj" />
     <ProjectReference Include="..\JobService.Persistence\JobService.Persistence.csproj" />
   </ItemGroup>
 

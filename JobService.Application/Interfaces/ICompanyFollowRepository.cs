@@ -8,7 +8,8 @@ using JobService.Domain.Entities;
 
 namespace JobService.Application.Interfaces
 {
-    public interface ICompanyFollowRepository :IWriteRepository<CompanyFollow>
+    public interface ICompanyFollowRepository : IWriteRepository<CompanyFollow>
     {
+        Task<IEnumerable<CompanyFollow>> GetByUserIdIdAsync(string? userId, CancellationToken cancellationToken);
     }
 }

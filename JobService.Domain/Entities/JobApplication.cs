@@ -1,26 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using JobSeeker.Shared.Kernel.Abstractions;
-using JobSeeker.Shared.Kernel.Domain;
-using JobSeeker.Shared.Models;
+using JobService.Domain.Common;
 
 namespace JobService.Domain.Entities
 {
-    public class JobApplication : IBaseEntity<Guid> , IAggregateRoot
+    public class JobApplication : AuditableEntityBaseInt//AuditableEntityBase<Guid>
     {
-        public Guid Id { get; set; }
-
         [ForeignKey("Job")]
-        public Guid JobId { get; set; }
-        public virtual Job Job { get; set; } // Navigation property
+        public int JobId { get; set; }
+        public virtual Job Job { get; set; }
 
-        //[ForeignKey("Candidate")]
-        public Guid CandidateId { get; set; }
-        //public virtual Candidate Candidate { get; set; } // Navigation property
+        [ForeignKey("JobPost")]
+        public int JobPostId { get; set; }
+        public virtual JobPost JobPost { get; set; }
+
+        public string UserId { get; set; }
 
         public DateTime ApplicationDate { get; set; }
 
@@ -40,18 +35,5 @@ namespace JobService.Domain.Entities
         public OfferDetails OfferDetails { get; set; }
 
         public RejectionDetails RejectionDetails { get; set; }
-
-        public DateTime? DateCreated { get; set; }
-        public DateTime? DateModified { get; set; }
-        public bool? IsActive { get; set; }
-
-
-
-        private readonly List<DomainEvent> _domainEvents = new();
-
-        protected void Raise(DomainEvent domainEvent)
-        {
-            _domainEvents.Add(domainEvent);
-        }
     }
 }

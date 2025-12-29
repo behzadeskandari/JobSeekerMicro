@@ -30,6 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
     <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
+    <ProjectReference Include="..\JobService.Infrastructure\JobService.Infrastructure.csproj" />
     <ProjectReference Include="..\JobService.Persistence\JobService.Persistence.csproj" />
   </ItemGroup>
 

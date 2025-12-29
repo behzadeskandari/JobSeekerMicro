@@ -18,7 +18,14 @@ namespace JobService.Persistence
         public static IServiceCollection AddJobPersistanceService(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IWriteRepository<>), typeof(GenericWriteRepository<>));
-            services.AddScoped<IJobUnitOfWork, JobUnitOfWork>();
+            
+            // Register UnitOfWork with domain event dispatcher
+            services.AddScoped<IJobUnitOfWork>(sp =>
+            {
+                var context = sp.GetRequiredService<JobService.Persistence.DbContexts.JobDbContext>();
+                var dispatcher = sp.GetService<JobService.Application.Interfaces.IDomainEventDispatcher>();
+                return new JobService.Persistence.UnitOfWork.JobUnitOfWork(context, dispatcher);
+            });
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<ICompanyBenefitRepository, CompanyBenefitRepository>();
             services.AddScoped<ICompanyFollowRepository, CompanyFollowRepository>();

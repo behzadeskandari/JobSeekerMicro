@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using JobSeeker.Shared.Common.Interfaces;
+using JobService.Application.Features.OfferDetails.Queries;
 using JobService.Domain.Entities;
 
 namespace JobService.Application.Interfaces
 {
     public interface IOfferDetailsRepository : IWriteRepository<OfferDetails>
     {
+        Task<IEnumerable<OfferDetails>> GetOfferDetails(GetOfferDetailsQuery request, CancellationToken cancellationToken);
     }
 }
