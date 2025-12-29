@@ -22,4 +22,8 @@
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\" />
+  </ItemGroup>
+
 </Project>
