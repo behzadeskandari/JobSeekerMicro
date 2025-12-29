@@ -13,4 +13,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AssessmentService.Application\AssessmentService.Application.csproj" />
+    <ProjectReference Include="..\AssessmentService.Persistance\AssessmentService.Persistance.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

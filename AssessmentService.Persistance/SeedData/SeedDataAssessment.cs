@@ -622,7 +622,7 @@ namespace AssessmentService.Persistance.SeedData
                 }
 
                 // Seed AnswerOptions
-                if (!context.Advertisements.Any())
+                if (!context.AnswerOption.Any())
                 {
                     var answerOptions = new List<AnswerOption>
                     {
@@ -661,7 +661,7 @@ namespace AssessmentService.Persistance.SeedData
                         new AnswerOption { Value = 4, Label = "بسیار مناسب", PsychologyTestId = 6, DateCreated = DateTime.UtcNow, IsActive = true }
                     };
 
-                    await context.Advertisements.AddRangeAsync(answerOptions);
+                    await context.AnswerOption.AddRangeAsync(answerOptions);
                     await context.SaveChangesAsync();
                 }
 
@@ -669,7 +669,7 @@ namespace AssessmentService.Persistance.SeedData
                 if (!context.PsychologyTestQuestions.Any())
                 {
                     // Get AnswerOptions grouped by PsychologyTestId
-                    var answerOptionsByTest = context.Advertisements
+                    var answerOptionsByTest = context.AnswerOption
                         .Where(ao => ao.IsActive == true)
                         .GroupBy(ao => ao.PsychologyTestId)
                         .ToDictionary(g => g.Key, g => g.ToList());

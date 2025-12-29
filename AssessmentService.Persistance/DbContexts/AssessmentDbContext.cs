@@ -36,7 +36,7 @@ namespace AssessmentService.Persistance.DbContexts
                  .OnDelete(DeleteBehavior.Restrict);
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<AnswerOption> Advertisements { get; set; }
+        public DbSet<AnswerOption> AnswerOption { get; set; }
         public DbSet<MBTIQuestions> MBTIQuestions { get; set; }
         public DbSet<MBTIResultAnswers> MBTIResultAnswers { get; set; }
         public DbSet<MBTIResult> MBTIResults { get; set; }

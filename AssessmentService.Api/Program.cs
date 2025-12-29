@@ -1,7 +1,9 @@
 using AssessmentService.Persistance;
 using AssessmentService.Persistance.DbContexts;
 using AssessmentService.Persistance.SeedData;
+using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.Kernel.Middleware;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,27 @@ builder.Services.AddDbContext<AssessmentDbContext>(options =>
 
 // Register persistence services
 builder.Services.AddAssessmentPersistanceServiceRegistration(builder.Configuration);
+
+// MassTransit configuration for request-response pattern
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq://localhost", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+// Register request client for GetUserById
+builder.Services.AddScoped<IRequestClient<GetUserByIdRequestIntegrationEvent>>(provider =>
+    provider.GetRequiredService<IBus>().CreateRequestClient<GetUserByIdRequestIntegrationEvent>(
+        TimeSpan.FromSeconds(10)
+    ));
 
 var app = builder.Build();
 

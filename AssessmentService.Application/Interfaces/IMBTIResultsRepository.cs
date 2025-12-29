@@ -10,5 +10,10 @@ namespace AssessmentService.Application.Interfaces
 {
     public interface IMBTIResultsRepository : IWriteRepository<MBTIResult>
     {
+        Task<IEnumerable<MBTIResult>> GetAllAsyncMBTI();
+        Task<MBTIResult> GetByIdAsyncMBTI(Guid id);
+        Task AddAsyncMBTI(MBTIResult entity);
+        void UpdateMBTI(MBTIResult entity);
+        void DeleteMBTI(MBTIResult entity);
     }
 }

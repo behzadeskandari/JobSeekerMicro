@@ -10,5 +10,10 @@ namespace AssessmentService.Application.Interfaces
 {
     public interface IMBTIQuestionsRepository : IWriteRepository<MBTIQuestions>
     {
+        Task<IAsyncEnumerable<MBTIQuestions>> GetAllAsync();
+        Task<MBTIQuestions> GetByIdAsyncMBTI(Guid id);
+        Task AddAsyncMBTI(MBTIQuestions entity);
+        void UpdateMBTI(MBTIQuestions entity);
+        void DeleteMBTI(MBTIQuestions entity);
     }
 }

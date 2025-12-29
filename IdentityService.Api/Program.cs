@@ -203,9 +203,8 @@ builder.Services.Configure<RateLimitOptions>(options =>
 
 builder.Services.AddMassTransit(x =>
 {
-    //x.AddConsumers<YourPocoConsumer>();  // If needed
-
-    
+    // Register consumers
+    x.AddConsumer<IdentityService.Application.Features.IntegrationEvents.GetUserByIdRequestConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -222,6 +221,12 @@ builder.Services.AddMassTransit(x =>
         // Publish endpoints for events
         cfg.Publish<JobSeeker.Shared.Contracts.Integration.UserRegisteredIntegrationEvent>(p => { p.Durable = true; });
         cfg.Publish<JobSeeker.Shared.Contracts.Integration.CompanyCreatedIntegrationEvent>(p => { p.Durable = true; });
+
+        // Configure request-response endpoints
+        cfg.ReceiveEndpoint("get-user-by-id-request", e =>
+        {
+            e.ConfigureConsumer<IdentityService.Application.Features.IntegrationEvents.GetUserByIdRequestConsumer>(context);
+        });
 
         // Configure the bus
         cfg.ConfigureEndpoints(context);
