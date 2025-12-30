@@ -1,6 +1,6 @@
 ﻿namespace JobSeeker.Shared.Models
 {
-    public class PushSubscription
+    public class AppPushSubscriptions
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string UserId { get; set; } = string.Empty; // string from Identity

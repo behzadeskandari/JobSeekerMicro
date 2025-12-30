@@ -4,6 +4,7 @@ using JobSeeker.Shared.Models;
 using JobSeeker.Shared.PushNotifications.DTOs;
 using JobSeeker.Shared.PushNotifications.Interfaces;
 using Lib.Net.Http.WebPush;
+using Lib.Net.Http.WebPush.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +34,7 @@ namespace JobSeeker.Shared.PushNotifications.Services
 
             _pushClient = new PushServiceClient
             {
-                DefaultAuthentication = new VapidAuthentication(publicKey, privateKey, subject)
+                DefaultAuthentication = new VapidAuthentication(publicKey, privateKey)
             };
         }
 
@@ -49,7 +50,7 @@ namespace JobSeeker.Shared.PushNotifications.Services
             await SendToSubscriptionsAsync(subscriptions, title, body, icon, url);
         }
 
-        private async Task SendToSubscriptionsAsync(List<PushSubscription> subscriptions, string title, string body, string? icon, string? url)
+        private async Task SendToSubscriptionsAsync(List<AppPushSubscriptions> subscriptions, string title, string body, string? icon, string? url)
         {
             var payload = JsonSerializer.Serialize(new { title, body, icon, url });
 
@@ -57,19 +58,17 @@ namespace JobSeeker.Shared.PushNotifications.Services
             {
                 try
                 {
-                    var pushSubscription = new Lib.Net.Http.WebPush.PushSubscription(
-                        subscription.Endpoint,
-                        new PushSubscriptionKeys
-                        {
-                            P256DH = subscription.P256DH,
-                            Auth = subscription.Auth
-                        },
-                        subscription.ExpirationTime);
+                    var pushSubscription = new PushSubscription();
+
+                    pushSubscription.Endpoint = subscription.Endpoint;
+                    pushSubscription.Keys.Add("P256DH", subscription.P256DH);
+                    pushSubscription.Keys.Add("Auth", subscription.Auth);
+                    pushSubscription.Keys.Add("ExpirationTime", subscription.ExpirationTime.ToString());
 
                     var message = new PushMessage(payload)
                     {
-                        Urgency = PushMessageUrgency.High,
-                        TimeToLive = TimeSpan.FromSeconds(3000)
+                        TimeToLive = 3000,
+                        Content = "message",
                     };
 
                     await _pushClient.RequestPushMessageDeliveryAsync(pushSubscription, message);
@@ -103,7 +102,7 @@ namespace JobSeeker.Shared.PushNotifications.Services
             else
             {
                 // Create new subscription
-                var subscription = new PushSubscription
+                var subscription = new AppPushSubscriptions
                 {
                     Id = Guid.NewGuid(),
                     UserId = userId,

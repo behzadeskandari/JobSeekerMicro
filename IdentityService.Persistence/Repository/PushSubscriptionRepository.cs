@@ -14,25 +14,25 @@ namespace IdentityService.Persistence.Repository
             _context = context;
         }
 
-        public async Task<List<PushSubscription>> GetAllAsync()
+        public async Task<List<AppPushSubscriptions>> GetAllAsync()
         {
             return await _context.PushSubscriptions.ToListAsync();
         }
 
-        public async Task<List<PushSubscription>> GetByUserIdAsync(string userId)
+        public async Task<List<AppPushSubscriptions>> GetByUserIdAsync(string userId)
         {
             return await _context.PushSubscriptions
                 .Where(s => s.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task<PushSubscription?> GetByEndpointAsync(string endpoint)
+        public async Task<AppPushSubscriptions?> GetByEndpointAsync(string endpoint)
         {
             return await _context.PushSubscriptions
                 .FirstOrDefaultAsync(s => s.Endpoint == endpoint);
         }
 
-        public async Task AddOrUpdateAsync(PushSubscription subscription)
+        public async Task AddOrUpdateAsync(AppPushSubscriptions subscription)
         {
             var existing = await _context.PushSubscriptions
                 .FirstOrDefaultAsync(s => s.Endpoint == subscription.Endpoint);
@@ -53,7 +53,7 @@ namespace IdentityService.Persistence.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveAsync(PushSubscription subscription)
+        public async Task RemoveAsync(AppPushSubscriptions subscription)
         {
             _context.PushSubscriptions.Remove(subscription);
             await _context.SaveChangesAsync();

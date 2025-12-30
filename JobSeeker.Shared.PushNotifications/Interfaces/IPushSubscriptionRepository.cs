@@ -4,11 +4,11 @@ namespace JobSeeker.Shared.PushNotifications.Interfaces
 {
     public interface IPushSubscriptionRepository
     {
-        Task<List<PushSubscription>> GetAllAsync();
-        Task<List<PushSubscription>> GetByUserIdAsync(string userId);
-        Task<PushSubscription?> GetByEndpointAsync(string endpoint);
-        Task AddOrUpdateAsync(PushSubscription subscription);
-        Task RemoveAsync(PushSubscription subscription);
+        Task<List<AppPushSubscriptions>> GetAllAsync();
+        Task<List<AppPushSubscriptions>> GetByUserIdAsync(string userId);
+        Task<AppPushSubscriptions?> GetByEndpointAsync(string endpoint);
+        Task AddOrUpdateAsync(AppPushSubscriptions subscription);
+        Task RemoveAsync(AppPushSubscriptions subscription);
     }
 }
 

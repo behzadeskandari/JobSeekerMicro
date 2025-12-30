@@ -18,7 +18,7 @@ namespace ProfileService.Application.Features.UserSettings.Handlers
         private readonly IProfileServiceUnitOfWork _repository;
         private readonly IMapper _mapper;
 
-        public UpdateUserSettingsCommandHandler(IProfileServiceUnitOfWork repository, IMapper mapper, IUnitOfWork unitOfWork)
+        public UpdateUserSettingsCommandHandler(IProfileServiceUnitOfWork repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;

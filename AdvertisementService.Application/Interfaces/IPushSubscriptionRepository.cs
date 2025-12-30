@@ -9,15 +9,15 @@ namespace AdvertisementService.Application.Interfaces
 {
     public interface IPushSubscriptionRepository
     {
-        public Task<List<PushSubscription>> GetAllAsync();
+        public Task<List<AppPushSubscriptions>> GetAllAsync();
 
-        public Task<List<PushSubscription>> GetByUserIdAsync(string userId);
+        public Task<List<AppPushSubscriptions>> GetByUserIdAsync(string userId);
 
 
-        public Task<PushSubscription?> GetByEndpointAsync(string endpoint);
+        public Task<AppPushSubscriptions?> GetByEndpointAsync(string endpoint);
 
-        public Task AddOrUpdateAsync(PushSubscription subscription);
+        public Task AddOrUpdateAsync(AppPushSubscriptions subscription);
 
-        public Task RemoveAsync(PushSubscription subscription);
+        public Task RemoveAsync(AppPushSubscriptions subscription);
     }
 }
