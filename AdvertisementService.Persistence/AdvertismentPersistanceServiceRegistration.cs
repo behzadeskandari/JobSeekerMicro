@@ -41,7 +41,7 @@ namespace AdvertisementService.Persistence
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ISalesOrderItemRepository, SalesOrderItemRepository>();
             services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
-            services.AddScoped<IPushSubscriptionRepository, PushSubscriptionRepository>();
+            services.AddScoped<JobSeeker.Shared.PushNotifications.Interfaces.IPushSubscriptionRepository, AdvertisementService.Persistence.Repository.PushSubscriptionRepository>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
             return services;
         }

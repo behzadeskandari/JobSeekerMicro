@@ -32,6 +32,6 @@ namespace AdvertisementService.Persistence.DbContexts
         public DbSet<SalesOrderItem> SalesOrderItem { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-        public DbSet<PushSubscription> PushSubscriptions { get; set; }
+        public DbSet<AppPushSubscriptions> PushSubscriptions { get; set; }
     }
 }

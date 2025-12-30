@@ -57,7 +57,7 @@ namespace JobService.Persistence.DbContexts
         public DbSet<TechnicalOption> TechnicalOptions { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<ExceptionLog> ExceptionLogs { get; set; }
-        public DbSet<PushSubscription> PushSubscriptions { get; set; }
+        public DbSet<AppPushSubscriptions> PushSubscriptions { get; set; }
 
     }
 }

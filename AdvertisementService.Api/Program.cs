@@ -10,6 +10,7 @@ using AdvertisementService.Persistence.DbContexts;
 using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Kernel.Middleware;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
