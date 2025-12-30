@@ -8,6 +8,8 @@ using AdvertisementService.Persistence.GenericRepository;
 using AdvertisementService.Persistence.Repository;
 using AdvertisementService.Persistence.UnitOfWork;
 using JobSeeker.Shared.Common.Interfaces;
+using JobSeeker.Shared.PushNotifications.Interfaces;
+using JobSeeker.Shared.PushNotifications.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,6 +41,8 @@ namespace AdvertisementService.Persistence
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ISalesOrderItemRepository, SalesOrderItemRepository>();
             services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
+            services.AddScoped<IPushSubscriptionRepository, PushSubscriptionRepository>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
             return services;
         }
     }

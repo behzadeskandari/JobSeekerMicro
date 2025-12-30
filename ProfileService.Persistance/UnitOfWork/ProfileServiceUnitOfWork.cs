@@ -41,6 +41,12 @@ namespace ProfileService.Persistance.UnitOfWork
         public IWorkExperienceRepository _workExperienceRepository;
         public IWorkExperienceRepository WorkExperienceRepository => _workExperienceRepository ??= new WorkExperienceRepository(_context);
 
+        public ILogRepository _logs;
+        public ILogRepository Logs => _logs ??= new LogRepository(_context);
+
+        public IExceptionLogRepository _exceptionLogs;
+        public IExceptionLogRepository ExceptionLogs => _exceptionLogs ??= new ExceptionLogRepository(_context);
+
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
             return await _context.SaveChangesAsync(cancellationToken);

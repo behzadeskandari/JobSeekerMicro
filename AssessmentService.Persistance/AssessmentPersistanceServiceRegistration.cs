@@ -34,6 +34,8 @@ namespace AssessmentService.Persistance
             services.AddScoped<IPsychologyTestResultAnswersRepository, PsychologyTestResultAnswersRepository>();
             services.AddScoped<IPsychologyTestResultsRepository, PsychologyTestResultsRepository>();
             services.AddScoped<IPsychologyTestsRepository, PsychologyTestsRepository>();
+            services.AddScoped<ILogRepository, LogRepository>();
+            services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
             return services;
         }
     }

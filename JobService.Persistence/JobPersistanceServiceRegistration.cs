@@ -1,4 +1,6 @@
 ﻿using JobSeeker.Shared.Common.Interfaces;
+using JobSeeker.Shared.PushNotifications.Interfaces;
+using JobSeeker.Shared.PushNotifications.Services;
 using JobService.Application.Interfaces;
 using JobService.Persistence.GenericRepository;
 using JobService.Persistence.Repository;
@@ -45,9 +47,8 @@ namespace JobService.Persistence
             services.AddScoped<ISavedJobRepository, SavedJobRepository>();
             services.AddScoped<ISubmissionDetailsRepository, SubmissionDetailsRepository>();
             services.AddScoped<ITechnicalOptionsRepository, TechnicalOptionsRepository>();
-
-
-                
+            services.AddScoped<IPushSubscriptionRepository, PushSubscriptionRepository>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
 
             return services;
 

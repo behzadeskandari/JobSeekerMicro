@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using JobSeeker.Contracts.Dtos.PersonalityTestItem;
+using JobSeeker.Shared.Contracts.PersonalityTestItem;
 
 namespace JobSeeker.Shared.Contracts.PersonalityTrait
 {

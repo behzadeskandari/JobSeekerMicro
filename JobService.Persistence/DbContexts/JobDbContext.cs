@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AdvertisementService.Persistence.DbContexts;
+using JobSeeker.Shared.Models;
 using JobService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -54,6 +55,9 @@ namespace JobService.Persistence.DbContexts
         public DbSet<SavedJob> SavedJob { get; set; }
         public DbSet<SubmissionDetails> SubmissionDetails { get; set; }
         public DbSet<TechnicalOption> TechnicalOptions { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
+        public DbSet<PushSubscription> PushSubscriptions { get; set; }
 
     }
 }

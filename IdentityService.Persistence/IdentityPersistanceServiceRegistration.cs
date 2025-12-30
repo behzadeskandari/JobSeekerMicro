@@ -8,6 +8,8 @@ using IdentityService.Application.Services;
 using IdentityService.Persistence.GenericRepository;
 using IdentityService.Persistence.Repository;
 using JobSeeker.Shared.Common.Interfaces;
+using JobSeeker.Shared.PushNotifications.Interfaces;
+using JobSeeker.Shared.PushNotifications.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,7 +23,8 @@ namespace IdentityService.Persistence
             services.AddScoped<IIdentityUnitOfWOrk, IdentityUnitOfWork>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<IPushSubscriptionRepository, PushSubscriptionRepository>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
 
             return services;
         }

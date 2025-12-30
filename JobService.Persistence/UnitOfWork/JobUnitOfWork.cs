@@ -49,6 +49,9 @@ namespace JobService.Persistence.UnitOfWork
 
         public ITechnicalOptionsRepository _technicalOptions;
 
+        public ILogRepository _logs;
+        public IExceptionLogRepository _exceptionLogs;
+
         private readonly IDomainEventDispatcher? _domainEventDispatcher;
 
         public JobUnitOfWork(JobDbContext context, IDomainEventDispatcher? domainEventDispatcher = null)
@@ -85,6 +88,8 @@ namespace JobService.Persistence.UnitOfWork
         public ISubmissionDetailsRepository SubmissionDetails => _submissionDetails ??= new SubmissionDetailsRepository(_context);
 
         public ITechnicalOptionsRepository TechnicalOptions => _technicalOptions ??= new TechnicalOptionsRepository(_context);
+        public ILogRepository Logs => _logs ??= new LogRepository(_context);
+        public IExceptionLogRepository ExceptionLogs => _exceptionLogs ??= new ExceptionLogRepository(_context);
         public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
         {
             var result = await _context.SaveChangesAsync(cancellationToken);

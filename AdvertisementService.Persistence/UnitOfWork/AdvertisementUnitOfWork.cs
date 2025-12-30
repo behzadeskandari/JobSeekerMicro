@@ -67,6 +67,12 @@ namespace AdvertisementService.Persistence.UnitOfWork
         public ISalesOrderRepository _salesOrderRepository;
         public ISalesOrderRepository SalesOrderRepository => _salesOrderRepository ??= new SalesOrderRepository(_context);
 
+        public ILogRepository _logs;
+        public ILogRepository Logs => _logs ??= new LogRepository(_context);
+
+        public IExceptionLogRepository _exceptionLogs;
+        public IExceptionLogRepository ExceptionLogs => _exceptionLogs ??= new ExceptionLogRepository(_context);
+
         public AdvertisementUnitOfWork(AdvertismentDbContext context, IDomainEventDispatcher? domainEventDispatcher = null)
         {
             _context = context;

@@ -35,49 +35,36 @@ namespace IdentityService.Infrastructure
     {
         public static IServiceCollection AddJWTService(this IServiceCollection services, IConfiguration config)
         {
-
-
-            services.AddAuthentication(options =>
-            {
-                 options.DefaultAuthenticateScheme =
-                 options.DefaultChallengeScheme =
-                 options.DefaultForbidScheme =
-                 options.DefaultScheme =
-                 options.DefaultSignInScheme =
-                 options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer("Bearer", opt =>
-            {
-                opt.Authority = config["Identity:Authority"];
-                opt.RequireHttpsMetadata = false;
-                opt.SaveToken = true;
-                opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
                 {
-                    ValidateAudience = true,
-                    ValidateIssuer = true,
-                    //ValidateLifetime =  ️true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["JWT:Issuer"],
-                    ValidAudience = config["JWT:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"]))
-                };
-                opt.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        Console.WriteLine("Authentication failed: " + context.Exception.Message);
-                        return Task.CompletedTask;
-                    },
-                    OnTokenValidated = context =>
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = config["JWT:Issuer"],
+                        ValidAudience = config["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:Key"])),
+                        ClockSkew = TimeSpan.Zero // Remove delay of token expiration
+                    };
+                    options.RequireHttpsMetadata = false; // Set to true in production
+                    options.SaveToken = true;
+                    options.Events = new JwtBearerEvents
                     {
-                        Console.WriteLine("Token validated successfully.");
-                        return Task.CompletedTask;
-                    },
-                    OnMessageReceived = context =>
-                    {
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                        OnAuthenticationFailed = context =>
+                        {
+                            Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                            return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            Console.WriteLine("Token validated successfully.");
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
             return services;
         }
     }

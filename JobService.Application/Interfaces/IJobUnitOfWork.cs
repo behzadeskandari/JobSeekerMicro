@@ -26,6 +26,8 @@ namespace JobService.Application.Interfaces
         ISavedJobRepository SavedJob { get; }
         ISubmissionDetailsRepository SubmissionDetails { get; }
         ITechnicalOptionsRepository TechnicalOptions { get; }
+        ILogRepository Logs { get; }
+        IExceptionLogRepository ExceptionLogs { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }

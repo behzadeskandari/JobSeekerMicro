@@ -31,6 +31,8 @@ namespace ProfileService.Persistance
             services.AddScoped<ISkillRepository, SkillRepository>();
             services.AddScoped<IUserSettingsRepository, UserSettingsRepository>();
             services.AddScoped<IWorkExperienceRepository, WorkExperienceRepository>();
+            services.AddScoped<ILogRepository, LogRepository>();
+            services.AddScoped<IExceptionLogRepository, ExceptionLogRepository>();
 
             return services;
         }

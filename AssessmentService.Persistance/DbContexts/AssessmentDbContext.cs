@@ -52,6 +52,7 @@ namespace AssessmentService.Persistance.DbContexts
         public DbSet<PsychologyTestResultAnswer> PsychologyTestResultAnswers { get; set; }
         public DbSet<PsychologyTestResult> PsychologyTestResults { get; set; }
         public DbSet<PsychologyTest> PsychologyTests { get; set; }
-
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
     }
 }

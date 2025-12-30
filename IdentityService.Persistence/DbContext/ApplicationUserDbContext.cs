@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Domain.Entities;
 using JobSeeker.Shared.Models;
+using JobSeeker.Shared.PushNotifications.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace IdentityService.Persistence.DbContext
         public DbSet<OutboxMessage> OutboxMessage { get; set; }
         public DbSet<TermsOfService> TermsOfServices { get; set; }
         public DbSet<TermsSection> TermsSections { get; set; }
+        public DbSet<PushSubscription> PushSubscriptions { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

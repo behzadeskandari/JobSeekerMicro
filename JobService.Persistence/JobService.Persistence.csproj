@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.PushNotifications\JobSeeker.Shared.PushNotifications.csproj" />
     <ProjectReference Include="..\JobService.Domain\JobService.Domain.csproj" />
     <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
   </ItemGroup>

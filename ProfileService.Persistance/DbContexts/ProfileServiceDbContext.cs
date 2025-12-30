@@ -24,8 +24,7 @@ namespace ProfileService.Persistance.DbContexts
         public DbSet<Skill> Skill { get; set; }
         public DbSet<UserSetting> UserSettings { get; set; }
         public DbSet<WorkExperience> WorkExperiences { get; set; }
-        
-        
-
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
     }
 }

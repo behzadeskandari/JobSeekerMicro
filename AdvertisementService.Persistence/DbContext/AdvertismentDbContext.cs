@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdvertisementService.Domain.Entities;
+using JobSeeker.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AdvertisementService.Persistence.DbContexts
@@ -29,5 +30,8 @@ namespace AdvertisementService.Persistence.DbContexts
         public DbSet<ProductInventorySnapshot> ProductInventorySnapshot { get; set; }
         public DbSet<SalesOrder> SalesOrder { get; set; }
         public DbSet<SalesOrderItem> SalesOrderItem { get; set; }
+        public DbSet<Log> Logs { get; set; }
+        public DbSet<ExceptionLog> ExceptionLogs { get; set; }
+        public DbSet<PushSubscription> PushSubscriptions { get; set; }
     }
 }

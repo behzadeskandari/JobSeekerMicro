@@ -23,7 +23,8 @@ namespace AssessmentService.Application.Interfaces
         public IPsychologyTestResultAnswersRepository PsychologyTestResultAnswersRepository { get; }
         public IPsychologyTestResultsRepository PsychologyTestResultsRepository { get; }
         public IPsychologyTestsRepository PsychologyTestsRepository { get; }
+        ILogRepository Logs { get; }
+        IExceptionLogRepository ExceptionLogs { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
-
     }
 }

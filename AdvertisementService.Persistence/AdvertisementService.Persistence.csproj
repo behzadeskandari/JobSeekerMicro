@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AdvertisementService.Application\AdvertisementService.Application.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.PushNotifications\JobSeeker.Shared.PushNotifications.csproj" />
   </ItemGroup>
 
 </Project>

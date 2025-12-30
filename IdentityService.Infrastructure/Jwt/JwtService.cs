@@ -31,11 +31,17 @@ namespace IdentityService.Infrastructure.Jwt
         {
             var userClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.UserName),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName),
-                new Claim(ClaimTypes.Role,user.Role),
+                new Claim("sub", user.Id.ToString()), // Standard JWT claim for subject (UserId)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Keep for backward compatibility
+                new Claim(ClaimTypes.Email, user.Email ?? user.UserName ?? string.Empty),
+                new Claim("email", user.Email ?? user.UserName ?? string.Empty), // Standard JWT claim
+                new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
+                new Claim("given_name", user.FirstName ?? string.Empty), // Standard JWT claim
+                new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
+                new Claim("family_name", user.LastName ?? string.Empty), // Standard JWT claim
+                new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}".Trim()),
+                new Claim("name", $"{user.FirstName} {user.LastName}".Trim()), // Standard JWT claim
+                new Claim(ClaimTypes.Role, user.Role ?? string.Empty),
             };
 
             var creadentials = new SigningCredentials(_jwtKey, SecurityAlgorithms.HmacSha512Signature);

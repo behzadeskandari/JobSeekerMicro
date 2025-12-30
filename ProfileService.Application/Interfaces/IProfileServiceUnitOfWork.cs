@@ -16,6 +16,8 @@ namespace ProfileService.Application.Interfaces
         public ISkillRepository SkillRepository { get; }
         public IUserSettingsRepository UserSettingsRepository { get; }
         public IWorkExperienceRepository WorkExperienceRepository { get; }
+        ILogRepository Logs { get; }
+        IExceptionLogRepository ExceptionLogs { get; }
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
     }
 }
