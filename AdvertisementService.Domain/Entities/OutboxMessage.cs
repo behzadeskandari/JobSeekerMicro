@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class OutboxMessage
+    public class OutboxMessage 
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public DateTime OccurredOn { get; set; } = DateTime.UtcNow;

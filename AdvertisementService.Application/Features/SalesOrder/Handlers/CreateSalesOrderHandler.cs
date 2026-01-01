@@ -28,7 +28,6 @@ namespace AdvertisementService.Application.Features.SalesOrder.Handlers
 
             var salesOrder = new AdvertisementService.Domain.Entities.SalesOrder
             {
-                Id = Guid.NewGuid(),
                 CustomerId = request.CustomerId,
                 IsPaid = request.IsPaid,
                 CreatedOn = DateTime.UtcNow,

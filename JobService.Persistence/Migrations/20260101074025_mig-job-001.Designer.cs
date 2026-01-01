@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobService.Persistence.Migrations
 {
     [DbContext(typeof(JobDbContext))]
-    [Migration("20251219104051_mig_002")]
-    partial class mig_002
+    [Migration("20260101074025_mig-job-001")]
+    partial class migjob001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,10 +25,43 @@ namespace JobService.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("JobSeeker.Shared.Models.AppPushSubscriptions", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Auth")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("P256DH")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PushSubscriptions");
+                });
+
             modelBuilder.Entity("JobService.Domain.Entities.City", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -36,32 +69,36 @@ namespace JobService.Persistence.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProvinceLabel")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Label");
 
-                    b.HasIndex("ProvinceId");
+                    b.HasIndex("ProvinceLabel");
 
                     b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.Company", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AdvertisementsIds")
                         .IsRequired()
@@ -144,12 +181,14 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.CompanyBenefit", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -177,12 +216,14 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.CompanyFollow", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
 
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -209,9 +250,11 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.CompanyJobPreferences", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -222,8 +265,8 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("JobPostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("PreferredEducationLevel")
                         .IsRequired()
@@ -244,16 +287,59 @@ namespace JobService.Persistence.Migrations
                     b.ToTable("CompanyJobPreferences");
                 });
 
-            modelBuilder.Entity("JobService.Domain.Entities.InterviewDetail", b =>
+            modelBuilder.Entity("JobService.Domain.Entities.ExceptionLog", b =>
                 {
-                    b.Property<int>("InterviewId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InterviewId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExceptionType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InnerException")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
+                });
+
+            modelBuilder.Entity("JobService.Domain.Entities.InterviewDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -264,11 +350,8 @@ namespace JobService.Persistence.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("InterviewerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("InterviewerId")
+                        .HasColumnType("int");
 
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
@@ -285,7 +368,7 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("InterviewId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ApplicationId");
 
@@ -294,9 +377,11 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.Job", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CandidatesIds")
                         .IsRequired()
@@ -305,17 +390,17 @@ namespace JobService.Persistence.Migrations
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CityLabel")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("FeaturesId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
@@ -338,9 +423,6 @@ namespace JobService.Persistence.Migrations
                     b.Property<int>("Level")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -356,7 +438,7 @@ namespace JobService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("CityLabel");
 
                     b.HasIndex("CompanyId");
 
@@ -369,15 +451,14 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.JobApplication", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("ApplicationDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("CandidateId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CoverLetter")
                         .IsRequired()
@@ -392,8 +473,11 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("JobId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -411,9 +495,15 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("JobId");
+
+                    b.HasIndex("JobPostId");
 
                     b.ToTable("JobApplication");
                 });
@@ -462,17 +552,22 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.JobPost", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ApplicationCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("BenefitId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("BenefitId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("CompanyJobPreferenceIds")
@@ -504,8 +599,11 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("JobCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("LastSyncDate")
                         .HasColumnType("datetime2");
@@ -526,14 +624,17 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("MinimumEducationLevelId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("MinimumEducationLevelId")
+                        .HasColumnType("int");
 
                     b.Property<string>("MinimumEducationLevelInstitution")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MinimumExperience")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProvinceId")
                         .HasColumnType("int");
 
                     b.Property<string>("Requirements")
@@ -572,9 +673,11 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.JobRequest", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CoverLetter")
                         .IsRequired()
@@ -589,8 +692,8 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("JobPostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("ResumeUrl")
                         .IsRequired()
@@ -612,9 +715,11 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.JobTestAssignment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -628,11 +733,11 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool>("IsRequired")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid?>("PersonalityTestId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("PersonalityTestId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PsychologyTestId")
                         .HasColumnType("int");
@@ -644,14 +749,66 @@ namespace JobService.Persistence.Migrations
                     b.ToTable("JobTestAssignments");
                 });
 
+            modelBuilder.Entity("JobService.Domain.Entities.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("JobService.Domain.Entities.OfferDetails", b =>
                 {
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Benefits")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Currency")
                         .IsRequired()
@@ -663,14 +820,15 @@ namespace JobService.Persistence.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OfferDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("OfferedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Salary")
                         .HasColumnType("decimal(18,2)");
@@ -679,7 +837,10 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ApplicationId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId")
+                        .IsUnique();
 
                     b.ToTable("OfferDetails");
                 });
@@ -711,7 +872,39 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.Province", b =>
                 {
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Label");
+
+                    b.ToTable("Provinces");
+                });
+
+            modelBuilder.Entity("JobService.Domain.Entities.RejectionDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
@@ -723,56 +916,32 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Provinces");
-                });
-
-            modelBuilder.Entity("JobService.Domain.Entities.RejectionDetails", b =>
-                {
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RejectedById")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RejectedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RejectionDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ApplicationId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId")
+                        .IsUnique();
 
                     b.ToTable("RejectionDetails");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.SavedJob", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -783,8 +952,8 @@ namespace JobService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("JobId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("JobPostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -792,24 +961,27 @@ namespace JobService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("JobId");
+                    b.HasIndex("JobPostId");
 
                     b.ToTable("SavedJob");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.SubmissionDetails", b =>
                 {
-                    b.Property<Guid>("ApplicationId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
@@ -826,7 +998,10 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ApplicationId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId")
+                        .IsUnique();
 
                     b.ToTable("SubmissionDetails");
                 });
@@ -865,9 +1040,7 @@ namespace JobService.Persistence.Migrations
                 {
                     b.HasOne("JobService.Domain.Entities.Province", null)
                         .WithMany("Cities")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProvinceLabel");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.CompanyBenefit", b =>
@@ -916,7 +1089,7 @@ namespace JobService.Persistence.Migrations
                 {
                     b.HasOne("JobService.Domain.Entities.City", null)
                         .WithMany("Jobs")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityLabel");
 
                     b.HasOne("JobService.Domain.Entities.Company", null)
                         .WithMany("Jobs")
@@ -943,7 +1116,15 @@ namespace JobService.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("JobService.Domain.Entities.JobPost", "JobPost")
+                        .WithMany()
+                        .HasForeignKey("JobPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Job");
+
+                    b.Navigation("JobPost");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.JobPost", b =>
@@ -954,8 +1135,8 @@ namespace JobService.Persistence.Migrations
 
                     b.OwnsOne("JobService.Domain.ValueObjects.SalaryRange", "Salary", b1 =>
                         {
-                            b1.Property<Guid>("JobPostId")
-                                .HasColumnType("uniqueidentifier");
+                            b1.Property<int>("JobPostId")
+                                .HasColumnType("int");
 
                             b1.Property<decimal>("Max")
                                 .HasColumnType("decimal(18,2)")
@@ -1020,11 +1201,13 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.SavedJob", b =>
                 {
-                    b.HasOne("JobService.Domain.Entities.Job", "Job")
+                    b.HasOne("JobService.Domain.Entities.JobPost", "JobPost")
                         .WithMany()
-                        .HasForeignKey("JobId");
+                        .HasForeignKey("JobPostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Job");
+                    b.Navigation("JobPost");
                 });
 
             modelBuilder.Entity("JobService.Domain.Entities.SubmissionDetails", b =>

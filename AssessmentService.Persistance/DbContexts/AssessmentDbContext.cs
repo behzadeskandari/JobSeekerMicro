@@ -34,6 +34,25 @@ namespace AssessmentService.Persistance.DbContexts
                  .WithMany(ptr => ptr.Responses)
                  .HasForeignKey(ptr => ptr.TestResultId)
                  .OnDelete(DeleteBehavior.Restrict);
+
+            // Ignore DomainEvents property on entities that implement domain events
+            // since it's not a database relationship but domain logic for in-memory event handling
+            //modelBuilder.Entity<AnswerOption>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<MBTIQuestions>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<MBTIResultAnswers>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<MBTIResult>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PersonalityTestItem>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PersonalityTestResponse>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PersonalityTestResults>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PersonalityTrait>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestInterpretation>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestQuestion>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestResponseAnswer>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestResponse>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestResultAnswer>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTestResult>().Ignore(e => e.DomainEvents);
+            //modelBuilder.Entity<PsychologyTest>().Ignore(e => e.DomainEvents);
+
             base.OnModelCreating(modelBuilder);
         }
         public DbSet<AnswerOption> AnswerOption { get; set; }

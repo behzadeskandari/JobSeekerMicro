@@ -13,7 +13,7 @@ namespace AdvertisementService.Application.Features.Payment.Command
         [Required]
         public int AdvertisementId { get; set; }
 
-        public int? OrderId { get; set; }
+        public Guid? OrderId { get; set; }
 
         [Required]
         public decimal Amount { get; set; }

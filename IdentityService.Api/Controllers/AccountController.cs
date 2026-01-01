@@ -7,7 +7,6 @@ using IdentityService.Application.Interfaces;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.IntegrationEventSourcing;
 using JobSeeker.Shared.Contracts.Integration;
-using IdentityService.Domain.Roles;
 using IdentityService.Infrastructure.Jwt;
 using JobSeeker.Shared.Common.Errors;
 using JobSeeker.Shared.Contracts.Authentication;
@@ -21,6 +20,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using JobSeeker.Shared.Models.Roles;
 
 namespace IdentityService.Api.Controllers
 {

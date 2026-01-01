@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvertisementService.Persistence.Migrations
 {
     [DbContext(typeof(AdvertismentDbContext))]
-    [Migration("20251116052612_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260101073429_mig-adv-001")]
+    partial class migadv001
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,8 +34,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -66,8 +66,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<DateTime>("JobADVCreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("PaymentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("PaymentId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -84,9 +84,11 @@ namespace AdvertisementService.Persistence.Migrations
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Customer", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -112,19 +114,22 @@ namespace AdvertisementService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("OrdersId")
-                        .IsRequired()
+                    b.Property<int?>("OrdersId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("OrdersId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrdersId");
+                    b.HasIndex("OrdersId1");
 
                     b.ToTable("Customers");
                 });
@@ -158,8 +163,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -192,6 +197,49 @@ namespace AdvertisementService.Persistence.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("CustomerAddress");
+                });
+
+            modelBuilder.Entity("AdvertisementService.Domain.Entities.ExceptionLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExceptionType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InnerException")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
                 });
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Feature", b =>
@@ -234,6 +282,49 @@ namespace AdvertisementService.Persistence.Migrations
                     b.ToTable("Feature");
                 });
 
+            modelBuilder.Entity("AdvertisementService.Domain.Entities.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -252,7 +343,10 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("PricingPlanId")
+                    b.Property<int>("PricingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PricingPlanId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
@@ -267,7 +361,7 @@ namespace AdvertisementService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PricingPlanId");
+                    b.HasIndex("PricingPlanId1");
 
                     b.ToTable("Orders");
                 });
@@ -303,7 +397,10 @@ namespace AdvertisementService.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AdvertisementId")
+                    b.Property<int>("AdvertisementId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("AdvertisementId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
@@ -345,7 +442,7 @@ namespace AdvertisementService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AdvertisementId");
+                    b.HasIndex("AdvertisementId1");
 
                     b.HasIndex("OrderId");
 
@@ -354,9 +451,11 @@ namespace AdvertisementService.Persistence.Migrations
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.PricingCategory", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -411,12 +510,15 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("PricingPlanId")
+                    b.Property<int>("PricingPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("PricingPlanId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PricingPlanId");
+                    b.HasIndex("PricingPlanId1");
 
                     b.ToTable("PricingFeature");
                 });
@@ -467,8 +569,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid>("PricingCategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("PricingCategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subtitle")
                         .IsRequired()
@@ -491,9 +593,11 @@ namespace AdvertisementService.Persistence.Migrations
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Product", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Attributes")
                         .IsRequired()
@@ -551,6 +655,13 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<decimal>("SalePrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Tags")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -558,20 +669,13 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<int>("TaxRate")
                         .HasColumnType("int");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Weight")
-                        .HasColumnType("int");
-
-                    b.Property<string>("sku")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -602,8 +706,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuantityOnHand")
                         .HasColumnType("int");
@@ -633,8 +737,8 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuantityOnHand")
                         .HasColumnType("int");
@@ -651,15 +755,17 @@ namespace AdvertisementService.Persistence.Migrations
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.SalesOrder", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -698,14 +804,14 @@ namespace AdvertisementService.Persistence.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("SalesOrderId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("SalesOrderId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -716,51 +822,44 @@ namespace AdvertisementService.Persistence.Migrations
                     b.ToTable("SalesOrderItem");
                 });
 
-            modelBuilder.Entity("JobSeeker.Shared.Models.Category", b =>
+            modelBuilder.Entity("JobSeeker.Shared.Models.AppPushSubscriptions", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AdvertisementsIds")
+                    b.Property<string>("Auth")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateCreated")
+                    b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateModified")
+                    b.Property<string>("Endpoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ExpirationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("P256DH")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductsIds")
+                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("PushSubscriptions");
                 });
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Customer", b =>
                 {
                     b.HasOne("AdvertisementService.Domain.Entities.Order", "Orders")
                         .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrdersId1");
 
                     b.Navigation("Orders");
                 });
@@ -780,7 +879,7 @@ namespace AdvertisementService.Persistence.Migrations
                 {
                     b.HasOne("AdvertisementService.Domain.Entities.PricingPlan", "PricingPlan")
                         .WithMany("Orders")
-                        .HasForeignKey("PricingPlanId")
+                        .HasForeignKey("PricingPlanId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -791,7 +890,7 @@ namespace AdvertisementService.Persistence.Migrations
                 {
                     b.HasOne("AdvertisementService.Domain.Entities.Advertisement", "Advertisement")
                         .WithMany("Payments")
-                        .HasForeignKey("AdvertisementId")
+                        .HasForeignKey("AdvertisementId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -808,7 +907,7 @@ namespace AdvertisementService.Persistence.Migrations
                 {
                     b.HasOne("AdvertisementService.Domain.Entities.PricingPlan", "PricingPlan")
                         .WithMany("Features")
-                        .HasForeignKey("PricingPlanId")
+                        .HasForeignKey("PricingPlanId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -828,7 +927,7 @@ namespace AdvertisementService.Persistence.Migrations
 
             modelBuilder.Entity("AdvertisementService.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("JobSeeker.Shared.Models.Category", "Category")
+                    b.HasOne("AdvertisementService.Domain.Entities.PricingCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)

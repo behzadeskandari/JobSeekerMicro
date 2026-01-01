@@ -28,7 +28,7 @@ namespace AdvertisementService.Domain.Common
             _domainEvents.Clear();
         }
 
-        protected void Raise(DomainEvent domainEvent)
+        public void Raise(DomainEvent domainEvent)
         {
             AddDomainEvent(domainEvent);
         }

@@ -54,6 +54,10 @@ namespace IdentityService.Persistence.DbContext
                 .HasForeignKey(ts => ts.TermsOfServiceId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Ignore DomainEvents property on entities that implement domain events
+            // since it's not a database relationship but domain logic for in-memory event handling
+            //modelBuilder.Entity<User>().Ignore(e => e.DomainEvents);
+
             base.OnModelCreating(modelBuilder);
 
             

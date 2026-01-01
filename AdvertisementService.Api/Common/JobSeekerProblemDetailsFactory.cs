@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using AdvertisementService.Application.Interfaces;
-using AdvertisementService.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -9,15 +7,8 @@ namespace AdvertisementService.Api.Common
 {
     public class JobSeekerProblemDetailsFactory : ProblemDetailsFactory
     {
-        private readonly IAdvertisementUnitOfWork _unitOfWork;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public JobSeekerProblemDetailsFactory(
-            IAdvertisementUnitOfWork unitOfWork,
-            IHttpContextAccessor httpContextAccessor)
+        public JobSeekerProblemDetailsFactory()
         {
-            _unitOfWork = unitOfWork;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public override ProblemDetails CreateProblemDetails(
@@ -40,29 +31,6 @@ namespace AdvertisementService.Api.Common
                 Instance = instance,
                 Extensions = { ["traceId"] = traceId }
             };
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var log = new Log
-                    {
-                        StatusCode = statusCode,
-                        Title = title,
-                        Detail = detail,
-                        TraceId = traceId,
-                        HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
-                        HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                        HttpContextResponse = statusCode.ToString(),
-                        DateCreated = DateTime.UtcNow,
-                        IsActive = true
-                    };
-
-                    await _unitOfWork.Logs.AddAsync(log);
-                    await _unitOfWork.CommitAsync();
-                }
-                catch { }
-            });
 
             return problemDetails;
         }
@@ -88,29 +56,6 @@ namespace AdvertisementService.Api.Common
                 Instance = instance,
                 Extensions = { ["traceId"] = traceId }
             };
-
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var log = new Log
-                    {
-                        StatusCode = statusCode,
-                        Title = title ?? "Validation Error",
-                        Detail = detail ?? string.Join(", ", modelStateDictionary.SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<ModelError>()).Select(e => e.ErrorMessage)),
-                        TraceId = traceId,
-                        HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
-                        HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                        HttpContextResponse = statusCode.ToString(),
-                        DateCreated = DateTime.UtcNow,
-                        IsActive = true
-                    };
-
-                    await _unitOfWork.Logs.AddAsync(log);
-                    await _unitOfWork.CommitAsync();
-                }
-                catch { }
-            });
 
             return validationProblemDetails;
         }

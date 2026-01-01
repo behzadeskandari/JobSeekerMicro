@@ -27,7 +27,6 @@ namespace AdvertisementService.Application.Features.Product.Handlers
 
             var product = new AdvertisementService.Domain.Entities.Product
             {
-                Id = Guid.NewGuid(),
                 Name = request.Name,
                 Description = request.Description,
                 Sku = request.Sku,

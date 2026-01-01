@@ -21,7 +21,6 @@ namespace AdvertisementService.Application.Features.Customer.Handlers
         {
             var customer = new AdvertisementService.Domain.Entities.Customer
             {
-                Id = Guid.NewGuid(),
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserId = request.UserId,

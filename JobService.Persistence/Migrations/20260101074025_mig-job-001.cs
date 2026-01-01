@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace JobService.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_002 : Migration
+    public partial class migjob001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +15,8 @@ namespace JobService.Persistence.Migrations
                 name: "Companies",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Size = table.Column<int>(type: "int", nullable: false),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -24,9 +25,6 @@ namespace JobService.Persistence.Migrations
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Website = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FoundedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: false),
                     ContactEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -36,11 +34,36 @@ namespace JobService.Persistence.Migrations
                     CityId = table.Column<int>(type: "int", nullable: true),
                     ProvinceId = table.Column<int>(type: "int", nullable: true),
                     Rating = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExceptionLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StackTrace = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExceptionType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TraceId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HttpContextUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HttpContextRequest = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InnerException = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExceptionLogs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,18 +72,40 @@ namespace JobService.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NameEn = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Industry = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JobCategory", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Logs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    StatusCode = table.Column<int>(type: "int", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TraceId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HttpContextUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HttpContextRequest = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HttpContextResponse = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Logs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,16 +127,33 @@ namespace JobService.Persistence.Migrations
                 name: "Provinces",
                 columns: table => new
                 {
+                    Label = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Id = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Provinces", x => x.Id);
+                    table.PrimaryKey("PK_Provinces", x => x.Label);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PushSubscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Endpoint = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    P256DH = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Auth = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PushSubscriptions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -100,10 +162,10 @@ namespace JobService.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Label = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -115,8 +177,9 @@ namespace JobService.Persistence.Migrations
                 name: "CompanyBenefits",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -138,13 +201,14 @@ namespace JobService.Persistence.Migrations
                 name: "CompanyFollows",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    Rating = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Rating = table.Column<int>(type: "int", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -160,57 +224,57 @@ namespace JobService.Persistence.Migrations
                 name: "Cities",
                 columns: table => new
                 {
+                    Label = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProvinceId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProvinceLabel = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Id = table.Column<int>(type: "int", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Label = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProvinceId = table.Column<int>(type: "int", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cities", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Label);
                     table.ForeignKey(
-                        name: "FK_Cities_Provinces_ProvinceId",
-                        column: x => x.ProvinceId,
+                        name: "FK_Cities_Provinces_ProvinceLabel",
+                        column: x => x.ProvinceLabel,
                         principalTable: "Provinces",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Label");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Job",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Level = table.Column<int>(type: "int", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     IsProirity = table.Column<bool>(type: "bit", nullable: false),
                     JobType = table.Column<int>(type: "int", nullable: false),
                     JobDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     JobRequirment = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CityId = table.Column<int>(type: "int", nullable: true),
-                    FeaturesId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TechnicalOptionsId = table.Column<int>(type: "int", nullable: true),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     JobCategoryId = table.Column<int>(type: "int", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CandidatesIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TechnicalOptionId = table.Column<int>(type: "int", nullable: true)
+                    CityLabel = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TechnicalOptionId = table.Column<int>(type: "int", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Job", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Job_Cities_CityId",
-                        column: x => x.CityId,
+                        name: "FK_Job_Cities_CityLabel",
+                        column: x => x.CityLabel,
                         principalTable: "Cities",
-                        principalColumn: "Id");
+                        principalColumn: "Label");
                     table.ForeignKey(
                         name: "FK_Job_Companies_CompanyId",
                         column: x => x.CompanyId,
@@ -231,52 +295,22 @@ namespace JobService.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobApplication",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CandidateId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ApplicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ResumeFileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResumeFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CoverLetter = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobApplication", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_JobApplication_Job_JobId",
-                        column: x => x.JobId,
-                        principalTable: "Job",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "JobPost",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Requirements = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BenefitId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BenefitId = table.Column<int>(type: "int", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SalaryMin = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     SalaryMax = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    JobId = table.Column<int>(type: "int", nullable: true),
                     ViewCount = table.Column<int>(type: "int", nullable: true),
                     ApplicationCount = table.Column<int>(type: "int", nullable: true),
                     DatePublished = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -287,12 +321,18 @@ namespace JobService.Persistence.Migrations
                     CompanyJobPreferenceIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SkillIds = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinimumExperience = table.Column<int>(type: "int", nullable: false),
-                    MinimumEducationLevelId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    MinimumEducationLevelId = table.Column<int>(type: "int", nullable: true),
                     MinimumEducationLevelDegree = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinimumEducationLevelInstitution = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinimumEducationLevelField = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MinimumEducationLevelDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false)
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    JobCategoryId = table.Column<int>(type: "int", nullable: true),
+                    ProvinceId = table.Column<int>(type: "int", nullable: true),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -308,10 +348,11 @@ namespace JobService.Persistence.Migrations
                 name: "JobTestAssignments",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobId = table.Column<int>(type: "int", nullable: true),
                     PsychologyTestId = table.Column<int>(type: "int", nullable: true),
-                    PersonalityTestId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PersonalityTestId = table.Column<int>(type: "int", nullable: true),
                     IsRequired = table.Column<bool>(type: "bit", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -328,134 +369,12 @@ namespace JobService.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SavedJob",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    JobId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SavedJob", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_SavedJob_Job_JobId",
-                        column: x => x.JobId,
-                        principalTable: "Job",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InterviewDetail",
-                columns: table => new
-                {
-                    InterviewId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    InterviewerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Outcome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InterviewDetail", x => x.InterviewId);
-                    table.ForeignKey(
-                        name: "FK_InterviewDetail_JobApplication_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "JobApplication",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OfferDetails",
-                columns: table => new
-                {
-                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OfferDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Benefits = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OfferDetails", x => x.ApplicationId);
-                    table.ForeignKey(
-                        name: "FK_OfferDetails_JobApplication_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "JobApplication",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RejectionDetails",
-                columns: table => new
-                {
-                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RejectedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RejectionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RejectionDetails", x => x.ApplicationId);
-                    table.ForeignKey(
-                        name: "FK_RejectionDetails_JobApplication_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "JobApplication",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubmissionDetails",
-                columns: table => new
-                {
-                    ApplicationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Source = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubmissionDetails", x => x.ApplicationId);
-                    table.ForeignKey(
-                        name: "FK_SubmissionDetails_JobApplication_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "JobApplication",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompanyJobPreferences",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    JobPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobPostId = table.Column<int>(type: "int", nullable: false),
                     PreferredSkills = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PreferredEducationLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PreferredExperienceLevel = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -475,12 +394,49 @@ namespace JobService.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "JobApplication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobId = table.Column<int>(type: "int", nullable: false),
+                    JobPostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ApplicationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ResumeFileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResumeFileUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverLetter = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobApplication", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobApplication_JobPost_JobPostId",
+                        column: x => x.JobPostId,
+                        principalTable: "JobPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobApplication_Job_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Job",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobRequests",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    JobPostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    JobPostId = table.Column<int>(type: "int", nullable: false),
                     CoverLetter = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResumeUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -499,10 +455,139 @@ namespace JobService.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SavedJob",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobPostId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SavedJob", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SavedJob_JobPost_JobPostId",
+                        column: x => x.JobPostId,
+                        principalTable: "JobPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InterviewDetail",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationId = table.Column<int>(type: "int", nullable: false),
+                    InterviewerId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Outcome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InterviewDetail", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_InterviewDetail_JobApplication_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "JobApplication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfferDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationId = table.Column<int>(type: "int", nullable: false),
+                    OfferedById = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    OfferDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Benefits = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OfferDetails_JobApplication_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "JobApplication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RejectionDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationId = table.Column<int>(type: "int", nullable: false),
+                    RejectedById = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RejectionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RejectionDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RejectionDetails_JobApplication_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "JobApplication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubmissionDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationId = table.Column<int>(type: "int", nullable: false),
+                    Source = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserAgent = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubmissionDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_SubmissionDetails_JobApplication_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "JobApplication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Cities_ProvinceId",
+                name: "IX_Cities_ProvinceLabel",
                 table: "Cities",
-                column: "ProvinceId");
+                column: "ProvinceLabel");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompanyBenefits_CompanyId",
@@ -525,9 +610,9 @@ namespace JobService.Persistence.Migrations
                 column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Job_CityId",
+                name: "IX_Job_CityLabel",
                 table: "Job",
-                column: "CityId");
+                column: "CityLabel");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Job_CompanyId",
@@ -550,6 +635,11 @@ namespace JobService.Persistence.Migrations
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JobApplication_JobPostId",
+                table: "JobApplication",
+                column: "JobPostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobPost_JobId",
                 table: "JobPost",
                 column: "JobId");
@@ -565,9 +655,27 @@ namespace JobService.Persistence.Migrations
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SavedJob_JobId",
+                name: "IX_OfferDetails_ApplicationId",
+                table: "OfferDetails",
+                column: "ApplicationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RejectionDetails_ApplicationId",
+                table: "RejectionDetails",
+                column: "ApplicationId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SavedJob_JobPostId",
                 table: "SavedJob",
-                column: "JobId");
+                column: "JobPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SubmissionDetails_ApplicationId",
+                table: "SubmissionDetails",
+                column: "ApplicationId",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -583,6 +691,9 @@ namespace JobService.Persistence.Migrations
                 name: "CompanyJobPreferences");
 
             migrationBuilder.DropTable(
+                name: "ExceptionLogs");
+
+            migrationBuilder.DropTable(
                 name: "InterviewDetail");
 
             migrationBuilder.DropTable(
@@ -592,10 +703,16 @@ namespace JobService.Persistence.Migrations
                 name: "JobTestAssignments");
 
             migrationBuilder.DropTable(
+                name: "Logs");
+
+            migrationBuilder.DropTable(
                 name: "OfferDetails");
 
             migrationBuilder.DropTable(
                 name: "OutboxMessage");
+
+            migrationBuilder.DropTable(
+                name: "PushSubscriptions");
 
             migrationBuilder.DropTable(
                 name: "RejectionDetails");
@@ -607,10 +724,10 @@ namespace JobService.Persistence.Migrations
                 name: "SubmissionDetails");
 
             migrationBuilder.DropTable(
-                name: "JobPost");
+                name: "JobApplication");
 
             migrationBuilder.DropTable(
-                name: "JobApplication");
+                name: "JobPost");
 
             migrationBuilder.DropTable(
                 name: "Job");

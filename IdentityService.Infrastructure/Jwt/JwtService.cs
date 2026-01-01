@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityService.Domain.Entities;
-using IdentityService.Domain.Roles;
+using JobSeeker.Shared.Models.Roles;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

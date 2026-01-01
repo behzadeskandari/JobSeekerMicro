@@ -203,6 +203,58 @@ namespace ProfileService.Persistance.Migrations
                     b.ToTable("Education");
                 });
 
+            modelBuilder.Entity("ProfileService.Domain.Entities.ExceptionLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClassName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExceptionType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InnerException")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MethodName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StackTrace")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExceptionLogs");
+                });
+
             modelBuilder.Entity("ProfileService.Domain.Entities.Language", b =>
                 {
                     b.Property<Guid>("Id")
@@ -233,6 +285,55 @@ namespace ProfileService.Persistance.Migrations
                     b.HasIndex("ResumeId");
 
                     b.ToTable("Language");
+                });
+
+            modelBuilder.Entity("ProfileService.Domain.Entities.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextRequest")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextResponse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HttpContextUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Instance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TraceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("ProfileService.Domain.Entities.OutboxMessage", b =>

@@ -34,6 +34,26 @@ namespace JobService.Persistence.DbContexts
                           .HasColumnType("decimal(18,2)");
                 });
             });
+
+            // Ignore DomainEvents property on entities that inherit from AuditableEntityBaseInt
+            // since it's not a database relationship but domain logic for in-memory event handling
+            modelBuilder.Entity<SubmissionDetails>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<SavedJob>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<Province>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<RejectionDetails>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<OfferDetails>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<JobTestAssignment>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<JobRequest>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<JobPost>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<JobApplication>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<JobCategory>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<Job>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<InterviewDetail>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<CompanyJobPreferences>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<CompanyFollow>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<CompanyBenefit>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<Company>().Ignore(e => e.DomainEvents);
+            modelBuilder.Entity<City>().Ignore(e => e.DomainEvents);
         }
         public DbSet<JobPost> JobPosts { get; set; }
         public DbSet<JobRequest> JobRequests { get; set; }

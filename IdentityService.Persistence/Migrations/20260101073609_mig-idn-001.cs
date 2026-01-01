@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace IdentityService.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class mig_001 : Migration
+    public partial class migidn001 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -74,6 +74,40 @@ namespace IdentityService.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OutboxMessage", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PushSubscriptions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Endpoint = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    P256DH = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Auth = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PushSubscriptions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TermsOfServices",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Version = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastUpdated = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TermsOfServices", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -182,6 +216,30 @@ namespace IdentityService.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TermsSections",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModified = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    TermsOfServiceId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TermsSections", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TermsSections_TermsOfServices_TermsOfServiceId",
+                        column: x => x.TermsOfServiceId,
+                        principalTable: "TermsOfServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -227,6 +285,11 @@ namespace IdentityService.Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TermsSections_TermsOfServiceId",
+                table: "TermsSections",
+                column: "TermsOfServiceId");
         }
 
         /// <inheritdoc />
@@ -251,10 +314,19 @@ namespace IdentityService.Persistence.Migrations
                 name: "OutboxMessage");
 
             migrationBuilder.DropTable(
+                name: "PushSubscriptions");
+
+            migrationBuilder.DropTable(
+                name: "TermsSections");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "TermsOfServices");
         }
     }
 }

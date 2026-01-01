@@ -7,7 +7,7 @@ using JobSeeker.Shared.Contracts.Enums;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Product : EntityBase<Guid>
+    public class Product : EntityBaseInt
     {
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }

@@ -5,7 +5,7 @@ using AdvertisementService.Domain.Common;
 
 namespace AdvertisementService.Domain.Entities
 {
-    public class Customer : EntityBase<Guid>
+    public class Customer : EntityBaseInt
     {
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using IdentityService.Domain.Roles;
 using JobSeeker.Shared.Kernel.Abstractions;
 using JobSeeker.Shared.Kernel.Domain;
+using JobSeeker.Shared.Models.Roles;
 using MassTransit.Transports;
 using Microsoft.AspNetCore.Identity;
 
