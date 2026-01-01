@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityService.Domain.Entities;
-
-namespace IdentityService.Domain.Roles
+﻿namespace JobSeeker.Shared.Models.Roles
 {
     public static class AppRoles
     {

@@ -28,6 +28,7 @@
     <ProjectReference Include="..\AdvertisementService.Application\AdvertisementService.Application.csproj" />
     <ProjectReference Include="..\AdvertisementService.Infrastructure\AdvertisementService.Infrastructure.csproj" />
     <ProjectReference Include="..\AdvertisementService.Persistence\AdvertisementService.Persistence.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
   </ItemGroup>
 

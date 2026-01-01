@@ -32,4 +32,22 @@ namespace JobSeeker.Shared.Contracts.Payment
         public string StatusString => Status.ToString();
 
     }
+
+
+
+    public record RequestPaymentDto(decimal Amount, string TestType);
+
+    public class ZarinpalRequestResponse
+    {
+        public DataObj Data { get; set; }
+        public object Errors { get; set; }
+        public class DataObj { public string Authority { get; set; } }
+    }
+
+    public class ZarinpalVerifyResponse
+    {
+        public VerifyData Data { get; set; }
+        public object Errors { get; set; }
+        public class VerifyData { public int Code { get; set; } }
+    }
 }

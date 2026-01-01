@@ -15,7 +15,7 @@ namespace AdvertisementService.Domain.Entities
 
         public Advertisement Advertisement { get; set; } = null!;
 
-        public int? OrderId { get; set; }
+        public Guid? OrderId { get; set; }
         public Order? Order { get; set; }
 
         [Required]
