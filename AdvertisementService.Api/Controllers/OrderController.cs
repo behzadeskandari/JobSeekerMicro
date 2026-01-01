@@ -10,7 +10,7 @@ namespace AdvertisementService.Api.Controllers
 {
     [Authorize(Roles = AppRoles.Admin)]
     [Route("api/[controller]")]
-    public class OrderController : ApiController
+    public class OrderController : ApiControllers
     {
         private readonly ILogger<OrderController> _logger;
         private readonly IAdvertisementUnitOfWork _unitOfWork;

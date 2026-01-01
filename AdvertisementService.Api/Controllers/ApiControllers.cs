@@ -10,7 +10,7 @@ namespace AdvertisementService.Api.Controllers
 {
     [ApiController]
     //[Authorize]
-    public class ApiController : ControllerBase
+    public class ApiControllers : ControllerBase
     {
         private ISender _mediator;
         private string _user;

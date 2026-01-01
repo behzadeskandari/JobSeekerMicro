@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdvertisementService.Api.Controllers
 {
-    public class CustomerAddressesController : ApiController
+    public class CustomerAddressesController : ApiControllers
     {
         private readonly ILogger<CustomerAddressesController> _logger;
         private readonly IAdvertisementUnitOfWork _unitOfWork;
@@ -22,7 +22,7 @@ namespace AdvertisementService.Api.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("GetCustomerAddresses")]
         public async Task<IActionResult> GetCustomerAddresses()
         {
             var customerAddresses = await _unitOfWork.CustomerAddressRepository.GetAllAsync();

@@ -12,7 +12,7 @@ namespace AdvertisementService.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdvertismentController : ApiController
+    public class AdvertismentController : ApiControllers
     {
         
 

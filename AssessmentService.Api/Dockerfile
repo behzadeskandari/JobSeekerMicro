@@ -1,24 +1,31 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY ["AssessmentService.Api.csproj", "."]
-COPY ["../AssessmentService.Application/AssessmentService.Application.csproj", "../AssessmentService.Application/"]
-COPY ["../AssessmentService.Domain/AssessmentService.Domain.csproj", "../AssessmentService.Domain/"]
-COPY ["../AssessmentService.Infrastructure/AssessmentService.Infrastructure.csproj", "../AssessmentService.Infrastructure/"]
-COPY ["../AssessmentService.Persistence/AssessmentService.Persistence.csproj", "../AssessmentService.Persistence/"]
-COPY ["../../JobSeeker.Shared.Common/JobSeeker.Shared.Common.csproj", "../../JobSeeker.Shared.Common/"]
-COPY ["../../JobSeeker.Shared.Contracts/JobSeeker.Shared.Contracts.csproj", "../../JobSeeker.Shared.Contracts/"]
-COPY ["../../JobSeeker.Shared.EventBusRabbitMQ/JobSeeker.Shared.EventBusRabbitMQ.csproj", "../../JobSeeker.Shared.EventBusRabbitMQ/"]
-COPY ["../../JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "../../JobSeeker.Shared.Kernel/"]
-COPY ["../../JobSeeker.Shared.Logging/JobSeeker.Shared.Logging.csproj", "../../JobSeeker.Shared.Logging/"]
-COPY ["../../JobSeeker.Shared.Models/JobSeeker.Shared.Models.csproj", "../../JobSeeker.Shared.Models/"]
-RUN dotnet restore "AssessmentService.Api.csproj"
+
+# Copy csproj files and restore as distinct layers
+COPY ["AssessmentService.Api/AssessmentService.Api.csproj", "AssessmentService.Api/"]
+COPY ["AssessmentService.Application/AssessmentService.Application.csproj", "AssessmentService.Application/"]
+COPY ["AssessmentService.Domain/AssessmentService.Domain.csproj", "AssessmentService.Domain/"]
+COPY ["AssessmentService.Infrastructure/AssessmentService.Infrastructure.csproj", "AssessmentService.Infrastructure/"]
+COPY ["AssessmentService.Persistance/AssessmentService.Persistance.csproj", "AssessmentService.Persistance/"]
+COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
+
+RUN dotnet restore "AssessmentService.Api/AssessmentService.Api.csproj"
+
+# Copy everything else and build
 COPY . .
-WORKDIR "/src"
+WORKDIR "/src/AssessmentService.Api"
 RUN dotnet build "AssessmentService.Api.csproj" -c Release -o /app/build
+
+# Publish stage
 FROM build AS publish
 RUN dotnet publish "AssessmentService.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
+LABEL version="1.0" maintainer="behzadeskandari"
 ENTRYPOINT ["dotnet", "AssessmentService.Api.dll"]

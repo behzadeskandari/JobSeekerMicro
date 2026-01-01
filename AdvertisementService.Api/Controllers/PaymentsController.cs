@@ -12,7 +12,7 @@ namespace AdvertisementService.Api.Controllers
 {
 
     [Route("api/[controller]")]
-    public class PaymentsController : ApiController
+    public class PaymentsController : ApiControllers
     {
         private readonly IAdvertisementUnitOfWork _unitOfWork;
         private readonly IConfiguration _config;

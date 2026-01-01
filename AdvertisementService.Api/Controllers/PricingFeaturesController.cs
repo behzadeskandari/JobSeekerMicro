@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AdvertisementService.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class PricingFeaturesController : ApiController
+    public class PricingFeaturesController : ApiControllers
     {
 
         public PricingFeaturesController()

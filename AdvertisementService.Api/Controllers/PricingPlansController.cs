@@ -15,7 +15,7 @@ namespace AdvertisementService.Api.Controllers
 {
     [Route("api/[controller]")]
     [Authorize(Roles = AppRoles.Admin)]
-    public class PricingPlansController : ApiController
+    public class PricingPlansController : ApiControllers
     {
 
         [HttpGet]

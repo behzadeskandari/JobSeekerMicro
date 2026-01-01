@@ -11,7 +11,7 @@ namespace AdvertisementService.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class PricingCategoryController : ApiController
+    public class PricingCategoryController : ApiControllers
     {
         /// <summary>
         /// Get all pricing categories

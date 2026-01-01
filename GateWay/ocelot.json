@@ -5,7 +5,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 }
             ],
@@ -30,7 +30,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 }
             ],
@@ -42,23 +42,23 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "profileservice",
                     "Port": 7002
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "advertisementservice",
                     "Port": 7003
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "advertisementservice",
                     "Port": 7004
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "assessmentservice",
                     "Port": 7005
                 }
             ],
@@ -70,23 +70,23 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "profileservice",
                     "Port": 7002
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "jobservice",
                     "Port": 7003
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "advertisementservice",
                     "Port": 7004
                 },
                 {
-                    "Host": "localhost",
+                    "Host": "assessmentservice",
                     "Port": 7005
                 }
             ],
@@ -98,7 +98,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 }
             ],
@@ -115,7 +115,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "jobservice",
                     "Port": 7002
                 }
             ],
@@ -132,7 +132,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "profileservice",
                     "Port": 7003
                 }
             ],
@@ -149,7 +149,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "advertisementservice",
                     "Port": 7004
                 }
             ],
@@ -166,7 +166,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "assessmentservice",
                     "Port": 7005
                 }
             ],
@@ -183,7 +183,7 @@
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
                 {
-                    "Host": "localhost",
+                    "Host": "identityservice",
                     "Port": 7001
                 }
             ],

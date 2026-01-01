@@ -10,7 +10,7 @@ namespace AdvertisementService.Api.Controllers
 {
     [Route("api/[controller]")]
     [Authorize(Roles = AppRoles.Admin)]
-    public class FeaturesController : ApiController
+    public class FeaturesController : ApiControllers
     {
         [HttpGet("GetAllFeatures")]
         public async Task<ActionResult<List<Feature>>> GetAllFeatures()
