@@ -145,7 +145,7 @@ namespace IdentityService.Persistence.SeedData
                     {
                         new TermsSection
                         {
-                            Id = 1,
+                           // Id = 1,
                             TermsOfServiceId = termsOfService.Id,
                             Title = "مقدمه",
                             Content = "به پلتفرم کاریابی ما خوش آمدید. این شرایط سرویس، قوانین و مقررات استفاده از خدمات ما را برای کارجویان و کارفرمایان تعیین می‌کند. با استفاده از پلتفرم، شما موافقت خود را با این شرایط اعلام می‌کنید.",

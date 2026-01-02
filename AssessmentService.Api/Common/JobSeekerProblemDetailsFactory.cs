@@ -9,14 +9,14 @@ namespace AssessmentService.Api.Common
 {
     public class JobSeekerProblemDetailsFactory : ProblemDetailsFactory
     {
-        private readonly IAssessmentServiceUnitOfWork _unitOfWork;
+        //private readonly IAssessmentServiceUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public JobSeekerProblemDetailsFactory(
-            IAssessmentServiceUnitOfWork unitOfWork,
+            //IAssessmentServiceUnitOfWork unitOfWork,
             IHttpContextAccessor httpContextAccessor)
         {
-            _unitOfWork = unitOfWork;
+            //_unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -42,33 +42,33 @@ namespace AssessmentService.Api.Common
             };
 
             // Log to database
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var log = new Log
-                    {
-                        StatusCode = statusCode,
-                        Title = title,
-                        Type = type,
-                        Detail = detail,
-                        Instance = instance,
-                        TraceId = traceId,
-                        HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
-                        HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                        HttpContextResponse = statusCode.ToString(),
-                        DateCreated = DateTime.UtcNow,
-                        IsActive = true
-                    };
+            //_ = Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        var log = new Log
+            //        {
+            //            StatusCode = statusCode,
+            //            Title = title,
+            //            Type = type,
+            //            Detail = detail,
+            //            Instance = instance,
+            //            TraceId = traceId,
+            //            HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
+            //            HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+            //            HttpContextResponse = statusCode.ToString(),
+            //            DateCreated = DateTime.UtcNow,
+            //            IsActive = true
+            //        };
 
-                    await _unitOfWork.Logs.AddAsync(log);
-                    await _unitOfWork.CommitAsync();
-                }
-                catch
-                {
-                    // Silently fail logging to prevent circular errors
-                }
-            });
+            //        await _unitOfWork.Logs.AddAsync(log);
+            //        await _unitOfWork.CommitAsync();
+            //    }
+            //    catch
+            //    {
+            //        // Silently fail logging to prevent circular errors
+            //    }
+            //});
 
             return problemDetails;
         }
@@ -96,33 +96,33 @@ namespace AssessmentService.Api.Common
             };
 
             // Log to database
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    var log = new Log
-                    {
-                        StatusCode = statusCode,
-                        Title = title ?? "Validation Error",
-                        Type = type,
-                        Detail = detail ?? string.Join(", ", modelStateDictionary.SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<ModelError>()).Select(e => e.ErrorMessage)),
-                        Instance = instance,
-                        TraceId = traceId,
-                        HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
-                        HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
-                        HttpContextResponse = statusCode.ToString(),
-                        DateCreated = DateTime.UtcNow,
-                        IsActive = true
-                    };
+            //_ = Task.Run(async () =>
+            //{
+            //    try
+            //    {
+            //        var log = new Log
+            //        {
+            //            StatusCode = statusCode,
+            //            Title = title ?? "Validation Error",
+            //            Type = type,
+            //            Detail = detail ?? string.Join(", ", modelStateDictionary.SelectMany(x => x.Value?.Errors ?? Enumerable.Empty<ModelError>()).Select(e => e.ErrorMessage)),
+            //            Instance = instance,
+            //            TraceId = traceId,
+            //            HttpContextUser = _httpContextAccessor.HttpContext?.User?.Identity?.Name,
+            //            HttpContextRequest = $"{httpContext.Request.Method} {httpContext.Request.Path}",
+            //            HttpContextResponse = statusCode.ToString(),
+            //            DateCreated = DateTime.UtcNow,
+            //            IsActive = true
+            //        };
 
-                    await _unitOfWork.Logs.AddAsync(log);
-                    await _unitOfWork.CommitAsync();
-                }
-                catch
-                {
-                    // Silently fail logging
-                }
-            });
+            //        await _unitOfWork.Logs.AddAsync(log);
+            //        await _unitOfWork.CommitAsync();
+            //    }
+            //    catch
+            //    {
+            //        // Silently fail logging
+            //    }
+            //});
 
             return validationProblemDetails;
         }

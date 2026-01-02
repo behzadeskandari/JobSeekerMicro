@@ -102,3 +102,4 @@ Or using Package Manager Console in Visual Studio:
 ```powershell
 Update-Database -Context {DbContextName} -Project {ServiceName}.Persistence
 ```
+

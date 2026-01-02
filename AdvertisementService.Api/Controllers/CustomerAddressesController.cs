@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AdvertisementService.Api.Controllers
 {
+    [Route("api/[controller]")]
     public class CustomerAddressesController : ApiControllers
     {
         private readonly ILogger<CustomerAddressesController> _logger;

@@ -9,6 +9,7 @@ using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
 using IdentityService.Domain.IntegrationEventSourcing;
 using IdentityService.Infrastructure;
+using IdentityService.Persistence;
 using IdentityService.Persistence.DbContext;
 using IdentityService.Persistence.SeedData;
 using JobSeeker.Shared.Kernel.Middleware;
@@ -143,7 +144,8 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 builder.Services.AddMemoryCache();
-builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration);
+builder.Services.ConfigureInfrastructureRegistrationServices(builder.Configuration)
+    .AddIdentityPersistanceServiceRegistration(builder.Configuration);
 builder.Services.AddJWTService(builder.Configuration);
 
 

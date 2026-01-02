@@ -10,6 +10,7 @@ using IdentityService.Persistence.Repository;
 using JobSeeker.Shared.Common.Interfaces;
 using JobSeeker.Shared.PushNotifications.Interfaces;
 using JobSeeker.Shared.PushNotifications.Services;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +26,7 @@ namespace IdentityService.Persistence
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPushSubscriptionRepository, PushSubscriptionRepository>();
             services.AddScoped<IPushNotificationService, PushNotificationService>();
+            services.AddScoped<IOutboxMessage, OutBoxRepository>();
 
             return services;
         }

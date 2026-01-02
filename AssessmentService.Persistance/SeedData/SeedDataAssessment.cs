@@ -559,66 +559,74 @@ namespace AssessmentService.Persistance.SeedData
                 // Seed PsychologyTests
                 if (!context.PsychologyTests.Any())
                 {
-                    var psychologyTests = new List<PsychologyTest>
-                    {
-                        new PsychologyTest
-                        {
-                            Id = 1,
-                            Name = "تست شغلی هلند",
-                            Description = "علایق شغلی را در 6 تیپ شخصیتی (RIASEC) شناسایی می‌کند.",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.Holland,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        },
-                        new PsychologyTest
-                        {
-                            Id = 2,
-                            Name = "پنج ویژگی شخصیتی بزرگ (NEO-PI-R)",
-                            Description = "شخصیت را در پنج بُعد اصلی ارزیابی می‌کند (OCEAN).",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.BigFive,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        },
-                        new PsychologyTest
-                        {
-                            Id = 3,
-                            Name = "ارزیابی دیسک",
-                            Description = "بر رفتار در محیط‌های کاری تمرکز دارد: تسلط، نفوذ، ثبات و وظیفه‌شناسی.",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.DISC,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        },
-                        new PsychologyTest
-                        {
-                            Id = 4,
-                            Name = "هوش هیجانی (EQ-i)",
-                            Description = "آگاهی عاطفی، کنترل، همدلی و مهارت‌های اجتماعی را ارزیابی می‌کند.",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.EmotionalIntelligence,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        },
-                        new PsychologyTest
-                        {
-                            Id = 5,
-                            Name = "آزمون استعدادهای شناختی",
-                            Description = "هوش عمومی، منطق، ریاضی و استدلال کلامی را می‌سنجد.",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.Cognitive,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        },
-                        new PsychologyTest
-                        {
-                            Id = 6,
-                            Name = "آزمون قضاوت موقعیتی (SJT)",
-                            Description = "تصمیم‌گیری در سناریوهای مرتبط با شغل را ارزیابی می‌کند.",
-                            Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.SJT,
-                            DateCreated = DateTime.UtcNow,
-                            IsActive = true
-                        }
-                    };
+                    // Enable IDENTITY_INSERT to allow explicit ID values starting from 1
+                    context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('dbo.PsychologyTests', RESEED, 0)");
+                    await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.PsychologyTests ON");
 
-                    await context.PsychologyTests.AddRangeAsync(psychologyTests);
-                    await context.SaveChangesAsync();
+        var psychologyTests = new List<PsychologyTest>
+        {
+            new PsychologyTest
+            {
+                Id = 1,
+                Name = "تست شغلی هلند",
+                Description = "علایق شغلی را در 6 تیپ شخصیتی (RIASEC) شناسایی می‌کند.",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.Holland,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            },
+            new PsychologyTest
+            {
+                Id = 2,
+                Name = "پنج ویژگی شخصیتی بزرگ (NEO-PI-R)",
+                Description = "شخصیت را در پنج بُعد اصلی ارزیابی می‌کند (OCEAN).",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.BigFive,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            },
+            new PsychologyTest
+            {
+                Id = 3,
+                Name = "ارزیابی دیسک",
+                Description = "بر رفتار در محیط‌های کاری تمرکز دارد: تسلط، نفوذ، ثبات و وظیفه‌شناسی.",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.DISC,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            },
+            new PsychologyTest
+            {
+                Id = 4,
+                Name = "هوش هیجانی (EQ-i)",
+                Description = "آگاهی عاطفی، کنترل، همدلی و مهارت‌های اجتماعی را ارزیابی می‌کند.",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.EmotionalIntelligence,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            },
+            new PsychologyTest
+            {
+                Id = 5,
+                Name = "آزمون استعدادهای شناختی",
+                Description = "هوش عمومی، منطق، ریاضی و استدلال کلامی را می‌سنجد.",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.Cognitive,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            },
+            new PsychologyTest
+            {
+                Id = 6,
+                Name = "آزمون قضاوت موقعیتی (SJT)",
+                Description = "تصمیم‌گیری در سناریوهای مرتبط با شغل را ارزیابی می‌کند.",
+                Type = JobSeeker.Shared.Contracts.Enums.PsychologyTestType.SJT,
+                DateCreated = DateTime.UtcNow,
+                IsActive = true
+            }
+        };
+
+        await context.PsychologyTests.AddRangeAsync(psychologyTests);
+        await context.SaveChangesAsync();
+        // Disable IDENTITY_INSERT after successful seeding
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.PsychologyTests OFF");
+
+
                 }
 
                 // Seed AnswerOptions

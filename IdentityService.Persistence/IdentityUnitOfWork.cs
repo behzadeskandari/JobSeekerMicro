@@ -15,11 +15,17 @@ namespace IdentityService.Persistence
         private readonly ApplicationUserDbContext _context;
         public IUserRepository _users;
         public IOutboxMessage _outBoxMessge;
-        private IDbContextTransaction? _transaction;
 
 
         public IUserRepository Users => _users ?? new UserRepository(_context);
         public IOutboxMessage OutboxMessage => _outBoxMessge ?? new OutBoxRepository(_context);
+
+        public IdentityUnitOfWork(ApplicationUserDbContext context, IUserRepository users, IOutboxMessage outBoxMessge)
+        {
+            _context = context;
+            _users = users;
+            _outBoxMessge = outBoxMessge;
+        }
 
         public async Task<int> CommitAsync()
         {
@@ -29,11 +35,6 @@ namespace IdentityService.Persistence
         public async Task DisposeAsync()
         {
             await _context.DisposeAsync();
-        }
-        public void Rollback()
-        {
-            // If using explicit transactions, rollback here. For simple SaveChanges-based approach this is a no-op.
-            _transaction?.Rollback();
         }
         public void Dispose()
         {

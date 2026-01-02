@@ -4,6 +4,7 @@ using JobService.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobService.Persistence.Migrations
 {
     [DbContext(typeof(JobDbContext))]
-    partial class JobDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260102061417_mig-job-002")]
+    partial class migjob002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -57,8 +60,8 @@ namespace JobService.Persistence.Migrations
 
             modelBuilder.Entity("JobService.Domain.Entities.City", b =>
                 {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("Label")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateCreated")
                         .HasColumnType("datetime2");
@@ -66,12 +69,11 @@ namespace JobService.Persistence.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Label")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
@@ -83,7 +85,7 @@ namespace JobService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Label");
 
                     b.HasIndex("ProvinceLabel");
 
@@ -388,6 +390,9 @@ namespace JobService.Persistence.Migrations
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
 
+                    b.Property<string>("CityLabel")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -433,7 +438,7 @@ namespace JobService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("CityLabel");
 
                     b.HasIndex("CompanyId");
 
@@ -1084,7 +1089,7 @@ namespace JobService.Persistence.Migrations
                 {
                     b.HasOne("JobService.Domain.Entities.City", null)
                         .WithMany("Jobs")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityLabel");
 
                     b.HasOne("JobService.Domain.Entities.Company", null)
                         .WithMany("Jobs")

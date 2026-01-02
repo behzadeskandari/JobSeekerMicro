@@ -1,250 +1,243 @@
 {
-    "Routes": [
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/account/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/account/register",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                }
-            ],
-            "UpstreamPathTemplate": "/account/Account/register",
-            "UpstreamHttpMethod": [ "POST" ],
-            "FileCacheOptions": {
-                "TtlSeconds": 60,
-                "Region": "default",
-                "Header": "OC-Cache-Control",
-                "EnabledContentHashing": false
-            },
-            "RateLimitOptions": {
-                "ClientWhitelist": [],
-                "EnableRateLimiting": true,
-                "Period": "1m",
-                "PeriodTimespan": 1,
-                "Limit": 5
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/account/login",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                }
-            ],
-            "UpstreamPathTemplate": "/account/Account/Login",
-            "UpstreamHttpMethod": [ "POST" ]
-        },
-        {
-            "DownstreamPathTemplate": "/swagger/v1/swagger.json",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                },
-                {
-                    "Host": "profileservice",
-                    "Port": 7002
-                },
-                {
-                    "Host": "advertisementservice",
-                    "Port": 7003
-                },
-                {
-                    "Host": "advertisementservice",
-                    "Port": 7004
-                },
-                {
-                    "Host": "assessmentservice",
-                    "Port": 7005
-                }
-            ],
-            "UpstreamPathTemplate": "/swagger/v1/swagger.json",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/swagger/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                },
-                {
-                    "Host": "profileservice",
-                    "Port": 7002
-                },
-                {
-                    "Host": "jobservice",
-                    "Port": 7003
-                },
-                {
-                    "Host": "advertisementservice",
-                    "Port": 7004
-                },
-                {
-                    "Host": "assessmentservice",
-                    "Port": 7005
-                }
-            ],
-            "UpstreamPathTemplate": "/swagger/{everything}",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                }
-            ],
-            "UpstreamPathTemplate": "/account/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-            "SwaggerKey": "account",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "jobservice",
-                    "Port": 7002
-                }
-            ],
-            "UpstreamPathTemplate": "/job/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-            "SwaggerKey": "job",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "profileservice",
-                    "Port": 7003
-                }
-            ],
-            "UpstreamPathTemplate": "/profile/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-            "SwaggerKey": "profile",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "advertisementservice",
-                    "Port": 7004
-                }
-            ],
-            "UpstreamPathTemplate": "/advertisement/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-            "SwaggerKey": "advertisement",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/{everything}",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "assessmentservice",
-                    "Port": 7005
-                }
-            ],
-            "UpstreamPathTemplate": "/assessment/{everything}",
-            "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
-            "SwaggerKey": "assessment",
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "AllowedScopes": []
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/",
-            "DownstreamScheme": "http",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "identityservice",
-                    "Port": 7001
-                }
-            ],
-            "UpstreamPathTemplate": "/",
-            "UpstreamHttpMethod": [ "GET" ]
+          "Host": "localhost",
+          "Port": 7001
         }
-    ],
-    "GlobalConfiguration": {
-        "BaseUrl": "https://localhost:7000",
-        "RequestIdKey": "OcRequestId"
+      ],
+      "UpstreamPathTemplate": "/account/Account/register",
+      "UpstreamHttpMethod": [ "POST" ],
+      "FileCacheOptions": {
+        "TtlSeconds": 60,
+        "Region": "default",
+        "Header": "OC-Cache-Control",
+        "EnabledContentHashing": false
+      }
     },
-    "SwaggerEndPoints": [
+    {
+      "DownstreamPathTemplate": "/api/account/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
         {
-            "Key": "account",
-            "Config": [
-                {
-                    "Name": "Account API",
-                    "Version": "v1",
-                    "Url": "http://localhost:7001/swagger/v1/swagger.json"
-                }
-            ]
-        },
-        {
-            "Key": "job",
-            "Config": [
-                {
-                    "Name": "Job API",
-                    "Version": "v1",
-                    "Url": "http://localhost:7002/swagger/v1/swagger.json"
-                }
-            ]
-        },
-        {
-            "Key": "profile",
-            "Config": [
-                {
-                    "Name": "Profile API",
-                    "Version": "v1",
-                    "Url": "http://localhost:7003/swagger/v1/swagger.json"
-                }
-            ]
-        },
-        {
-            "Key": "advertisement",
-            "Config": [
-                {
-                    "Name": "Advertisement API",
-                    "Version": "v1",
-                    "Url": "http://localhost:7004/swagger/v1/swagger.json"
-                }
-            ]
-        },
-        {
-            "Key": "assessment",
-            "Config": [
-                {
-                    "Name": "Assessment API",
-                    "Version": "v1",
-                    "Url": "http://localhost:7005/swagger/v1/swagger.json"
-                }
-            ]
+          "Host": "localhost",
+          "Port": 7001
         }
-    ]
+      ],
+      "UpstreamPathTemplate": "/account/Account/Login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/v1/swagger.json",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        },
+        {
+          "Host": "localhost",
+          "Port": 7002
+        },
+        {
+          "Host": "localhost",
+          "Port": 7003
+        },
+        {
+          "Host": "localhost",
+          "Port": 7004
+        },
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/v1/swagger.json",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/swagger/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        },
+        {
+          "Host": "localhost",
+          "Port": 7002
+        },
+        {
+          "Host": "localhost",
+          "Port": 7003
+        },
+        {
+          "Host": "localhost",
+          "Port": 7004
+        },
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "UpstreamPathTemplate": "/swagger/{everything}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/account/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "SwaggerKey": "account",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7002
+        }
+      ],
+      "UpstreamPathTemplate": "/job/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "SwaggerKey": "job",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7003
+        }
+      ],
+      "UpstreamPathTemplate": "/profile/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "SwaggerKey": "profile",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7004
+        }
+      ],
+      "UpstreamPathTemplate": "/advertisement/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "SwaggerKey": "advertisement",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7005
+        }
+      ],
+      "UpstreamPathTemplate": "/assessment/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "SwaggerKey": "assessment",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/",
+      "UpstreamHttpMethod": [ "GET" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7000",
+    "RequestIdKey": "OcRequestId"
+  },
+  "SwaggerEndPoints": [
+    {
+      "Key": "account",
+      "Config": [
+        {
+          "Name": "Account API",
+          "Version": "v1",
+          "Url": "http://localhost:7001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "job",
+      "Config": [
+        {
+          "Name": "Job API",
+          "Version": "v1",
+          "Url": "http://localhost:7002/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "profile",
+      "Config": [
+        {
+          "Name": "Profile API",
+          "Version": "v1",
+          "Url": "http://localhost:7003/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "advertisement",
+      "Config": [
+        {
+          "Name": "Advertisement API",
+          "Version": "v1",
+          "Url": "http://localhost:7004/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "assessment",
+      "Config": [
+        {
+          "Name": "Assessment API",
+          "Version": "v1",
+          "Url": "http://localhost:7005/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
 }

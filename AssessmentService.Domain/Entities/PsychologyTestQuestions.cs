@@ -14,7 +14,8 @@ namespace AssessmentService.Domain.Entities
     public class PsychologyTestQuestion : IBaseEntity<Guid> , IAggregateRoot
     {
         [Key]
-        public Guid Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
         [ForeignKey("PsychologyTest")]
