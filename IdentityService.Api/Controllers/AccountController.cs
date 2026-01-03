@@ -171,17 +171,24 @@ namespace IdentityService.Api.Controllers
                 userRecord.LastName
             );
 
-            await _unitOfWork.OutboxMessage.AddAsync(new OutboxMessage
+            var message = new OutboxMessage
             {
                 Id = userRegisteredEvent.Id,
                 Type = nameof(UserRegisteredIntegrationEvent),
                 Content = JsonSerializer.Serialize(userRegisteredEvent),
-                OccurredOn = DateTime.UtcNow
-            });
+                OccurredOn = DateTime.UtcNow,
+                Published = false
 
-            await _unitOfWork.CommitAsync();
+            };
+
 
             await _publishEndpoint.Publish(userRegisteredEvent);
+            
+            message.Published = true;
+
+            await _unitOfWork.OutboxMessage.AddAsync(message);
+
+            await _unitOfWork.CommitAsync();
 
             return Ok(new { message = SuccessMessages.AccountCreated, Items = userRecord });
         }
