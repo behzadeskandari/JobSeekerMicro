@@ -8,8 +8,8 @@ using AdvertisementService.Infrastructure.Services;
 using AdvertisementService.Persistence;
 using AdvertisementService.Persistence.DbContexts;
 using JobSeeker.Shared.Contracts.Integration;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -66,27 +66,16 @@ builder.Services.AddAdvertismentPersistanceServiceRegistration(builder.Configura
 // Register infrastructure services (HTTP clients)
 builder.Services.ConfigureAdvertismentInfrastructureServiceRegistration(builder.Configuration);
 
-// MassTransit configuration for publishing integration events
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("rabbitmq://localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+// Configure event bus using shared library
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
+var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
+var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 
-        // Publish endpoints for integration events
-        cfg.Publish<AdvertisementCreatedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<PaymentProcessedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<OrderPlacedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<ProductInventoryUpdatedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<SalesOrderCreatedIntegrationEvent>(p => { p.Durable = true; });
-
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddEventBusRabbitMQ(
+    connectionString: rabbitMqConnectionString,
+    queueName: "jobseeker-events",
+    exchangeName: "jobseeker-exchange");
 
 var app = builder.Build();
 

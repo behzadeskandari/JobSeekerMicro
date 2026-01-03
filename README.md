@@ -103,3 +103,62 @@ Or using Package Manager Console in Visual Studio:
 Update-Database -Context {DbContextName} -Project {ServiceName}.Persistence
 ```
 
+## Event Bus Migration
+
+### Overview
+All microservices now use a single, consistent message broker setup via the shared `JobSeeker.Shared.EventBusRabbitMQ` library. This replaces the previous per-service RabbitMQ queue approach with a unified pub-sub model.
+
+### Key Changes
+- **Single Queue**: All services now publish to and consume from the `jobseeker-events` queue
+- **Direct Exchange**: Uses `jobseeker-exchange` as a direct exchange bound to the shared queue
+- **Shared Library**: All event bus functionality is centralized in `JobSeeker.Shared.EventBusRabbitMQ`
+- **Configuration**: RabbitMQ connection settings are configured in each service's `appsettings.json`
+
+### Configuration
+Each service's `appsettings.json` now includes a `RabbitMQ` section:
+
+```json
+{
+  "RabbitMQ": {
+    "HostName": "localhost",
+    "UserName": "guest",
+    "Password": "guest"
+  }
+}
+```
+
+### Docker Setup
+The `docker-compose.yml` now includes a single RabbitMQ container that all services use. Uncomment the RabbitMQ service section if you're using Docker for local development.
+
+### Backward Compatibility
+This change maintains backward compatibility with existing integration events. The shared library supports all existing event types defined in `JobSeeker.Shared.Contracts`.
+
+### Sample Event Handler
+A sample event handler has been added to `AssessmentService` that demonstrates how to consume events from the shared queue. The handler logs `JobApplicationSubmittedIntegrationEvent` events.
+
+### Publishing Events
+To publish events in your service:
+
+```csharp
+// Inject IEventBus in your service
+private readonly IEventBus _eventBus;
+
+// Publish an event
+await _eventBus.PublishAsync(new JobApplicationSubmittedIntegrationEvent(jobApplicationId, jobPostId, userId, resumeUrl, appliedAt));
+```
+
+### Consuming Events
+To consume events in your service:
+
+1. Create an event handler implementing `IIntegrationEventHandler<T>`
+2. Register the handler in `Program.cs`
+3. Subscribe to the event during application startup
+
+```csharp
+// Register handler
+builder.Services.AddScoped<IIntegrationEventHandler<MyEvent>, MyEventHandler>();
+
+// Subscribe during startup
+await eventBus.SubscribeAsync<MyEvent, MyEventHandler>();
+```
+

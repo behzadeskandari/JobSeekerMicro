@@ -11,11 +11,17 @@
     <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.22" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.22">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.22" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +29,7 @@
     <ProjectReference Include="..\AssessmentService.Domain\AssessmentService.Domain.csproj" />
     <ProjectReference Include="..\AssessmentService.Infrastructure\AssessmentService.Infrastructure.csproj" />
     <ProjectReference Include="..\AssessmentService.Persistance\AssessmentService.Persistance.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
   </ItemGroup>
 

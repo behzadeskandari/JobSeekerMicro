@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
-using MassTransit;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Polly;
-using ProfileService.Application.Events;
+using JobSeeker.Shared.Contracts.Integration; // Changed to shared integration event
 using ProfileService.Application.Interfaces;
 using ProfileService.Domain.Entities;
 using ProfileService.Persistance.DbContexts;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace ProfileService.Persistance.Messaging.Consumers
 {
-    public class UserRegisteredConsumer : IConsumer<UserRegisteredEvent>
+    public class UserRegisteredConsumer : IIntegrationEventHandler<UserRegisteredIntegrationEvent>
     {
         private readonly IProfileServiceUnitOfWork _context;  // Infrastructure dep
 
@@ -22,28 +24,31 @@ namespace ProfileService.Persistance.Messaging.Consumers
             _context = context;
         }
 
-        public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
+        public async Task HandleAsync(UserRegisteredIntegrationEvent @event)
         {
+            // Event type verification - now correctly receiving shared integration event
+            Serilog.Log.Information("ProfileService Consumer: Received UserRegisteredIntegrationEvent for UserId {UserId}", @event.UserId);
+
             // Idempotency check (uses Domain entity)
             var existing = await _context.CandidateRepository.GetQueryable()
-                .FirstOrDefaultAsync(p => p.UserId == context.Message.UserId);
+                .FirstOrDefaultAsync(p => p.UserId == @event.UserId);
             if (existing == null)
             {
                 // Create and persist (orchestrates via Application if using MediatR; here direct for simplicity)
                 var candidate = new Candidate // From Domain
                 {
                     Id = Guid.NewGuid(),
-                    UserId = context.Message.UserId,
-                    FirstName = context.Message.FirstName,
-                    LastName = context.Message.LastName,
-                    Email = context.Message.Email,
+                    UserId = @event.UserId,
+                    FirstName = @event.FirstName,
+                    LastName = @event.LastName,
+                    Email = @event.Email,
                 };
                 await _context.CandidateRepository.AddAsync(candidate);
 
             }
             else
             {
-                existing.FirstName = existing.FirstName;    
+                existing.FirstName = existing.FirstName;
                 existing.LastName = existing.LastName;
                 existing.Email = existing.Email;
                 existing.UserId = existing.UserId;
@@ -52,7 +57,7 @@ namespace ProfileService.Persistance.Messaging.Consumers
             }
 
 
-            var resumeExits = await  _context.ResumeRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == context.Message.UserId);
+            var resumeExits = await  _context.ResumeRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == @event.UserId);
 
             if(resumeExits == null)
             {
@@ -60,9 +65,9 @@ namespace ProfileService.Persistance.Messaging.Consumers
                 var resume = new Resume// From Domain
                 {
                     Id = Guid.NewGuid(),
-                    UserId = context.Message.UserId,
-                    FullName = context.Message.FirstName + " " + context.Message.LastName,
-                    Email = context.Message.Email,
+                    UserId = @event.UserId,
+                    FullName = @event.FirstName + " " + @event.LastName,
+                    Email = @event.Email,
                 };
                 await _context.ResumeRepository.AddAsync(resume);
 
@@ -72,17 +77,17 @@ namespace ProfileService.Persistance.Messaging.Consumers
                 resumeExits.FullName = resumeExits.FullName;
                 resumeExits.Email = resumeExits.Email;
                 resumeExits.UserId = resumeExits.UserId;
-                
+
                 await _context.ResumeRepository.UpdateAsync(resumeExits);
             }
 
-            var userSettingsExits = await _context.UserSettingsRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == context.Message.UserId);
+            var userSettingsExits = await _context.UserSettingsRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == @event.UserId);
 
             if(userSettingsExits == null)
             {
                 var userSettings = new UserSetting
                 {
-                    UserId = context.Message.UserId,
+                    UserId = @event.UserId,
                     DateCreated = DateTime.UtcNow,
                     DateModified = null,
                     Id = Guid.NewGuid(),

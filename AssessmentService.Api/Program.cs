@@ -3,18 +3,20 @@ using AssessmentService.Api.Common;
 using AssessmentService.Api.Filters;
 using AssessmentService.Api.Middleware;
 using AssessmentService.Application.Common.Interfaces;
+using AssessmentService.Application.IntegrationEvents;
 using AssessmentService.Infrastructure.Services;
 using AssessmentService.Persistance;
 using AssessmentService.Persistance.DbContexts;
 using AssessmentService.Persistance.SeedData;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,26 +67,19 @@ builder.Services.AddDbContext<AssessmentDbContext>(options =>
 // Register persistence services
 builder.Services.AddAssessmentPersistanceServiceRegistration(builder.Configuration);
 
-// MassTransit configuration for request-response pattern
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("rabbitmq://localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+// Configure event bus using shared library
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
+var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
+var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddEventBusRabbitMQ(
+    connectionString: rabbitMqConnectionString,
+    queueName: "jobseeker-events",
+    exchangeName: "jobseeker-exchange");
 
-// Register request client for GetUserById
-builder.Services.AddScoped<IRequestClient<GetUserByIdRequestIntegrationEvent>>(provider =>
-    provider.GetRequiredService<IBus>().CreateRequestClient<GetUserByIdRequestIntegrationEvent>(
-        TimeSpan.FromSeconds(10)
-    ));
+// Register event handlers
+builder.Services.AddScoped<IIntegrationEventHandler<JobApplicationSubmittedIntegrationEvent>, AssessmentService.Application.IntegrationEvents.JobApplicationSubmittedEventHandler>();
 
 var app = builder.Build();
 
@@ -109,5 +104,13 @@ app.UseMiddleware<ResterictAccessMiddleware>();
 // Initialize and seed database
 await SeedDataAssessment.InitializeAsync(app.Services);
 await SeedDataAssessment.SeedAsync(app.Services);
+
+// Start event bus consumer
+using (var scope = app.Services.CreateScope())
+{
+    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+    await eventBus.SubscribeAsync<JobApplicationSubmittedIntegrationEvent, AssessmentService.Application.IntegrationEvents.JobApplicationSubmittedEventHandler>();
+    eventBus.StartConsuming();
+}
 
 app.Run();

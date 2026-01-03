@@ -4,6 +4,7 @@ using AppJob.Core.Configuration;
 using AppJob.Core.Services;
 using AspNetCoreRateLimit;
 using IdentityService.Api.Filters;
+using IdentityService.Application.Features.IntegrationEvents;
 using IdentityService.Application.Interfaces;
 using IdentityService.Application.Services;
 using IdentityService.Domain.Entities;
@@ -12,17 +13,20 @@ using IdentityService.Infrastructure;
 using IdentityService.Persistence;
 using IdentityService.Persistence.DbContext;
 using IdentityService.Persistence.SeedData;
+using JobSeeker.Shared.Contracts.IntegrationEvents;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
-using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Azure;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using ProfileService.Persistance.Messaging.Consumers;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -203,37 +207,19 @@ builder.Services.Configure<RateLimitOptions>(options =>
 });
 
 
-builder.Services.AddMassTransit(x =>
-{
-    // Register consumers
-    x.AddConsumer<IdentityService.Application.Features.IntegrationEvents.GetUserByIdRequestConsumer>();
+// Configure event bus using shared library
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["Host"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["Username"] ?? "guest";
+var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
+var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        // RabbitMQ config
-        cfg.Host("rabbitmq://localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+builder.Services.AddEventBusRabbitMQ(
+    connectionString: rabbitMqConnectionString,
+    queueName: "jobseeker-events",
+    exchangeName: "jobseeker-exchange");
 
-        // Enable Outbox (stores messages in DB)
-        //cfg.UseMessageOutbox(context);  // Requires EF Core setup below
-
-        // Publish endpoints for events
-        cfg.Publish<JobSeeker.Shared.Contracts.Integration.UserRegisteredIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<JobSeeker.Shared.Contracts.Integration.CompanyCreatedIntegrationEvent>(p => { p.Durable = true; });
-
-        // Configure request-response endpoints
-        cfg.ReceiveEndpoint("get-user-by-id-request", e =>
-        {
-            e.ConfigureConsumer<IdentityService.Application.Features.IntegrationEvents.GetUserByIdRequestConsumer>(context);
-        });
-
-        // Configure the bus
-        cfg.ConfigureEndpoints(context);
-    });
-});
+// Register event handlers
+builder.Services.AddScoped<IIntegrationEventHandler<GetUserByIdRequestIntegrationEvent>, GetUserByIdRequestConsumer>();
 
 var app = builder.Build();
 
@@ -268,7 +254,13 @@ app.UseRateLimiter();
 await SeedDataIdentity.InitializeAsync(app.Services);
 await SeedDataIdentity.SeedAsync(app.Services);
 
-
+// Start event bus consumer
+using (var scope = app.Services.CreateScope())
+{
+    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+    await eventBus.SubscribeAsync<JobSeeker.Shared.Contracts.IntegrationEvents.GetUserByIdRequestIntegrationEvent, IdentityService.Application.Features.IntegrationEvents.GetUserByIdRequestConsumer>();
+    eventBus.StartConsuming();
+}
 
 app.Run();
 

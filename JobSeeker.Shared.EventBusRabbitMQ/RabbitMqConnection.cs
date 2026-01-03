@@ -11,69 +11,48 @@ namespace JobSeeker.Shared.EventBusRabbitMQ
     public class RabbitMqConnection : IRabbitMqConnection
     {
         private readonly IConnectionFactory _connectionFactory;
-        private IConnection _connection;
+        private IConnection? _connection;
         private bool _disposed;
+
         public RabbitMqConnection(IConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
-            if (!IsConnected)
-            {
-                TryConnect();
-            }
-
+            // Note: In v7, you might prefer calling TryConnect externally 
+            // since constructor-based async calls are tricky.
         }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return _connection != null && _connection.IsOpen && !_disposed;
-            }
-        }
-        public bool TryConnect()
+        public bool IsConnected => _connection is { IsOpen: true } && !_disposed;
+
+        public async Task<bool> TryConnect()
         {
             try
             {
-                _connection = _connectionFactory.CreateConnection();
+                _connection = await _connectionFactory.CreateConnectionAsync();
+                return IsConnected;
             }
             catch (BrokerUnreachableException)
             {
-                Thread.Sleep(2000);
-                _connection = _connectionFactory.CreateConnection();
-            }
-            if (IsConnected)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                await Task.Delay(2000); // Use Task.Delay instead of Thread.Sleep in async
+                _connection = await _connectionFactory.CreateConnectionAsync();
+                return IsConnected;
             }
         }
 
-        public IModel CreateModel()
+        public async Task<IChannel> CreateChannelAsync()
         {
             if (!IsConnected)
             {
                 throw new InvalidOperationException("No Rabbit Connection");
             }
-            return _connection.CreateModel();
+            // CreateModel() is now CreateChannelAsync()
+            return await _connection!.CreateChannelAsync();
         }
 
         public void Dispose()
         {
-            if (_disposed)
-                return;
-            try
-            {
-                _connection.Dispose();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
+            if (_disposed) return;
+            _disposed = true;
+            _connection?.Dispose();
         }
-
     }
 }

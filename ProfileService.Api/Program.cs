@@ -1,9 +1,12 @@
 using System.Text;
+using JobSeeker.Shared.Contracts.Integration;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ProfileService.Api.Common;
 using ProfileService.Api.Filters;
@@ -13,6 +16,8 @@ using ProfileService.Infrastructure.Interfaces;
 using ProfileService.Infrastructure.Services;
 using ProfileService.Persistance;
 using ProfileService.Persistance.DbContexts;
+using ProfileService.Persistance.Messaging.Consumers;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +44,22 @@ builder.Services.AddHttpContextAccessor();
 
 // Register CurrentUserService
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+// Configure event bus using shared library
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
+var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
+var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
+
+builder.Services.AddEventBusRabbitMQ(
+    connectionString: rabbitMqConnectionString,
+    queueName: "jobseeker-events",
+    exchangeName: "jobseeker-exchange");
+
+// Register event handlers
+builder.Services.AddScoped<JobSeeker.Shared.EventBusRabbitMQ.IIntegrationEventHandler<UserRegisteredIntegrationEvent>, UserRegisteredConsumer>();
+
+
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -83,5 +104,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<ResterictAccessMiddleware>();
+
+// Start event bus consumer
+using (var scope = app.Services.CreateScope())
+{
+    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+    await eventBus.SubscribeAsync<UserRegisteredIntegrationEvent, UserRegisteredConsumer>();
+    eventBus.StartConsuming();
+}
 
 app.Run();

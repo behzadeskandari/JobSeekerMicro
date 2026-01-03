@@ -2,6 +2,7 @@ using System.Text;
 using JobSeeker.Shared.Common.SeedData;
 using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
 using JobService.Api.Common;
 using JobService.Api.Filters;
@@ -12,7 +13,6 @@ using JobService.Infrastructure;
 using JobService.Infrastructure.Services;
 using JobService.Persistence;
 using JobService.Persistence.DbContexts;
-using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -69,29 +69,16 @@ builder.Services.AddJobApplicationServiceRegistration()
     .AddJobInfrastructureService(builder.Configuration);
 
 
-// MassTransit configuration for publishing integration events
-builder.Services.AddMassTransit(x =>
-{
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        cfg.Host("rabbitmq://localhost", h =>
-        {
-            h.Username("guest");
-            h.Password("guest");
-        });
+// Configure event bus using shared library
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
+var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
+var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 
-        // Publish endpoints for integration events
-        cfg.Publish<JobPostPublishedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<JobApplicationSubmittedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<CompanyCreatedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<OfferSentIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<InterviewScheduledIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<JobApplicationRejectedIntegrationEvent>(p => { p.Durable = true; });
-        cfg.Publish<JobSavedIntegrationEvent>(p => { p.Durable = true; });
-
-        cfg.ConfigureEndpoints(context);
-    });
-});
+builder.Services.AddEventBusRabbitMQ(
+    connectionString: rabbitMqConnectionString,
+    queueName: "jobseeker-events",
+    exchangeName: "jobseeker-exchange");
 
 var app = builder.Build();
 

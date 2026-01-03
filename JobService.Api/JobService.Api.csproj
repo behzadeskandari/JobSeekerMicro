@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
     <ProjectReference Include="..\JobService.Application\JobService.Application.csproj" />
     <ProjectReference Include="..\JobService.Infrastructure\JobService.Infrastructure.csproj" />
