@@ -1,5 +1,6 @@
 using System.Text;
 using JobSeeker.Shared.Kernel.Middleware;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -13,6 +14,7 @@ using ProfileService.Infrastructure.Interfaces;
 using ProfileService.Infrastructure.Services;
 using ProfileService.Persistance;
 using ProfileService.Persistance.DbContexts;
+using ProfileService.Persistance.Messaging.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,25 @@ builder.Services.AddHttpContextAccessor();
 
 // Register CurrentUserService
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+// MassTransit configuration for publishing integration events
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserRegisteredConsumer>();
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq://localhost", h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+
+        // Publish endpoints for integration events
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+
 
 // Configure JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

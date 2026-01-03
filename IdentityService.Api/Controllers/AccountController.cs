@@ -50,7 +50,7 @@ namespace IdentityService.Api.Controllers
             //_emailService = emailService;
             _communicationOrchestrator = CommunicationOrchestrator;
             _publishEndpoint = publishEndpoint;
-            //    _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
         //"User,Staff"
         [Authorize(Roles = AppRoles.Combinations.UserOrStaff)]
