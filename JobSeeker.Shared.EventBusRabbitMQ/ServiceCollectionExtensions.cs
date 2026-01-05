@@ -16,7 +16,7 @@ namespace JobSeeker.Shared.EventBusRabbitMQ
             var connectionFactory = new ConnectionFactory
             {
                 Uri = new Uri(connectionString),
-                DispatchConsumersAsync = true
+                //DispatchConsumersAsync = true
             };
 
             // Register RabbitMQ connection

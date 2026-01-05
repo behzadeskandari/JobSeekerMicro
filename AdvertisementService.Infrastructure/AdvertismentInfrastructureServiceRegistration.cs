@@ -33,7 +33,7 @@ namespace AdvertisementService.Infrastructure
 
             // Register domain event dispatcher
             services.AddScoped<AdvertisementService.Application.Interfaces.IDomainEventDispatcher, 
-                AdvertisementService.Infrastructure.DomainEvents.DomainEventDispatcher>();
+                AdvertisementService.Persistence.DomainEvents.DomainEventDispatcher>();
 
             return services;
         }

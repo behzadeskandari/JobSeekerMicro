@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdvertisementService.Application.Interfaces;
+using AdvertisementService.Persistence.DomainEvents;
 using AdvertisementService.Persistence.GenericRepository;
 using AdvertisementService.Persistence.Repository;
 using AdvertisementService.Persistence.UnitOfWork;
@@ -28,6 +29,7 @@ namespace AdvertisementService.Persistence
                 var dispatcher = sp.GetService<AdvertisementService.Application.Interfaces.IDomainEventDispatcher>();
                 return new AdvertisementService.Persistence.UnitOfWork.AdvertisementUnitOfWork(context, dispatcher);
             });
+            services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
             services.AddScoped<ICustomersRepository, CustomersRepository>();
