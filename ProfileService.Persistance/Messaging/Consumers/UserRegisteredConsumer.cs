@@ -13,9 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MassTransit;
+using MassTransit.Middleware;
 namespace ProfileService.Persistance.Messaging.Consumers
 {
-    public class UserRegisteredConsumer : IIntegrationEventHandler<UserRegisteredIntegrationEvent>
+    public class UserRegisteredConsumer : IConsumer<UserRegisteredIntegrationEvent>
     {
         private readonly IProfileServiceUnitOfWork _context;  // Infrastructure dep
 
@@ -24,11 +26,11 @@ namespace ProfileService.Persistance.Messaging.Consumers
             _context = context;
         }
 
-        public async Task HandleAsync(UserRegisteredIntegrationEvent @event)
+        public async Task Consume(ConsumeContext<UserRegisteredIntegrationEvent> context)
         {
             // Event type verification - now correctly receiving shared integration event
+            var @event = context.Message;
             Serilog.Log.Information("ProfileService Consumer: Received UserRegisteredIntegrationEvent for UserId {UserId}", @event.UserId);
-
             // Idempotency check (uses Domain entity)
             var existing = await _context.CandidateRepository.GetQueryable()
                 .FirstOrDefaultAsync(p => p.UserId == @event.UserId);
@@ -57,9 +59,9 @@ namespace ProfileService.Persistance.Messaging.Consumers
             }
 
 
-            var resumeExits = await  _context.ResumeRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == @event.UserId);
+            var resumeExits = await _context.ResumeRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == @event.UserId);
 
-            if(resumeExits == null)
+            if (resumeExits == null)
             {
 
                 var resume = new Resume// From Domain
@@ -83,7 +85,7 @@ namespace ProfileService.Persistance.Messaging.Consumers
 
             var userSettingsExits = await _context.UserSettingsRepository.GetQueryable().FirstOrDefaultAsync(p => p.UserId == @event.UserId);
 
-            if(userSettingsExits == null)
+            if (userSettingsExits == null)
             {
                 var userSettings = new UserSetting
                 {
@@ -112,7 +114,6 @@ namespace ProfileService.Persistance.Messaging.Consumers
             }
             await _context.CommitAsync();
 
-            // Optional: Raise domain event or publish integration event via IPublishEndpoint (injected here)
         }
     }
 }

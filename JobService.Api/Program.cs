@@ -91,10 +91,10 @@ builder.Services.AddMassTransit(x =>
     });
 });
 builder.Services.AddMassTransitHostedService();
-builder.Services.AddEventBusRabbitMQ(
-    connectionString: rabbitMqConnectionString,
-    queueName: "jobseeker-events",
-    exchangeName: "jobseeker-exchange");
+//builder.Services.AddEventBusRabbitMQ(
+//    connectionString: rabbitMqConnectionString,
+//    queueName: "jobseeker-events",
+//    exchangeName: "jobseeker-exchange");
 
 var app = builder.Build();
 

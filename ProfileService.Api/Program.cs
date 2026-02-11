@@ -55,6 +55,7 @@ var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbi
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumer<UserRegisteredConsumer>();
     // register consumers if you have any: x.AddConsumer<MyConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -68,13 +69,8 @@ builder.Services.AddMassTransit(x =>
 });
 
 builder.Services.AddMassTransitHostedService();
-builder.Services.AddEventBusRabbitMQ(
-    connectionString: rabbitMqConnectionString,
-    queueName: "jobseeker-events",
-    exchangeName: "jobseeker-exchange");
 
 // Register event handlers
-builder.Services.AddScoped<JobSeeker.Shared.EventBusRabbitMQ.IIntegrationEventHandler<UserRegisteredIntegrationEvent>, UserRegisteredConsumer>();
 builder.Services.AddScoped<JobSeeker.Shared.EventBusRabbitMQ.IIntegrationEventHandler<JobPostPublishedIntegrationEvent>, ProfileService.Application.IntegrationEvents.JobPostPublishedEventHandler>();
 
 
@@ -105,30 +101,6 @@ builder.Services.AddSingleton<ProblemDetailsFactory, JobSeekerProblemDetailsFact
 
 var app = builder.Build();
 
-
-
-
-
-// In Program.cs after building app
-using (var scope = app.Services.CreateScope())
-{
-    try
-    {
-        var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-        await eventBus.SubscribeAsync<UserRegisteredIntegrationEvent, UserRegisteredConsumer>();
-        eventBus.StartConsuming();
-
-        Serilog.Log.Information("Event bus started successfully");
-    }
-    catch (Exception ex)
-    {
-        Serilog.Log.Error(ex, "Failed to start event bus");
-        throw;
-    }
-}
-
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -147,13 +119,5 @@ app.MapControllers();
 
 app.UseMiddleware<ResterictAccessMiddleware>();
 
-// Start event bus consumer
-using (var scope = app.Services.CreateScope())
-{
-    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-    await eventBus.SubscribeAsync<UserRegisteredIntegrationEvent, UserRegisteredConsumer>();
-    await eventBus.SubscribeAsync<JobPostPublishedIntegrationEvent, ProfileService.Application.IntegrationEvents.JobPostPublishedEventHandler>();
-    eventBus.StartConsuming();
-}
 
 app.Run();
