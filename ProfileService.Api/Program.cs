@@ -1,5 +1,6 @@
 using System.Text;
 using JobSeeker.Shared.Contracts.Integration;
+using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
 using MassTransit;
