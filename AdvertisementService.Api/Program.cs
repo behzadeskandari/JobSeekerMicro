@@ -10,6 +10,7 @@ using AdvertisementService.Persistence.DbContexts;
 using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -60,22 +61,42 @@ builder.Services.AddSingleton<ProblemDetailsFactory, JobSeekerProblemDetailsFact
 builder.Services.AddDbContext<AdvertismentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register persistence services
-builder.Services.AddAdvertismentPersistanceServiceRegistration(builder.Configuration);
-
-// Register infrastructure services (HTTP clients)
-builder.Services.ConfigureAdvertismentInfrastructureServiceRegistration(builder.Configuration);
-
 // Configure event bus using shared library
 var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
 var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
 var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
 var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 
+
+builder.Services.AddMassTransit(x =>
+{
+    // register consumers if you have any: x.AddConsumer<MyConsumer>();
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(rabbitMqHost, "/", h =>
+        {
+            h.Username(rabbitMqUser);
+            h.Password(rabbitMqPassword);
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+});
+
+builder.Services.AddMassTransitHostedService();
 builder.Services.AddEventBusRabbitMQ(
     connectionString: rabbitMqConnectionString,
     queueName: "jobseeker-events",
     exchangeName: "jobseeker-exchange");
+
+
+// Register persistence services
+builder.Services.AddAdvertismentPersistanceServiceRegistration(builder.Configuration);
+
+// Register infrastructure services (HTTP clients)
+builder.Services.ConfigureAdvertismentInfrastructureServiceRegistration(builder.Configuration);
+
+
+
 
 var app = builder.Build();
 

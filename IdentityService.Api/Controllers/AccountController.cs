@@ -44,7 +44,7 @@ namespace IdentityService.Api.Controllers
             IPublishEndpoint publishEndpoint,
            // IEmailService emailService            
            ICommunicationOrchestrator CommunicationOrchestrator,
-           IIdentityUnitOfWOrk unitOfWork,
+           IIdentityUnitOfWOrk unitOfWork
             )
         {
             _logger = logger;
