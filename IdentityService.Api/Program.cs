@@ -13,6 +13,7 @@ using IdentityService.Infrastructure;
 using IdentityService.Persistence;
 using IdentityService.Persistence.DbContext;
 using IdentityService.Persistence.SeedData;
+using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
@@ -208,8 +209,8 @@ builder.Services.Configure<RateLimitOptions>(options =>
 
 
 // Configure event bus using shared library
-var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["Host"] ?? "localhost";
-var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["Username"] ?? "guest";
+var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "localhost";
+var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
 var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
 var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
 

@@ -33,18 +33,21 @@ namespace IdentityService.Api.Controllers
         private readonly IIdentityUnitOfWOrk _unitOfWork;
         private readonly ICommunicationOrchestrator _communicationOrchestrator;//IEmailService _emailService;
         private readonly IPublishEndpoint _publishEndpoint;
+
+
+        private readonly ILogger<AccountController> _logger;
         /// <summary>
         /// goes into the service not needed any more here 
         /// </summary>
         /// <param name="accountService"></param>
-        public AccountController(IAccountService accountService, IJwtTokenGenerator jwtTokenGenerator,
+        public AccountController(ILogger<AccountController> logger, IAccountService accountService, IJwtTokenGenerator jwtTokenGenerator,
             IPublishEndpoint publishEndpoint,
            // IEmailService emailService            
            ICommunicationOrchestrator CommunicationOrchestrator,
-           IIdentityUnitOfWOrk unitOfWork
+           IIdentityUnitOfWOrk unitOfWork,
             )
         {
-
+            _logger = logger;
             _jwt = jwtTokenGenerator;
             _accountService = accountService;
             //_emailService = emailService;
@@ -180,7 +183,9 @@ namespace IdentityService.Api.Controllers
                 Published = false
 
             };
-
+            // In Register method
+            _logger.LogInformation("Publishing UserRegisteredIntegrationEvent for UserId: {UserId}, Email: {Email}",
+                userRecord.Id, userRecord.Email);
             await _publishEndpoint.Publish(userRegisteredEvent);
             
             message.Published = true;

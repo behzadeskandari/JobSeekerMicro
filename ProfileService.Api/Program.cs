@@ -90,6 +90,30 @@ builder.Services.AddSingleton<ProblemDetailsFactory, JobSeekerProblemDetailsFact
 
 var app = builder.Build();
 
+
+
+
+
+// In Program.cs after building app
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
+        await eventBus.SubscribeAsync<UserRegisteredIntegrationEvent, UserRegisteredConsumer>();
+        eventBus.StartConsuming();
+
+        Serilog.Log.Information("Event bus started successfully");
+    }
+    catch (Exception ex)
+    {
+        Serilog.Log.Error(ex, "Failed to start event bus");
+        throw;
+    }
+}
+
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
