@@ -40,7 +40,9 @@ namespace IdentityService.Api.Controllers
         /// goes into the service not needed any more here 
         /// </summary>
         /// <param name="accountService"></param>
-        public AccountController(ILogger<AccountController> logger, IAccountService accountService, IJwtTokenGenerator jwtTokenGenerator,
+        public AccountController(ILogger<AccountController> logger,
+            IAccountService accountService, 
+            IJwtTokenGenerator jwtTokenGenerator,
             IPublishEndpoint publishEndpoint,
            // IEmailService emailService            
            ICommunicationOrchestrator CommunicationOrchestrator,

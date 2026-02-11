@@ -17,6 +17,7 @@ using JobSeeker.Shared.Contracts.Integration;
 using JobSeeker.Shared.Contracts.IntegrationEvents;
 using JobSeeker.Shared.EventBusRabbitMQ;
 using JobSeeker.Shared.Kernel.Middleware;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -213,6 +214,20 @@ var rabbitMqHost = builder.Configuration.GetSection("RabbitMQ")["HostName"] ?? "
 var rabbitMqUser = builder.Configuration.GetSection("RabbitMQ")["UserName"] ?? "guest";
 var rabbitMqPassword = builder.Configuration.GetSection("RabbitMQ")["Password"] ?? "guest";
 var rabbitMqConnectionString = $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqHost}:5672/";
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(rabbitMqHost, "/", h =>
+        {
+            h.Username(rabbitMqUser);
+            h.Password(rabbitMqPassword);
+        });
+        cfg.ConfigureEndpoints(context);
+    });
+});
+builder.Services.AddMassTransitHostedService();
 
 builder.Services.AddEventBusRabbitMQ(
     connectionString: rabbitMqConnectionString,
