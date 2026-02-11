@@ -13,7 +13,7 @@ using JobSeeker.Shared.Kernel.Domain;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
-namespace AdvertisementService.Infrastructure.DomainEvents
+namespace AdvertisementService.Persistence.DomainEvents
 {
     public class DomainEventDispatcher : IDomainEventDispatcher
     {

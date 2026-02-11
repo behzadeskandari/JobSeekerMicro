@@ -9,14 +9,16 @@ using System.Text.Json;
 
 namespace JobSeeker.Shared.EventBusRabbitMQ
 {
-    public class EventBusRabbitMQ : IEventBus
+    public class EventBusRabbitMQ : IEventBus, IDisposable
     {
         private readonly IRabbitMqConnection _connection;
         private readonly ILogger<EventBusRabbitMQ> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly string _queueName;
         private readonly string _exchangeName;
-        private IModel _consumerChannel;
+
+        // v7: IModel is now IChannel
+        private IChannel? _consumerChannel;
         private readonly ConcurrentDictionary<string, Type> _eventTypes = new();
         private readonly ConcurrentDictionary<string, List<Type>> _eventHandlers = new();
 
@@ -32,169 +34,109 @@ namespace JobSeeker.Shared.EventBusRabbitMQ
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _queueName = queueName;
             _exchangeName = exchangeName;
-
-            _consumerChannel = CreateConsumerChannel();
         }
 
         public async Task PublishAsync<T>(T @event) where T : IntegrationEvent
         {
-            if (!@event.GetType().IsAssignableTo(typeof(IntegrationEvent)))
+            // v7: CreateChannelAsync replaces CreateModel
+            using var channel = await _connection.CreateChannelAsync();
+
+            var routingKey = @event.GetType().Name;
+
+            // v7: All Declare/Bind methods are now Async
+            await channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Direct, durable: true);
+            await channel.QueueDeclareAsync(_queueName, durable: true, exclusive: false, autoDelete: false);
+            await channel.QueueBindAsync(_queueName, _exchangeName, routingKey);
+
+            var message = JsonSerializer.Serialize(@event);
+            var body = Encoding.UTF8.GetBytes(message);
+
+            // v7: Properties are handled via BasicProperties class
+            var properties = new BasicProperties
             {
-                throw new ArgumentException("Event must inherit from IntegrationEvent");
-            }
+                Persistent = true,
+                Type = routingKey
+            };
 
-            var channel = _connection.CreateModel();
+            // v7: BasicPublishAsync
+            await channel.BasicPublishAsync(_exchangeName, routingKey, mandatory: false, basicProperties: properties, body: body);
 
-            try
-            {
-                // Declare exchange
-                channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, durable: true);
-
-                // Declare queue
-                channel.QueueDeclare(_queueName, durable: true, exclusive: false, autoDelete: false);
-
-                // Bind queue to exchange with routing key (use event type name)
-                var routingKey = @event.GetType().Name;
-                channel.QueueBind(_queueName, _exchangeName, routingKey);
-
-                var message = JsonSerializer.Serialize(@event);
-                var body = Encoding.UTF8.GetBytes(message);
-
-                var properties = channel.CreateBasicProperties();
-                properties.Persistent = true;
-                properties.Type = routingKey;
-
-                channel.BasicPublish(_exchangeName, routingKey, properties, body);
-
-                _logger.LogInformation("Published event {EventType} with ID {EventId}", routingKey, @event.Id);
-            }
-            finally
-            {
-                channel.Dispose();
-            }
+            _logger.LogInformation("Published event {EventType} with ID {EventId}", routingKey, @event.Id);
         }
 
         public Task SubscribeAsync<T, TH>() where T : IntegrationEvent where TH : IIntegrationEventHandler<T>
         {
-            var eventType = typeof(T);
-            var eventName = eventType.Name;
-            var handlerType = typeof(TH);
+            var eventName = typeof(T).Name;
+            if (!_eventTypes.ContainsKey(eventName)) _eventTypes[eventName] = typeof(T);
 
-            if (!_eventTypes.ContainsKey(eventName))
-            {
-                _eventTypes[eventName] = eventType;
-            }
-
-            if (!_eventHandlers.ContainsKey(eventName))
-            {
-                _eventHandlers[eventName] = new List<Type>();
-            }
-
-            if (!_eventHandlers[eventName].Contains(handlerType))
-            {
-                _eventHandlers[eventName].Add(handlerType);
-            }
-
-            _logger.LogInformation("Subscribed handler {HandlerType} for event {EventType}", handlerType.Name, eventName);
+            var handlers = _eventHandlers.GetOrAdd(eventName, _ => new List<Type>());
+            if (!handlers.Contains(typeof(TH))) handlers.Add(typeof(TH));
 
             return Task.CompletedTask;
         }
 
-        public void StartConsuming()
+        public async Task StartConsuming()
         {
-            if (_consumerChannel == null || _consumerChannel.IsClosed)
+            if (_consumerChannel == null || !_consumerChannel.IsOpen)
             {
-                _consumerChannel = CreateConsumerChannel();
+                _consumerChannel = await CreateConsumerChannelAsync();
             }
 
             var consumer = new AsyncEventingBasicConsumer(_consumerChannel);
 
             consumer.ReceivedAsync += async (model, ea) =>
             {
-                var eventName = ea.RoutingKey;
+                var eventName = ea.RoutingKey ?? ea.BasicProperties.Type;
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
 
                 try
                 {
-                    await ProcessEvent(eventName, message);
-                    _consumerChannel.BasicAck(ea.DeliveryTag, false);
+                    await ProcessEvent(eventName!, message);
+                    // v7: Acks are Async
+                    await _consumerChannel.BasicAckAsync(ea.DeliveryTag, false);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error processing event {EventName}", eventName);
-                    // In a production system, you might want to implement dead letter queues
-                    // For now, we'll nack the message and let RabbitMQ handle redelivery
-                    _consumerChannel.BasicNack(ea.DeliveryTag, false, true);
+                    await _consumerChannel.BasicNackAsync(ea.DeliveryTag, false, true);
                 }
             };
 
-            _consumerChannel.BasicConsume(_queueName, false, consumer);
-
-            _logger.LogInformation("Started consuming events from queue {QueueName}", _queueName);
+            await _consumerChannel.BasicConsumeAsync(_queueName, autoAck: false, consumer: consumer);
         }
 
-        private async Task ProcessEvent(string eventName, string message)
+        public async Task ProcessEvent(string eventName, string message)
         {
-            if (!_eventTypes.ContainsKey(eventName) || !_eventHandlers.ContainsKey(eventName))
-            {
-                _logger.LogWarning("No handlers registered for event {EventName}", eventName);
-                return;
-            }
+            if (!_eventTypes.ContainsKey(eventName)) return;
 
             var eventType = _eventTypes[eventName];
             var eventInstance = JsonSerializer.Deserialize(message, eventType) as IntegrationEvent;
 
-            if (eventInstance == null)
-            {
-                _logger.LogError("Failed to deserialize event {EventName}", eventName);
-                return;
-            }
-
-            var handlerTypes = _eventHandlers[eventName];
+            if (eventInstance == null) return;
 
             using var scope = _serviceProvider.CreateScope();
-
-            foreach (var handlerType in handlerTypes)
+            if (_eventHandlers.TryGetValue(eventName, out var handlerTypes))
             {
-                var handler = scope.ServiceProvider.GetService(handlerType);
-                if (handler == null)
+                foreach (var handlerType in handlerTypes)
                 {
-                    _logger.LogError("Handler {HandlerType} not found in service provider", handlerType.Name);
-                    continue;
+                    var handler = scope.ServiceProvider.GetService(handlerType);
+                    if (handler == null) continue;
+
+                    var method = handlerType.GetMethod("HandleAsync");
+                    if (method != null)
+                    {
+                        await (Task)method.Invoke(handler, new object[] { eventInstance })!;
+                    }
                 }
-
-                var method = handlerType.GetMethod("HandleAsync");
-                if (method == null)
-                {
-                    _logger.LogError("HandleAsync method not found on handler {HandlerType}", handlerType.Name);
-                    continue;
-                }
-
-                var task = (Task)method.Invoke(handler, new object[] { eventInstance });
-                await task;
-
-                _logger.LogInformation("Handled event {EventName} with handler {HandlerType}", eventName, handlerType.Name);
             }
         }
 
-        private IModel CreateConsumerChannel()
+        public async Task<IChannel> CreateConsumerChannelAsync()
         {
-            var channel = _connection.CreateModel();
+            var channel = await _connection.CreateChannelAsync();
 
-            // Declare exchange
-            channel.ExchangeDeclare(_exchangeName, ExchangeType.Direct, durable: true);
-
-            // Declare queue
-            channel.QueueDeclare(_queueName, durable: true, exclusive: false, autoDelete: false);
-
-            channel.CallbackException += (sender, ea) =>
-            {
-                _logger.LogError(ea.Exception, "Recreating RabbitMQ consumer channel");
-
-                _consumerChannel.Dispose();
-                _consumerChannel = CreateConsumerChannel();
-                StartConsuming();
-            };
+            await channel.ExchangeDeclareAsync(_exchangeName, ExchangeType.Direct, durable: true);
+            await channel.QueueDeclareAsync(_queueName, durable: true, exclusive: false, autoDelete: false);
 
             return channel;
         }
