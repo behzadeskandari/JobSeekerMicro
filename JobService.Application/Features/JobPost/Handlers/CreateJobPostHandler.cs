@@ -72,16 +72,16 @@ namespace JobService.Application.Features.JobPost.Handlers
             await _repository.CommitAsync(cancellationToken);
 
             // Publish integration event for job post creation
-            var jobPostPublishedEvent = new JobPostPublishedIntegrationEvent(
-                JobPostId: int.Parse(jobPost.Id.ToString()),
-                CompanyId: request.CompanyId,
-                Title: request.Title,
-                JobCategoryId: request.JobCategoryId,
-                ProvinceId: request.ProvinceId,
-                CityId: request.CityId,
-                UserId: request.UserId,
-                PublishedAt: DateTime.UtcNow
-            );
+            var jobPostPublishedEvent = new JobPostPublishedIntegrationEvent();
+
+            jobPostPublishedEvent.JobPostId = int.Parse(jobPost.Id.ToString());
+            jobPostPublishedEvent.CompanyId = request.CompanyId;
+            jobPostPublishedEvent.Title = request.Title;
+            jobPostPublishedEvent.JobCategoryId = request.JobCategoryId.Value;
+            jobPostPublishedEvent.ProvinceId = request.ProvinceId;
+            jobPostPublishedEvent.CityId = request.CityId;
+            jobPostPublishedEvent.UserId = request.UserId;
+            jobPostPublishedEvent.PublishedAt = DateTime.UtcNow;
 
             await _eventBus.PublishAsync(jobPostPublishedEvent);
 
