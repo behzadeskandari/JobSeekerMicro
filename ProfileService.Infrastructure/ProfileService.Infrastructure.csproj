@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProfileService.Domain\ProfileService.Domain.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

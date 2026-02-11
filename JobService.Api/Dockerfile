@@ -5,6 +5,7 @@ WORKDIR /src
 # Copy csproj files and restore as distinct layers
 COPY ["JobService.Api/JobService.Api.csproj", "JobService.Api/"]
 COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
+COPY ["JobSeeker.Shared.EventBusRabbitMQ/JobSeeker.Shared.EventBusRabbitMQ.csproj", "JobSeeker.Shared.EventBusRabbitMQ/"]
 COPY ["JobService.Application/JobService.Application.csproj", "JobService.Application/"]
 COPY ["JobService.Domain/JobService.Domain.csproj", "JobService.Domain/"]
 COPY ["JobService.Persistence/JobService.Persistence.csproj", "JobService.Persistence/"]

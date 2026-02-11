@@ -52,7 +52,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
     volumes:
       - ./IdentityService.Api:/app # For hot reload in development
-    depends_on: [] # No external dependencies in Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   profileservice:
     build:
@@ -65,7 +67,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProfileServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
     volumes:
       - ./ProfileService.Api:/app # For hot reload in development
-    depends_on: [] # No external dependencies in Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   jobservice:
     build:
@@ -78,7 +82,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=JobServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
     volumes:
       - ./JobService.Api:/app # For hot reload in development
-    depends_on: [] # No external dependencies in Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   advertisementservice:
     build:
@@ -91,7 +97,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=AdvertisementDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
     volumes:
       - ./AdvertisementService.Api:/app # For hot reload in development
-    depends_on: [] # No external dependencies in Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   assessmentservice:
     build:
@@ -104,7 +112,9 @@ services:
       - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=AssessmentServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
     volumes:
       - ./AssessmentService.Api:/app # For hot reload in development
-    depends_on: [] # No external dependencies in Docker
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
   gateway:
     build:

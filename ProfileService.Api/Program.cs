@@ -59,6 +59,7 @@ builder.Services.AddEventBusRabbitMQ(
 
 // Register event handlers
 builder.Services.AddScoped<JobSeeker.Shared.EventBusRabbitMQ.IIntegrationEventHandler<UserRegisteredIntegrationEvent>, UserRegisteredConsumer>();
+builder.Services.AddScoped<JobSeeker.Shared.EventBusRabbitMQ.IIntegrationEventHandler<JobPostPublishedIntegrationEvent>, ProfileService.Application.IntegrationEvents.JobPostPublishedEventHandler>();
 
 
 
@@ -111,6 +112,7 @@ using (var scope = app.Services.CreateScope())
 {
     var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
     await eventBus.SubscribeAsync<UserRegisteredIntegrationEvent, UserRegisteredConsumer>();
+    await eventBus.SubscribeAsync<JobPostPublishedIntegrationEvent, ProfileService.Application.IntegrationEvents.JobPostPublishedEventHandler>();
     eventBus.StartConsuming();
 }
 

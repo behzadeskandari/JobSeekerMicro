@@ -27,6 +27,7 @@
     <ProjectReference Include="..\ProfileService.Infrastructure\ProfileService.Infrastructure.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Logging\JobSeeker.Shared.Logging.csproj" />
   </ItemGroup>
 

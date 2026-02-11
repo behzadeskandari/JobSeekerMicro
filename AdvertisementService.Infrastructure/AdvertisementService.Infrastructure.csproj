@@ -24,6 +24,7 @@
     <ProjectReference Include="..\AdvertisementService.Application\AdvertisementService.Application.csproj" />
     <ProjectReference Include="..\AdvertisementService.Domain\AdvertisementService.Domain.csproj" />
     <ProjectReference Include="..\AdvertisementService.Persistence\AdvertisementService.Persistence.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

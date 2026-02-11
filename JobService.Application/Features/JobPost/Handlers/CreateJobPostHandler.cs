@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using JobService.Application.Features.JobPost.Command;
 using JobService.Application.Interfaces;
 using JobService.Domain.Entities;
+using JobSeeker.Shared.Contracts.IntegrationEvents;
+using JobSeeker.Shared.EventBusRabbitMQ;
 using FluentResults;
 using MediatR;
 
@@ -12,10 +14,12 @@ namespace JobService.Application.Features.JobPost.Handlers
     public class CreateJobPostHandler : IRequestHandler<CreateJobPostCommand, Result<string>>
     {
         private readonly IJobUnitOfWork _repository;
+        private readonly IEventBus _eventBus;
 
-        public CreateJobPostHandler(IJobUnitOfWork repository)
+        public CreateJobPostHandler(IJobUnitOfWork repository, IEventBus eventBus)
         {
             _repository = repository;
+            _eventBus = eventBus;
         }
 
         public async Task<Result<string>> Handle(CreateJobPostCommand request, CancellationToken cancellationToken)
@@ -66,6 +70,20 @@ namespace JobService.Application.Features.JobPost.Handlers
 
             await _repository.JobPostsRepository.AddAsync(jobPost);
             await _repository.CommitAsync(cancellationToken);
+
+            // Publish integration event for job post creation
+            var jobPostPublishedEvent = new JobPostPublishedIntegrationEvent(
+                JobPostId: int.Parse(jobPost.Id.ToString()),
+                CompanyId: request.CompanyId,
+                Title: request.Title,
+                JobCategoryId: request.JobCategoryId,
+                ProvinceId: request.ProvinceId,
+                CityId: request.CityId,
+                UserId: request.UserId,
+                PublishedAt: DateTime.UtcNow
+            );
+
+            await _eventBus.PublishAsync(jobPostPublishedEvent);
 
             return Result.Ok(jobPost.Id.ToString());
         }

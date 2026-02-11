@@ -26,6 +26,7 @@
     <ProjectReference Include="..\AssessmentService.Application\AssessmentService.Application.csproj" />
     <ProjectReference Include="..\AssessmentService.Domain\AssessmentService.Domain.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Common\JobSeeker.Shared.Common.csproj" />
+    <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>
