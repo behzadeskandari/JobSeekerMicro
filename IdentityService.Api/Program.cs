@@ -97,7 +97,13 @@ builder.Services.AddSwaggerGen(
 
 
 builder.Services.AddDbContext<ApplicationUserDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sql =>
+    {
+        sql.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null);
+    }));
 
 //builder.Services.AddIdentity<User, IdentityRole>()
 //    .AddDefaultTokenProviders()
