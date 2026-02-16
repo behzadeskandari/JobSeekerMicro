@@ -1,51 +1,30 @@
-# =========================
-# BUILD STAGE
-# =========================
+﻿# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy csproj files for restore
+# Copy csproj files and restore as distinct layers
 COPY ["ProfileService.Api/ProfileService.Api.csproj", "ProfileService.Api/"]
 COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
 COPY ["ProfileService.Application/ProfileService.Application.csproj", "ProfileService.Application/"]
 COPY ["ProfileService.Domain/ProfileService.Domain.csproj", "ProfileService.Domain/"]
 COPY ["ProfileService.Persistance/ProfileService.Persistance.csproj", "ProfileService.Persistance/"]
 
-# Restore dependencies
 RUN dotnet restore "ProfileService.Api/ProfileService.Api.csproj"
 
-# Copy all source code
+# Copy everything else and build
 COPY . .
-
-# Set working directory and build
 WORKDIR "/src/ProfileService.Api"
 RUN dotnet build "ProfileService.Api.csproj" -c Release -o /app/build
 
-# =========================
-# PUBLISH STAGE
-# =========================
+# Publish stage
 FROM build AS publish
-WORKDIR "/src/ProfileService.Api"
 RUN dotnet publish "ProfileService.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# =========================
-# RUNTIME STAGE
-# =========================
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-
-# Copy published files
 COPY --from=publish /app/publish .
-
-# Expose runtime port
 EXPOSE 80
-
-# Optional healthcheck
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl --fail http://localhost/health || exit 1
-
-# Metadata
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
 LABEL version="1.0" maintainer="behzadeskandari"
-
-# Entry point
 ENTRYPOINT ["dotnet", "ProfileService.Api.dll"]

@@ -8,6 +8,7 @@
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<DocumentationFile>bin\Debug\net8.0\IdentityService.Api.xml</DocumentationFile>
+		<UserSecretsId>f1398163-78c7-4623-98a1-42b9538f68fe</UserSecretsId>
 	</PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
@@ -53,7 +54,6 @@
     <ProjectReference Include="..\JobSeeker.Shared.Contracts\JobSeeker.Shared.Contracts.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.EventBusRabbitMQ\JobSeeker.Shared.EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\JobSeeker.Shared.Kernel\JobSeeker.Shared.Kernel.csproj" />
-    <ProjectReference Include="..\ProfileService.Persistance\ProfileService.Persistance.csproj" />
   </ItemGroup>
 
 </Project>
