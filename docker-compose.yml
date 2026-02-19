@@ -1,28 +1,10 @@
-services:
-  # Shared Dependencies
-  # Note: Using external SQL Server and RabbitMQ for local development
-  # Uncomment and configure the following if you want Dockerized versions
-  # db:
-  #   image: mcr.microsoft.com/mssql/server:2022-latest
-  #   environment:
-  #     SA_PASSWORD: "P@ssw0rd123!Strong"
-  #     ACCEPT_EULA: "Y"
-  #     MSSQL_PID: Express
-  #   ports:
-  #     - "1433:1433"
-  #   volumes:
-  #     - db-data:/var/opt/mssql
-  #   networks:
-  #     - backend
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '$$SA_PASSWORD' -Q 'SELECT 1' || exit 1"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #     start_period: 30s
+version: '3.8'
 
+services:
+  # Infrastructure
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: jobseeker-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -40,86 +22,168 @@ services:
       retries: 3
       start_period: 30s
 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: jobseeker-mssql
+    environment:
+      SA_PASSWORD: "SafePass123"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "SafePass123", "-Q", "SELECT 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   # Microservices
   identityservice:
     build:
       context: .
       dockerfile: IdentityService.Api/Dockerfile
+    container_name: jobseeker-identity
     ports:
       - "5001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
-    volumes:
-      - ./IdentityService.Api:/app # For hot reload in development
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     depends_on:
+      mssql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   profileservice:
     build:
       context: .
       dockerfile: ProfileService.Api/Dockerfile
+    container_name: jobseeker-profile
     ports:
       - "5002:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=ProfileServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
-    volumes:
-      - ./ProfileService.Api:/app # For hot reload in development
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=ProfileServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     depends_on:
+      mssql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   jobservice:
     build:
       context: .
       dockerfile: JobService.Api/Dockerfile
+    container_name: jobseeker-job
     ports:
       - "5003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=JobServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
-    volumes:
-      - ./JobService.Api:/app # For hot reload in development
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=JobServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     depends_on:
+      mssql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   advertisementservice:
     build:
       context: .
       dockerfile: AdvertisementService.Api/Dockerfile
+    container_name: jobseeker-advertisement
     ports:
       - "5004:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=AdvertisementDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
-    volumes:
-      - ./AdvertisementService.Api:/app # For hot reload in development
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AdvertisementDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     depends_on:
+      mssql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   assessmentservice:
     build:
       context: .
       dockerfile: AssessmentService.Api/Dockerfile
+    container_name: jobseeker-assessment
     ports:
       - "5005:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,1433;Database=AssessmentServiceDB;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;
-    volumes:
-      - ./AssessmentService.Api:/app # For hot reload in development
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AssessmentServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - RabbitMQ__HostName=rabbitmq
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
     depends_on:
+      mssql:
+        condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
+  # API Gateway
   gateway:
     build:
       context: .
       dockerfile: GateWay/Dockerfile
+    container_name: jobseeker-gateway
     ports:
       - "5000:80"
     environment:
@@ -130,11 +194,18 @@ services:
       - jobservice
       - advertisementservice
       - assessmentservice
-    volumes:
-      - ./GateWay:/app # For hot reload in development
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
 volumes:
-  db-data:
   rabbitmq-data:
+  mssql-data:
 
 networks:
   backend:

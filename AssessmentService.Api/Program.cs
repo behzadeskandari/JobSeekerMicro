@@ -123,12 +123,5 @@ app.UseMiddleware<ResterictAccessMiddleware>();
 await SeedDataAssessment.InitializeAsync(app.Services);
 await SeedDataAssessment.SeedAsync(app.Services);
 
-// Start event bus consumer
-using (var scope = app.Services.CreateScope())
-{
-    var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
-    await eventBus.SubscribeAsync<JobApplicationSubmittedIntegrationEvent, AssessmentService.Application.IntegrationEvents.JobApplicationSubmittedEventHandler>();
-    eventBus.StartConsuming();
-}
 
 app.Run();

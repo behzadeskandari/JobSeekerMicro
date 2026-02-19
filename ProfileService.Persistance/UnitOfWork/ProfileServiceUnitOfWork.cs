@@ -52,6 +52,13 @@ namespace ProfileService.Persistance.UnitOfWork
             return await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public void Dispose() => _context.Dispose();
+        public void Dispose() {
+
+            if (_context != null)
+            {
+                _context.Dispose();
+            }
+        }
+        
     }
 }
