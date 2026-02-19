@@ -1,48 +1,28 @@
-# =========================
-# BUILD STAGE
-# =========================
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-
-# Copy project files for restore
+# Restore: Copy csproj files from root context
 COPY ["GateWay/GateWay.csproj", "GateWay/"]
 COPY ["JobSeeker.Shared.Common/JobSeeker.Shared.Common.csproj", "JobSeeker.Shared.Common/"]
 COPY ["JobSeeker.Shared.Contracts/JobSeeker.Shared.Contracts.csproj", "JobSeeker.Shared.Contracts/"]
 COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
 COPY ["JobSeeker.Shared.Logging/JobSeeker.Shared.Logging.csproj", "JobSeeker.Shared.Logging/"]
-
-# Restore dependencies
 RUN dotnet restore "GateWay/GateWay.csproj"
-
-# Copy all source files
-COPY . .
-
-# Set working directory and build
+# Build: Copy GateWay code (excludes Dockerfile via .dockerignore)
+COPY GateWay/ GateWay/
+# Copy shared source
+COPY JobSeeker.Shared.Common/ JobSeeker.Shared.Common/
+COPY JobSeeker.Shared.Contracts/ JobSeeker.Shared.Contracts/
+COPY JobSeeker.Shared.Kernel/ JobSeeker.Shared.Kernel/
+COPY JobSeeker.Shared.Logging/ JobSeeker.Shared.Logging/
 WORKDIR "/src/GateWay"
 RUN dotnet build "GateWay.csproj" -c Release -o /app/build
-
-# =========================
-# PUBLISH STAGE
-# =========================
+# Publish
 FROM build AS publish
 WORKDIR "/src/GateWay"
 RUN dotnet publish "GateWay.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-# =========================
-# RUNTIME STAGE
-# =========================
+# Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-
-# Copy published files
 COPY --from=publish /app/publish .
-
-# Expose runtime port
 EXPOSE 80
-
-# Healthcheck (optional but recommended)
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD curl --fail http://localhost/health || exit 1
-
-# Entry point
 ENTRYPOINT ["dotnet", "GateWay.dll"]

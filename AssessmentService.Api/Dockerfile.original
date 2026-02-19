@@ -1,6 +1,4 @@
-# =========================
-# BUILD STAGE
-# =========================
+﻿# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -12,41 +10,22 @@ COPY ["AssessmentService.Infrastructure/AssessmentService.Infrastructure.csproj"
 COPY ["AssessmentService.Persistance/AssessmentService.Persistance.csproj", "AssessmentService.Persistance/"]
 COPY ["JobSeeker.Shared.Kernel/JobSeeker.Shared.Kernel.csproj", "JobSeeker.Shared.Kernel/"]
 
-# Restore dependencies
 RUN dotnet restore "AssessmentService.Api/AssessmentService.Api.csproj"
 
-# Copy all source code
+# Copy everything else and build
 COPY . .
-
-# Build
 WORKDIR "/src/AssessmentService.Api"
 RUN dotnet build "AssessmentService.Api.csproj" -c Release -o /app/build
 
-# =========================
-# PUBLISH STAGE
-# =========================
+# Publish stage
 FROM build AS publish
-WORKDIR "/src/AssessmentService.Api"
 RUN dotnet publish "AssessmentService.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# =========================
-# RUNTIME STAGE
-# =========================
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
-
-# Copy published files
 COPY --from=publish /app/publish .
-
-# Expose runtime port
 EXPOSE 80
-
-# Optional healthcheck
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl --fail http://localhost/health || exit 1
-
-# Metadata
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl --fail http://localhost/health || exit 1
 LABEL version="1.0" maintainer="behzadeskandari"
-
-# Entry point
 ENTRYPOINT ["dotnet", "AssessmentService.Api.dll"]

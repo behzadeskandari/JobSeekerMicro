@@ -62,7 +62,13 @@ builder.Services.AddSingleton<ProblemDetailsFactory, JobSeekerProblemDetailsFact
 
 // Add DbContext
 builder.Services.AddDbContext<JobDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),sql =>
+    {
+        sql.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null);
+    }));
 
 // Register persistence services
 builder.Services.AddJobApplicationServiceRegistration()
