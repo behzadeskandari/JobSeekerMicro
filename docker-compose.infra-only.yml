@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
+
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: jobseeker-mssql
     environment:
       SA_PASSWORD: "YourStrong@Passw0rd"
       ACCEPT_EULA: "Y"
-      MSSQL_PID: Developer
+      MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
     volumes:
@@ -19,7 +20,7 @@ services:
       ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -36,8 +37,135 @@ services:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+
+  identityservice:
+    build:
+      context: .
+      dockerfile: IdentityService.Api/Dockerfile
+    image: jobseeker-identityservice-api
+    container_name: jobseeker-identityservice
+    depends_on:
+      mssql:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+    ports:
+      - "5001:80"
+
+  profileservice:
+    build:
+      context: .
+      dockerfile: ProfileService.Api/Dockerfile
+    image: jobseeker-profileservice-api
+    container_name: jobseeker-profileservice
+    depends_on:
+      mssql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=ProfileServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+    ports:
+      - "5002:80"
+
+  jobservice:
+    build:
+      context: .
+      dockerfile: JobService.Api/Dockerfile
+    image: jobseeker-jobservice-api
+    container_name: jobseeker-jobservice
+    depends_on:
+      mssql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=JobServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+    ports:
+      - "5003:80"
+
+  advertisementservice:
+    build:
+      context: .
+      dockerfile: AdvertisementService.Api/Dockerfile
+    image: jobseeker-advertisementservice-api
+    container_name: jobseeker-advertisementservice
+    depends_on:
+      mssql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AdvertisementDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+    ports:
+      - "5004:80"
+
+  assessmentservice:
+    build:
+      context: .
+      dockerfile: AssessmentService.Api/Dockerfile
+    image: jobseeker-assessmentservice-api
+    container_name: jobseeker-assessmentservice
+    depends_on:
+      mssql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AssessmentDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+    ports:
+      - "5005:80"
 
 volumes:
   mssql-data:
   rabbitmq-data:
+
+# version: '3.8'
+
+# services:
+#   mssql:
+#     image: mcr.microsoft.com/mssql/server:2022-latest
+#     container_name: jobseeker-mssql
+#     environment:
+#       SA_PASSWORD: "YourStrong@Passw0rd"
+#       ACCEPT_EULA: "Y"
+#       MSSQL_PID: Developer
+#     ports:
+#       - "1433:1433"
+#     volumes:
+#       - mssql-data:/var/opt/mssql
+#     healthcheck:
+#       test: [
+#         "CMD-SHELL",
+#         "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -Q 'SELECT 1' || exit 1"
+#       ]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+#   rabbitmq:
+#     image: rabbitmq:3-management
+#     container_name: jobseeker-rabbitmq
+#     environment:
+#       RABBITMQ_DEFAULT_USER: guest
+#       RABBITMQ_DEFAULT_PASS: guest
+#     ports:
+#       - "5672:5672"
+#       - "15672:15672"
+#     volumes:
+#       - rabbitmq-data:/var/lib/rabbitmq
+#     healthcheck:
+#       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+
+# volumes:
+#   mssql-data:
+#   rabbitmq-data:

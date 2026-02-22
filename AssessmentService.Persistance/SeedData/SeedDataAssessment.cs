@@ -24,34 +24,37 @@ namespace AssessmentService.Persistance.SeedData
         {
             try
             {
-                using (var scope = serviceProvider.CreateScope())
-                {
-                    var _context = scope.ServiceProvider.GetRequiredService<AssessmentDbContext>();
+                //using (var scope = serviceProvider.CreateScope())
+                //{
+                    //var _context = scope.ServiceProvider.GetRequiredService<AssessmentDbContext>();
 
-                    if (_context.Database.IsSqlServer())
-                    {
-                        var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
-                        if (pendingMigrations.Any())
-                        {
-                            // Apply migrations only if schema doesn't match
-                            var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
-                            if (!appliedMigrations.Any())
-                            {
-                                // If no migrations are applied but tables exist, mark initial migration as applied
-                                //await _context.Database.ExecuteSqlRawAsync(
-                                //    "INSERT INTO __EFMigrationsHistory (MigrationId, ProductVersion) VALUES ('20251219101721_mig_001', '8.0.0')");
-                            }
-                            else
-                            {
-                                await _context.Database.MigrateAsync();
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("No pending migrations.");
-                        }
-                    }
-                }
+                    //if (_context.Database.IsSqlServer())
+                    //{
+                    //    var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
+                    //    if (pendingMigrations.Any())
+                    //    {
+                    //        // Apply migrations only if schema doesn't match
+                    //        var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
+                    //        if (!appliedMigrations.Any())
+                    //        {
+                    //            // If no migrations are applied but tables exist, mark initial migration as applied
+                    //            //await _context.Database.ExecuteSqlRawAsync(
+                    //            //    "INSERT INTO __EFMigrationsHistory (MigrationId, ProductVersion) VALUES ('20251219101721_mig_001', '8.0.0')");
+                    //        }
+                    //        else
+                    //        {
+                    //            await _context.Database.MigrateAsync();
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        Console.WriteLine("No pending migrations.");
+                    //    }
+                    //}
+                    using var scope = serviceProvider.CreateScope();
+                    var context = scope.ServiceProvider.GetRequiredService<AssessmentDbContext>();
+
+                    await context.Database.MigrateAsync();
             }
             catch (Exception)
             {
