@@ -13,7 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using ProfileService.Api.Common;
 using ProfileService.Api.Filters;
 using ProfileService.Api.Middleware;
+using ProfileService.Application;
 using ProfileService.Application.Features.UserSettings.Queries;
+using ProfileService.Infrastructure;
 using ProfileService.Infrastructure.Interfaces;
 using ProfileService.Infrastructure.Services;
 using ProfileService.Persistance;
@@ -34,13 +36,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetAllUserSettingsQuery).Assembly));
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add DbContext
 builder.Services.AddDbContext<ProfileServiceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Register persistence services
+builder.Services.ProfileApplicationService();
 builder.Services.AddProfilePersistanceServiceRegistration(builder.Configuration);
 
+builder.Services.ConfigureProfileInfrastructureServiceRegistration(builder.Configuration);
 // Add HttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
@@ -96,7 +101,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Register ProblemDetailsFactory
+
+// RegisInvalidOperationException: Unable to resolve service for type 'DinkToPdf.Contracts.IConverter' while attempting to activate 'ProfileService.Infrastructure.Pdf.PdfService'.ter ProblemDetailsFactory
 builder.Services.AddSingleton<ProblemDetailsFactory, JobSeekerProblemDetailsFactory>();
 
 var app = builder.Build();

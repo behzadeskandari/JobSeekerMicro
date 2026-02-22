@@ -29,6 +29,7 @@ namespace AdvertisementService.Persistence
                 var dispatcher = sp.GetService<AdvertisementService.Application.Interfaces.IDomainEventDispatcher>();
                 return new AdvertisementService.Persistence.UnitOfWork.AdvertisementUnitOfWork(context, dispatcher);
             });
+            services.AddAutoMapper(typeof(AdvertismentPersistanceServiceRegistration).Assembly);
             services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             services.AddScoped<ICustomerAddressRepository, CustomerAddressRepository>();
