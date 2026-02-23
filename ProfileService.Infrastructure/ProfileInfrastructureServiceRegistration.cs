@@ -21,6 +21,7 @@ namespace ProfileService.Infrastructure
                 new SynchronizedConverter(new PdfTools()));
 
             services.AddSingleton<IHtmlRenderer, HtmlRenderer>();
+
             services.AddScoped<IPdfService, PdfService>();
             return services;
         }

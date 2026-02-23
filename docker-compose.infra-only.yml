@@ -1,7 +1,7 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
-
+  # SQL Server Database
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: jobseeker-mssql
@@ -10,7 +10,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     ports:
-      - "1433:1433"
+      - "1434:1433"
     volumes:
       - mssql-data:/var/opt/mssql
     healthcheck:
@@ -22,6 +22,7 @@ services:
       timeout: 5s
       retries: 10
 
+  # RabbitMQ Message Broker
   rabbitmq:
     image: rabbitmq:3-management
     container_name: jobseeker-rabbitmq
@@ -29,8 +30,8 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - "5672:5672"      # AMQP port
+      - "15672:15672"    # Management UI
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     healthcheck:
@@ -39,103 +40,22 @@ services:
       timeout: 5s
       retries: 10
 
-  identityservice:
-    build:
-      context: .
-      dockerfile: IdentityService.Api/Dockerfile
-    image: jobseeker-identityservice-api
-    container_name: jobseeker-identityservice
-    depends_on:
-      mssql:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
-    ports:
-      - "5001:80"
-
-  profileservice:
-    build:
-      context: .
-      dockerfile: ProfileService.Api/Dockerfile
-    image: jobseeker-profileservice-api
-    container_name: jobseeker-profileservice
-    depends_on:
-      mssql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=ProfileServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
-    ports:
-      - "5002:80"
-
-  jobservice:
-    build:
-      context: .
-      dockerfile: JobService.Api/Dockerfile
-    image: jobseeker-jobservice-api
-    container_name: jobseeker-jobservice
-    depends_on:
-      mssql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=JobServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
-    ports:
-      - "5003:80"
-
-  advertisementservice:
-    build:
-      context: .
-      dockerfile: AdvertisementService.Api/Dockerfile
-    image: jobseeker-advertisementservice-api
-    container_name: jobseeker-advertisementservice
-    depends_on:
-      mssql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AdvertisementDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
-    ports:
-      - "5004:80"
-
-  assessmentservice:
-    build:
-      context: .
-      dockerfile: AssessmentService.Api/Dockerfile
-    image: jobseeker-assessmentservice-api
-    container_name: jobseeker-assessmentservice
-    depends_on:
-      mssql:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AssessmentDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
-    ports:
-      - "5005:80"
-
 volumes:
   mssql-data:
   rabbitmq-data:
 
+
 # version: '3.8'
 
 # services:
+#   # SQL Server - MUST be on the same network as services
 #   mssql:
 #     image: mcr.microsoft.com/mssql/server:2022-latest
 #     container_name: jobseeker-mssql
 #     environment:
 #       SA_PASSWORD: "YourStrong@Passw0rd"
 #       ACCEPT_EULA: "Y"
-#       MSSQL_PID: Developer
+#       MSSQL_PID: "Developer"
 #     ports:
 #       - "1433:1433"
 #     volumes:
@@ -147,8 +67,11 @@ volumes:
 #       ]
 #       interval: 10s
 #       timeout: 5s
-#       retries: 5
+#       retries: 10
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
 
+#   # RabbitMQ - on same network
 #   rabbitmq:
 #     image: rabbitmq:3-management
 #     container_name: jobseeker-rabbitmq
@@ -164,8 +87,135 @@ volumes:
 #       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
 #       interval: 10s
 #       timeout: 5s
-#       retries: 5
+#       retries: 10
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+
+#   # Gateway
+#   gateway:
+#     build:
+#       context: .
+#       dockerfile: GateWay/Dockerfile
+#     image: jobseeker-gateway-api:dev
+#     container_name: jobseeker-gateway
+#     ports:
+#       - "7000:80"
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+#     depends_on:
+#       - identityservice
+#       - profileservice
+#       - jobservice
+#       - advertisementservice
+#       - assessmentservice
+
+#   # Identity Service
+#   identityservice:
+#     build:
+#       context: .
+#       dockerfile: IdentityService.Api/Dockerfile
+#     image: jobseeker-identityservice-api:dev
+#     container_name: jobseeker-identityservice
+#     depends_on:
+#       mssql:
+#         condition: service_healthy
+#       rabbitmq:
+#         condition: service_healthy
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#       ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+#     ports:
+#       - "5001:80"
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+
+#   # Profile Service
+#   profileservice:
+#     build:
+#       context: .
+#       dockerfile: ProfileService.Api/Dockerfile
+#     image: jobseeker-profileservice-api:dev
+#     container_name: jobseeker-profileservice
+#     depends_on:
+#       mssql:
+#         condition: service_healthy
+#       rabbitmq:
+#         condition: service_healthy
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#       ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=ProfileDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+#     ports:
+#       - "5002:80"
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+
+#   # Job Service
+#   jobservice:
+#     build:
+#       context: .
+#       dockerfile: JobService.Api/Dockerfile
+#     image: jobseeker-jobservice-api:dev
+#     container_name: jobseeker-jobservice
+#     depends_on:
+#       mssql:
+#         condition: service_healthy
+#       rabbitmq:
+#         condition: service_healthy
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#       ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=JobDbContext;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+#     ports:
+#       - "5003:80"
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+
+#   # Advertisement Service
+#   advertisementservice:
+#     build:
+#       context: .
+#       dockerfile: AdvertisementService.Api/Dockerfile
+#     image: jobseeker-advertisementservice-api:dev
+#     container_name: jobseeker-advertisementservice
+#     depends_on:
+#       mssql:
+#         condition: service_healthy
+#       rabbitmq:
+#         condition: service_healthy
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#       ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AdvertisementDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+#     ports:
+#       - "5004:80"
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
+
+#   # Assessment Service
+#   assessmentservice:
+#     build:
+#       context: .
+#       dockerfile: AssessmentService.Api/Dockerfile
+#     image: jobseeker-assessmentservice-api:dev
+#     container_name: jobseeker-assessmentservice
+#     depends_on:
+#       mssql:
+#         condition: service_healthy
+#       rabbitmq:
+#         condition: service_healthy
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: Development
+#       ConnectionStrings__DefaultConnection: "Server=mssql,1433;Database=AssessmentDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;Encrypt=False;"
+#     ports:
+#       - "5005:80"
+#     networks:
+#       - jobseeker-network  # ✅ Explicit network
 
 # volumes:
 #   mssql-data:
 #   rabbitmq-data:
+
+# # ✅ DEFINE EXPLICIT NETWORK
+# networks:
+#   jobseeker-network:
+#     driver: bridge
