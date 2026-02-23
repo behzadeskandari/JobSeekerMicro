@@ -1,4 +1,4 @@
-version: '3.8'
+﻿version: '3.8'
 
 services:
   # Infrastructure
@@ -26,9 +26,9 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: jobseeker-mssql
     environment:
-      SA_PASSWORD: "SafePass123"
+      SA_PASSWORD: "YourStrong@Passw0rd"  # ✅ FIXED: Match other files
       ACCEPT_EULA: "Y"
-      MSSQL_PID: Express
+      MSSQL_PID: "Developer"  # ✅ FIXED: Use Developer not Express
     ports:
       - "1433:1433"
     volumes:
@@ -36,7 +36,7 @@ services:
     networks:
       - backend
     healthcheck:
-      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "SafePass123", "-Q", "SELECT 1"]
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong@Passw0rd", "-Q", "SELECT 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -52,7 +52,7 @@ services:
       - "5001:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=IdentityDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;Encrypt=false;
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
@@ -79,7 +79,7 @@ services:
       - "5002:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=ProfileServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=ProfileServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;Encrypt=false;
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
@@ -106,7 +106,7 @@ services:
       - "5003:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=JobServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=JobServiceDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;Encrypt=false;
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
@@ -133,7 +133,7 @@ services:
       - "5004:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AdvertisementDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AdvertisementDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;Encrypt=false;
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
@@ -160,7 +160,7 @@ services:
       - "5005:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AssessmentServiceDB;User Id=sa;Password=SafePass123;TrustServerCertificate=true;
+      - ConnectionStrings__DefaultConnection=Server=mssql,1433;Database=AssessmentDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;Encrypt=false;
       - RabbitMQ__HostName=rabbitmq
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
@@ -178,34 +178,9 @@ services:
       retries: 3
       start_period: 30s
 
-  # API Gateway
-  gateway:
-    build:
-      context: .
-      dockerfile: GateWay/Dockerfile
-    container_name: jobseeker-gateway
-    ports:
-      - "5000:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - identityservice
-      - profileservice
-      - jobservice
-      - advertisementservice
-      - assessmentservice
-    networks:
-      - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
 volumes:
-  rabbitmq-data:
   mssql-data:
+  rabbitmq-data:
 
 networks:
   backend:
